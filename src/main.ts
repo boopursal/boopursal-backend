@@ -14,10 +14,17 @@ async function bootstrap() {
   
   // Configuration indispensable pour Vercel
   app.setGlobalPrefix('api');
-  app.enableCors({ origin: '*', credentials: true });
+  
+  // Activation de CORS (Portes ouvertes pour le Frontend)
+  app.enableCors({
+    origin: true, 
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
-  // Dossiers statiques (Note: Vercel préfère S3, mais on garde pour compatibilité)
+  // Dossiers statiques
   app.use('/images', express.static(join(process.cwd(), 'public/images')));
   app.use('/attachement', express.static(join(process.cwd(), 'public/attachement')));
 
