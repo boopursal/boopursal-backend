@@ -6,9 +6,6 @@ import * as express from 'express';
 import { join } from 'path';
 
 async function bootstrap() {
-  // Injection manuelle des variables d'environnement cruciales
-  process.env.DATABASE_URL = "mysql://root:@127.0.0.1:3306/boopugbb_ha";
-  process.env.PORT = "3333";
 
   const app = await NestFactory.create(AppModule);
 
@@ -16,7 +13,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    origin: '*', // Autorise Vercel et Localhost
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Accept, Authorization',

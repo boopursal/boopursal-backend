@@ -7,12 +7,10 @@ const common_1 = require("@nestjs/common");
 const express = require("express");
 const path_1 = require("path");
 async function bootstrap() {
-    process.env.DATABASE_URL = "mysql://root:@127.0.0.1:3306/boopugbb_ha";
-    process.env.PORT = "3333";
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.setGlobalPrefix('api');
     app.enableCors({
-        origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+        origin: '*',
         credentials: true,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         allowedHeaders: 'Content-Type, Accept, Authorization',
