@@ -5,11 +5,24 @@
       "src": "src/main.ts",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["node_modules/.prisma/client/*.node", "prisma/schema.prisma"]
+        "includeFiles": [
+          "node_modules/.prisma/client/*.node", 
+          "prisma/schema.prisma",
+          "public/images/**",
+          "public/attachement/**"
+        ]
       }
     }
   ],
   "routes": [
+    {
+      "src": "/images/(.*)",
+      "dest": "/public/images/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable",
+        "Access-Control-Allow-Origin": "*"
+      }
+    },
     {
       "src": "/api/(.*)",
       "headers": {
