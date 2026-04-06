@@ -1,0 +1,141 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthService = void 0;
+const common_1 = require("@nestjs/common");
+const jwt_1 = require("@nestjs/jwt");
+const prisma_service_1 = require("../prisma/prisma.service");
+const bcrypt = require("bcrypt");
+let AuthService = class AuthService {
+    constructor(prisma, jwtService) {
+        this.prisma = prisma;
+        this.jwtService = jwtService;
+    }
+    async login(email, password) {
+        const cleanEmail = (email || '').trim().toLowerCase();
+        const fs = require('fs');
+        const logToDisk = (msg) => fs.appendFileSync('debug-auth.txt', `\n[${new Date().toISOString()}] ${msg}`);
+        logToDisk(`Tentative: ${cleanEmail}`);
+        const user = await this.prisma.user.findFirst({
+            where: { email: cleanEmail },
+            include: {
+                acheteur: true,
+                fournisseur: true,
+                avatar: true,
+            },
+        });
+        if (!user) {
+            logToDisk(` -> KO: Email non trouve (${cleanEmail})`);
+            throw new common_1.UnauthorizedException('Identifiants invalides');
+        }
+        const hash = user.password.replace(/^\$2y\$/, '$2a$');
+        const isMatch = await bcrypt.compare(password, hash);
+        if (!isMatch) {
+            logToDisk(` -> KO: Pass incorrect pour ${cleanEmail}`);
+            throw new common_1.UnauthorizedException('Identifiants invalides');
+        }
+        let roles = [];
+        try {
+            if (user.roles) {
+                const rawRoles = user.roles.trim();
+                if (rawRoles.startsWith('a:') || rawRoles.includes(':"')) {
+                    const matches = rawRoles.match(/"ROLE_[A-Z_]+"/g);
+                    roles = matches ? matches.map(m => m.replace(/"/g, '')) : ['ROLE_USER'];
+                }
+                else if (rawRoles.startsWith('[') || rawRoles.startsWith('{')) {
+                    roles = JSON.parse(rawRoles);
+                }
+                else {
+                    roles = rawRoles.split(/[\s,;]+/).filter(r => r.length > 0);
+                }
+            }
+        }
+        catch (e) {
+            roles = ['ROLE_USER'];
+        }
+        if (!roles.length)
+            roles = ['ROLE_USER'];
+        const type = user.acheteur ? 'acheteur' : user.fournisseur ? 'fournisseur' : 'admin';
+        const payload = { sub: user.id, email: user.email, roles: roles, type: type };
+        logToDisk(` -> OK: Succes pour ${cleanEmail}`);
+        return {
+            token: await this.jwtService.signAsync(payload),
+            user: this.formatUser(user, roles, type)
+        };
+    }
+    formatUser(user, roles, type) {
+        const mainRole = roles[0] || 'ROLE_USER';
+        return {
+            role: mainRole,
+            from: 'jwt',
+            data: {
+                id: user.id,
+                displayName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email,
+                email: user.email,
+                firstName: user.first_name,
+                lastName: user.last_name,
+                type: type,
+                role: mainRole,
+                roles: roles,
+                photoURL: user.avatar ? `/images/avatar/${user.avatar.url}` : null,
+                settings: {},
+                shortcuts: []
+            }
+        };
+    }
+    async validateUser(payload) {
+        const fs = require('fs');
+        const logToDisk = (msg) => fs.appendFileSync('debug-auth.txt', `\n[${new Date().toISOString()}] ${msg}`);
+        logToDisk(`AutoLogin pour ID: ${payload.sub} (${payload.email})`);
+        const user = await this.prisma.user.findUnique({
+            where: { id: payload.sub },
+            include: {
+                acheteur: true,
+                fournisseur: true,
+                avatar: true,
+            },
+        });
+        if (!user) {
+            logToDisk(` -> AutoLogin KO: User ${payload.sub} introuvable`);
+            return null;
+        }
+        let roles = [];
+        try {
+            if (user.roles) {
+                const rawRoles = user.roles.trim();
+                if (rawRoles.startsWith('a:') || rawRoles.includes(':"')) {
+                    const matches = rawRoles.match(/"ROLE_[A-Z_]+"/g);
+                    roles = matches ? matches.map(m => m.replace(/"/g, '')) : ['ROLE_USER'];
+                }
+                else if (rawRoles.startsWith('[') || rawRoles.startsWith('{')) {
+                    roles = JSON.parse(rawRoles);
+                }
+                else {
+                    roles = rawRoles.split(/[\s,;]+/).filter(r => r.length > 0);
+                }
+            }
+        }
+        catch (e) {
+            roles = ['ROLE_USER'];
+        }
+        if (!roles.length)
+            roles = ['ROLE_USER'];
+        const type = user.acheteur ? 'acheteur' : user.fournisseur ? 'fournisseur' : 'admin';
+        return this.formatUser(user, roles, type);
+    }
+};
+exports.AuthService = AuthService;
+exports.AuthService = AuthService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        jwt_1.JwtService])
+], AuthService);
+//# sourceMappingURL=auth.service.js.map

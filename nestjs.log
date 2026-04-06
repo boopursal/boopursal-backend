@@ -1,0 +1,718 @@
+
+> back-node@0.0.1 start:dev
+> nest start --watch
+
+[2J[3J[H[[90m20:28:55[0m] Starting compilation in watch mode...
+
+[[90m20:29:00[0m] Found 0 errors. Watching for file changes.
+
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +35ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +6ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDashboardModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPortalModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mReferentielModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAcheteursModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mFournisseursModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDemandesAchatModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mProduitsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAbonnementsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mCategoriesModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSecteursModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mActualitesModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +1ms[39m
+[33m[Nest] 38380  - [39m24/03/2026 20:29:01 [33m   WARN[39m [38;5;3m[LegacyRouteConverter] [39m[33mUnsupported route path: "/api/*". In previous versions, the symbols ?, *, and + were used to denote optional or repeating path parameters. The latest version of "path-to-regexp" now requires the use of named parameters. For example, instead of using a route like /users/* to capture all routes starting with "/users", you should use /users/*path. For more details, refer to the migration guide. Attempting to auto-convert...[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/api}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAcheteursController {/api/acheteurs}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs/:id/statut, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mFournisseursController {/api/fournisseurs}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/login_check, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/currentUser, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/profile, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mDemandesAchatController {/api/demande_achats}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_achats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_achats/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_achats/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mProduitsController {/api/produits}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/produits, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/produits/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/produits/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAbonnementsController {/api/offres/abonnements}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/offres/abonnements, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/offres/abonnements/stats, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/offres/abonnements/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mCategoriesController {/api/categories}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/categories, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/categories/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSecteursController {/api/secteurs}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/secteurs, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/secteurs/sous-secteurs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/secteurs/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mPortalController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/focus_categories_mobile, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/parcourir_secteurs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/select_produits, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/count_produit_categorie, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/count_produit_pays, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mActualitesController {/api/actualites}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/actualites, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/actualites/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mReferentielController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/sous_secteurs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/sous_secteurs/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/pays, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/pays/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/villes, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/villes/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mDashboardController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget1, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget2, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget3, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget4, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget5, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget6, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget7, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget8, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget8_1, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget12, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget13, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_abonnements, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_jetons, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demandes-admin, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demandes-devis, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/message-fournisseur, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/validation_produits, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteur-admin, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs-admin, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs-collaps, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs-provisoire, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/commandes-abonnements, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/commandes-jetons, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/abonnement-fournisseur, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demandes_prix, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/messages, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/product-devis, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs-tentatives, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs-tentatives, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[PrismaService] [39m[32mConnexion à la base de données MySQL...[39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[PrismaService] [39m[32m✅ Connexion MySQL réussie ![39m
+[32m[Nest] 38380  - [39m24/03/2026 20:29:01 [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +1ms[39m
+
+🚀 Backend NestJS démarré sur : http://localhost:3333
+📂 Modèle de données : 60 tables MySQL synchronisées via Prisma
+[INCOMING] GET /api/widget1?year=2026
+[32m[Nest] 38380  - [39m24/03/2026 20:30:33 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget1?year=2026 200 - 17ms[39m
+[INCOMING] GET /api/demandes-admin
+[32m[Nest] 38380  - [39m24/03/2026 20:30:50 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-admin 200 - 6ms[39m
+[INCOMING] GET /api/commandes-abonnements
+[32m[Nest] 38380  - [39m24/03/2026 20:30:50 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-abonnements 200 - 7ms[39m
+[INCOMING] GET /api/demande_abonnements?itemsPerPage=3
+[32m[Nest] 38380  - [39m24/03/2026 20:30:50 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demande_abonnements?itemsPerPage=3 200 - 12ms[39m
+[INCOMING] GET /api/widget4
+[32m[Nest] 38380  - [39m24/03/2026 20:30:58 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget4 200 - 15ms[39m
+[INCOMING] GET /api/widget7?year=2026
+[32m[Nest] 38380  - [39m24/03/2026 20:30:58 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget7?year=2026 200 - 7ms[39m
+[INCOMING] GET /api/widget9
+[32m[Nest] 38380  - [39m24/03/2026 20:30:58 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget9 404 - 1ms[39m
+[INCOMING] GET /api/message-fournisseur
+[32m[Nest] 38380  - [39m24/03/2026 20:31:34 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/message-fournisseur 200 - 6ms[39m
+[INCOMING] GET /api/validation_produits
+[32m[Nest] 38380  - [39m24/03/2026 20:31:34 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/validation_produits 200 - 5ms[39m
+[INCOMING] GET /api/fournisseurs-admin
+[32m[Nest] 38380  - [39m24/03/2026 20:31:34 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-admin 200 - 3ms[39m
+[INCOMING] GET /api/demandes/widgets
+[32m[Nest] 38380  - [39m24/03/2026 20:32:00 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes/widgets 404 - 0ms[39m
+[INCOMING] GET /api/fournisseur/widgets
+[32m[Nest] 38380  - [39m24/03/2026 20:32:00 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseur/widgets 404 - 0ms[39m
+[2J[3J[H[[90m20:34:35[0m] File change detected. Starting incremental compilation...
+
+[96msrc/dashboard/dashboard.service.ts[0m:[93m273[0m:[93m56[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'id_user' does not exist in type 'demande_achatWhereInput'.
+
+[7m273[0m             this.prisma.demande_achat.count({ where: { id_user: id, statut: 0, dateExpiration: { gte: new Date() }, del: false } }),
+[7m   [0m [91m                                                       ~~~~~~~[0m
+
+  [96mnode_modules/.prisma/client/index.d.ts[0m:[93m28092[0m:[93m5[0m
+    [7m28092[0m     where?: demande_achatWhereInput
+    [7m     [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'Subset<demande_achatCountArgs<DefaultArgs>, demande_achatCountArgs<DefaultArgs>>'
+
+[96msrc/dashboard/dashboard.service.ts[0m:[93m274[0m:[93m56[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'id_user' does not exist in type 'demande_achatWhereInput'.
+
+[7m274[0m             this.prisma.demande_achat.count({ where: { id_user: id, statut: 0, dateExpiration: { lt: new Date() }, del: false } }),
+[7m   [0m [91m                                                       ~~~~~~~[0m
+
+  [96mnode_modules/.prisma/client/index.d.ts[0m:[93m28092[0m:[93m5[0m
+    [7m28092[0m     where?: demande_achatWhereInput
+    [7m     [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'Subset<demande_achatCountArgs<DefaultArgs>, demande_achatCountArgs<DefaultArgs>>'
+
+[96msrc/dashboard/dashboard.service.ts[0m:[93m275[0m:[93m56[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'id_user' does not exist in type 'demande_achatWhereInput'.
+
+[7m275[0m             this.prisma.demande_achat.count({ where: { id_user: id, statut: 1, del: false } }), // Statut 1 = En attente/Cloturée ? A ajuster selon métier
+[7m   [0m [91m                                                       ~~~~~~~[0m
+
+  [96mnode_modules/.prisma/client/index.d.ts[0m:[93m28092[0m:[93m5[0m
+    [7m28092[0m     where?: demande_achatWhereInput
+    [7m     [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'Subset<demande_achatCountArgs<DefaultArgs>, demande_achatCountArgs<DefaultArgs>>'
+
+[96msrc/dashboard/dashboard.service.ts[0m:[93m276[0m:[93m56[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'id_user' does not exist in type 'demande_achatWhereInput'.
+
+[7m276[0m             this.prisma.demande_achat.count({ where: { id_user: id, statut: 2, del: false } }), // Statut 2 = Rejetée
+[7m   [0m [91m                                                       ~~~~~~~[0m
+
+  [96mnode_modules/.prisma/client/index.d.ts[0m:[93m28092[0m:[93m5[0m
+    [7m28092[0m     where?: demande_achatWhereInput
+    [7m     [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'Subset<demande_achatCountArgs<DefaultArgs>, demande_achatCountArgs<DefaultArgs>>'
+
+[96msrc/dashboard/dashboard.service.ts[0m:[93m293[0m:[93m34[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'id_user' does not exist in type '(Without<Demande_achatNullableScalarRelationFilter, demande_achatWhereInput> & demande_achatWhereInput) | (Without<...> & Demande_achatNullableScalarRelationFilter)'.
+
+[7m293[0m                 demande_achat: { id_user: id },
+[7m   [0m [91m                                 ~~~~~~~[0m
+
+  [96mnode_modules/.prisma/client/index.d.ts[0m:[93m73035[0m:[93m5[0m
+    [7m73035[0m     demande_achat?: XOR<Demande_achatNullableScalarRelationFilter, demande_achatWhereInput> | null
+    [7m     [0m [96m    ~~~~~~~~~~~~~[0m
+    The expected type comes from property 'demande_achat' which is declared here on type 'detail_visiteWhereInput'
+
+[96msrc/dashboard/dashboard.service.ts[0m:[93m330[0m:[93m79[0m - [91merror[0m[90m TS2561: [0mObject literal may only specify known properties, but 'dateExpiration' does not exist in type 'demande_achatWhereInput'. Did you mean to write 'date_expiration'?
+
+[7m330[0m             this.prisma.demande_achat.count({ where: { del: false, statut: 0, dateExpiration: { gte: new Date() } } }), // Demandes globales accessibles
+[7m   [0m [91m                                                                              ~~~~~~~~~~~~~~[0m
+
+  [96mnode_modules/.prisma/client/index.d.ts[0m:[93m28092[0m:[93m5[0m
+    [7m28092[0m     where?: demande_achatWhereInput
+    [7m     [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'Subset<demande_achatCountArgs<DefaultArgs>, demande_achatCountArgs<DefaultArgs>>'
+
+[96msrc/dashboard/dashboard.service.ts[0m:[93m332[0m:[93m50[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'id_user' does not exist in type 'produitWhereInput'.
+
+[7m332[0m             this.prisma.produit.count({ where: { id_user: id, is_valid: false, del: false } }),
+[7m   [0m [91m                                                 ~~~~~~~[0m
+
+  [96mnode_modules/.prisma/client/index.d.ts[0m:[93m57954[0m:[93m5[0m
+    [7m57954[0m     where?: produitWhereInput
+    [7m     [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'Subset<produitCountArgs<DefaultArgs>, produitCountArgs<DefaultArgs>>'
+
+[96msrc/dashboard/dashboard.service.ts[0m:[93m333[0m:[93m50[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'id_user' does not exist in type 'produitWhereInput'.
+
+[7m333[0m             this.prisma.produit.count({ where: { id_user: id, is_valid: true, del: false } }),
+[7m   [0m [91m                                                 ~~~~~~~[0m
+
+  [96mnode_modules/.prisma/client/index.d.ts[0m:[93m57954[0m:[93m5[0m
+    [7m57954[0m     where?: produitWhereInput
+    [7m     [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'Subset<produitCountArgs<DefaultArgs>, produitCountArgs<DefaultArgs>>'
+
+[[90m20:34:36[0m] Found 8 errors. Watching for file changes.
+
+[2J[3J[H[[90m20:35:10[0m] File change detected. Starting incremental compilation...
+
+[[90m20:35:11[0m] Found 0 errors. Watching for file changes.
+
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +33ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +6ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDashboardModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPortalModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mReferentielModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAcheteursModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mFournisseursModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDemandesAchatModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mProduitsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAbonnementsModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mCategoriesModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSecteursModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mActualitesModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[33m[Nest] 36872  - [39m24/03/2026 20:35:12 [33m   WARN[39m [38;5;3m[LegacyRouteConverter] [39m[33mUnsupported route path: "/api/*". In previous versions, the symbols ?, *, and + were used to denote optional or repeating path parameters. The latest version of "path-to-regexp" now requires the use of named parameters. For example, instead of using a route like /users/* to capture all routes starting with "/users", you should use /users/*path. For more details, refer to the migration guide. Attempting to auto-convert...[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/api}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api, GET} route[39m[38;5;3m +3ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAcheteursController {/api/acheteurs}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs/stats, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs/:id/statut, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mFournisseursController {/api/fournisseurs}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/login_check, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/currentUser, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/profile, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mDemandesAchatController {/api/demande_achats}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_achats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_achats/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_achats/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mProduitsController {/api/produits}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/produits, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/produits/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/produits/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAbonnementsController {/api/offres/abonnements}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/offres/abonnements, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/offres/abonnements/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/offres/abonnements/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mCategoriesController {/api/categories}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/categories, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/categories/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSecteursController {/api/secteurs}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/secteurs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/secteurs/sous-secteurs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/secteurs/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mPortalController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/focus_categories_mobile, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/parcourir_secteurs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/select_produits, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/count_produit_categorie, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/count_produit_pays, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mActualitesController {/api/actualites}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/actualites, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/actualites/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mReferentielController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/sous_secteurs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/sous_secteurs/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/pays, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/pays/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/villes, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/villes/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mDashboardController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget1, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget2, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget3, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget4, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget5, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget6, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget7, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget8, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget8_1, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget12, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget13, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_abonnements, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_jetons, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demandes-admin, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demandes-devis, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/message-fournisseur, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/validation_produits, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteur-admin, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs-admin, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs-collaps, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs-provisoire, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/commandes-abonnements, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/commandes-jetons, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/abonnement-fournisseur, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demandes_prix, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/messages, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/product-devis, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs-tentatives, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs-tentatives, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[PrismaService] [39m[32mConnexion à la base de données MySQL...[39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[PrismaService] [39m[32m✅ Connexion MySQL réussie ![39m
+[32m[Nest] 36872  - [39m24/03/2026 20:35:12 [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +2ms[39m
+
+🚀 Backend NestJS démarré sur : http://localhost:3333
+📂 Modèle de données : 60 tables MySQL synchronisées via Prisma
+[2J[3J[H[[90m20:35:30[0m] File change detected. Starting incremental compilation...
+
+[[90m20:35:30[0m] Found 0 errors. Watching for file changes.
+
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +28ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +6ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPortalModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mReferentielModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAcheteursModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mFournisseursModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDemandesAchatModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mProduitsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAbonnementsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mCategoriesModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSecteursModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mActualitesModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDashboardModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[33m[Nest] 47096  - [39m24/03/2026 20:35:31 [33m   WARN[39m [38;5;3m[LegacyRouteConverter] [39m[33mUnsupported route path: "/api/*". In previous versions, the symbols ?, *, and + were used to denote optional or repeating path parameters. The latest version of "path-to-regexp" now requires the use of named parameters. For example, instead of using a route like /users/* to capture all routes starting with "/users", you should use /users/*path. For more details, refer to the migration guide. Attempting to auto-convert...[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/api}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api, GET} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAcheteursController {/api/acheteurs}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs/:id/statut, PATCH} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mFournisseursController {/api/fournisseurs}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/login_check, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/currentUser, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/profile, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mDemandesAchatController {/api/demande_achats}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_achats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_achats/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_achats/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mProduitsController {/api/produits}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/produits, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/produits/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/produits/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAbonnementsController {/api/offres/abonnements}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/offres/abonnements, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/offres/abonnements/stats, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/offres/abonnements/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mCategoriesController {/api/categories}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/categories, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/categories/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSecteursController {/api/secteurs}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/secteurs, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/secteurs/sous-secteurs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/secteurs/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mPortalController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/focus_categories_mobile, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/parcourir_secteurs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/select_produits, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/count_produit_categorie, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/count_produit_pays, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mActualitesController {/api/actualites}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/actualites, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/actualites/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mReferentielController {/api}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/sous_secteurs, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/sous_secteurs/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/pays, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/pays/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/villes, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/villes/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mDashboardController {/api}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demandes/widgets, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demandes/budgets, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demandes/charts, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteur/teamsRank, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseur/widgets, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseur/doughnut, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseur/demandeDevisByProduct, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseur/topbudget, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseur/potentiel, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseur/personnelsRank, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget1, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget2, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget3, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget4, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget5, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget6, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget7, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget8, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget8_1, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget12, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/widget13, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_abonnements, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demande_jetons, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demandes-admin, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demandes-devis, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/message-fournisseur, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/validation_produits, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteur-admin, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs-admin, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs-collaps, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs-provisoire, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/commandes-abonnements, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/commandes-jetons, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/abonnement-fournisseur, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/demandes_prix, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/messages, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/product-devis, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/fournisseurs-tentatives, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/acheteurs-tentatives, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[PrismaService] [39m[32mConnexion à la base de données MySQL...[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[PrismaService] [39m[32m✅ Connexion MySQL réussie ![39m
+[32m[Nest] 47096  - [39m24/03/2026 20:35:31 [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +2ms[39m
+
+🚀 Backend NestJS démarré sur : http://localhost:3333
+📂 Modèle de données : 60 tables MySQL synchronisées via Prisma
+[INCOMING] GET /api/focus_categories_mobile
+[32m[Nest] 47096  - [39m24/03/2026 20:36:49 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/focus_categories_mobile 200 - 17ms[39m
+[INCOMING] GET /api/select_produits
+[32m[Nest] 47096  - [39m24/03/2026 20:36:49 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/select_produits 200 - 11ms[39m
+[INCOMING] GET /api/demandes-admin
+[32m[Nest] 47096  - [39m24/03/2026 20:37:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-admin 200 - 6ms[39m
+[INCOMING] GET /api/widget1
+[32m[Nest] 47096  - [39m24/03/2026 20:40:12 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget1 200 - 6ms[39m
+[INCOMING] GET /api/currentUser
+[32m[Nest] 47096  - [39m24/03/2026 20:40:21 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/currentUser 304 - 24ms[39m
+[INCOMING] GET /api/focus_categories_mobile
+[INCOMING] GET /api/select_produits?produit[exists]=true
+[32m[Nest] 47096  - [39m24/03/2026 20:40:21 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/focus_categories_mobile 304 - 4ms[39m
+[INCOMING] GET /api/actualites?itemsPerPage=4&isActive=true&order[created]=desc
+[INCOMING] GET /api/demande_achats?itemsPerPage=4&statut=1&isPublic=1&order[created]=desc&props[]=id&props[]=reference&props[]=titre&props[]=description&props[]=pays&props[]=ville&props[]=dateExpiration&props[]=created&props[]=slug
+[32m[Nest] 47096  - [39m24/03/2026 20:40:21 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/select_produits?produit[exists]=true 304 - 10ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:21 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/actualites?itemsPerPage=4&isActive=true&order[created]=desc 304 - 13ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:21 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demande_achats?itemsPerPage=4&statut=1&isPublic=1&order[created]=desc&props[]=id&props[]=reference&props[]=titre&props[]=description&props[]=pays&props[]=ville&props[]=dateExpiration&props[]=created&props[]=slug 304 - 13ms[39m
+[INCOMING] GET /api/focus_categories_mobile
+[INCOMING] GET /api/select_produits?produit[exists]=true
+[INCOMING] GET /api/demande_achats?itemsPerPage=4&statut=1&isPublic=1&order[created]=desc&props[]=id&props[]=reference&props[]=titre&props[]=description&props[]=pays&props[]=ville&props[]=dateExpiration&props[]=created&props[]=slug
+[INCOMING] GET /api/actualites?itemsPerPage=4&isActive=true&order[created]=desc
+[32m[Nest] 47096  - [39m24/03/2026 20:40:21 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/focus_categories_mobile 304 - 7ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:21 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demande_achats?itemsPerPage=4&statut=1&isPublic=1&order[created]=desc&props[]=id&props[]=reference&props[]=titre&props[]=description&props[]=pays&props[]=ville&props[]=dateExpiration&props[]=created&props[]=slug 304 - 7ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:21 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/actualites?itemsPerPage=4&isActive=true&order[created]=desc 304 - 5ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:21 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/select_produits?produit[exists]=true 304 - 11ms[39m
+[INCOMING] GET /api/focus_categories_mobile
+[INCOMING] GET /api/demande_achats?itemsPerPage=4&statut=1&isPublic=1&order[created]=desc&props[]=id&props[]=reference&props[]=titre&props[]=description&props[]=pays&props[]=ville&props[]=dateExpiration&props[]=created&props[]=slug
+[INCOMING] GET /api/actualites?itemsPerPage=4&isActive=true&order[created]=desc
+[32m[Nest] 47096  - [39m24/03/2026 20:40:21 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/focus_categories_mobile 304 - 4ms[39m
+[INCOMING] GET /api/select_produits?produit[exists]=true
+[32m[Nest] 47096  - [39m24/03/2026 20:40:21 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/actualites?itemsPerPage=4&isActive=true&order[created]=desc 304 - 5ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:21 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demande_achats?itemsPerPage=4&statut=1&isPublic=1&order[created]=desc&props[]=id&props[]=reference&props[]=titre&props[]=description&props[]=pays&props[]=ville&props[]=dateExpiration&props[]=created&props[]=slug 304 - 7ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:21 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/select_produits?produit[exists]=true 304 - 7ms[39m
+[INCOMING] GET /api/produits?page=1&isValid=true&itemsPerPage=10&order[created]=desc
+[32m[Nest] 47096  - [39m24/03/2026 20:40:32 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/produits?page=1&isValid=true&itemsPerPage=10&order[created]=desc 304 - 15ms[39m
+[INCOMING] GET /api/demandes-admin
+[INCOMING] GET /api/message-fournisseur
+[INCOMING] GET /api/demandes-devis
+[INCOMING] GET /api/validation_produits
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-admin 200 - 8ms[39m
+[INCOMING] GET /api/fournisseurs-collaps
+[INCOMING] GET /api/acheteur-admin
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/message-fournisseur 200 - 6ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/validation_produits 200 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-collaps 200 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/acheteur-admin 200 - 2ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-devis 200 - 5ms[39m
+[INCOMING] GET /api/fournisseurs-admin
+[INCOMING] GET /api/fournisseurs-provisoire
+[INCOMING] GET /api/commandes-abonnements
+[INCOMING] GET /api/abonnement-fournisseur
+[INCOMING] GET /api/commandes-jetons
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-admin 200 - 5ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-abonnements 200 - 5ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-provisoire 200 - 7ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/abonnement-fournisseur 200 - 5ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-jetons 200 - 5ms[39m
+[INCOMING] GET /api/widget3?year=2026
+[INCOMING] GET /api/widget1?year=2026
+[INCOMING] GET /api/widget2?year=2026
+[INCOMING] GET /api/widget7?year=2026
+[INCOMING] GET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget3?year=2026 200 - 9ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget1?year=2026 200 - 8ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget2?year=2026 200 - 8ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget7?year=2026 200 - 7ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:47 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut 200 - 9ms[39m
+[INCOMING] GET /api/currentUser
+[32m[Nest] 47096  - [39m24/03/2026 20:40:52 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/currentUser 304 - 8ms[39m
+[INCOMING] GET /api/demandes-admin
+[32m[Nest] 47096  - [39m24/03/2026 20:40:52 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-admin 304 - 4ms[39m
+[INCOMING] GET /api/demandes-devis
+[INCOMING] GET /api/message-fournisseur
+[INCOMING] GET /api/validation_produits
+[INCOMING] GET /api/acheteur-admin
+[INCOMING] GET /api/fournisseurs-collaps
+[32m[Nest] 47096  - [39m24/03/2026 20:40:52 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-devis 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:52 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/message-fournisseur 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:52 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/validation_produits 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:52 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-collaps 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:52 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/acheteur-admin 304 - 4ms[39m
+[INCOMING] GET /api/abonnement-fournisseur
+[INCOMING] GET /api/fournisseurs-provisoire
+[32m[Nest] 47096  - [39m24/03/2026 20:40:52 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/abonnement-fournisseur 304 - 3ms[39m
+[INCOMING] GET /api/fournisseurs-admin
+[INCOMING] GET /api/commandes-abonnements
+[INCOMING] GET /api/commandes-jetons
+[32m[Nest] 47096  - [39m24/03/2026 20:40:52 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-provisoire 304 - 5ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:52 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-admin 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:52 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-abonnements 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:52 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-jetons 304 - 4ms[39m
+[INCOMING] GET /api/widget1?year=2026
+[INCOMING] GET /api/widget3?year=2026
+[32m[Nest] 47096  - [39m24/03/2026 20:40:53 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget1?year=2026 304 - 2ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:53 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget3?year=2026 304 - 3ms[39m
+[INCOMING] GET /api/widget2?year=2026
+[INCOMING] GET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut
+[INCOMING] GET /api/widget7?year=2026
+[32m[Nest] 47096  - [39m24/03/2026 20:40:53 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget2?year=2026 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:53 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget7?year=2026 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:53 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut 304 - 6ms[39m
+[INCOMING] GET /api/currentUser
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/currentUser 304 - 6ms[39m
+[INCOMING] GET /api/demandes-admin
+[INCOMING] GET /api/demandes-devis
+[INCOMING] GET /api/message-fournisseur
+[INCOMING] GET /api/validation_produits
+[INCOMING] GET /api/acheteur-admin
+[INCOMING] GET /api/fournisseurs-collaps
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-admin 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-devis 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/message-fournisseur 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/validation_produits 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/acheteur-admin 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-collaps 304 - 4ms[39m
+[INCOMING] GET /api/fournisseurs-admin
+[INCOMING] GET /api/fournisseurs-provisoire
+[INCOMING] GET /api/abonnement-fournisseur
+[INCOMING] GET /api/commandes-jetons
+[INCOMING] GET /api/commandes-abonnements
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-admin 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-provisoire 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-jetons 304 - 2ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/abonnement-fournisseur 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-abonnements 304 - 3ms[39m
+[INCOMING] GET /api/widget7?year=2026
+[INCOMING] GET /api/widget1?year=2026
+[INCOMING] GET /api/widget2?year=2026
+[INCOMING] GET /api/widget3?year=2026
+[INCOMING] GET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget1?year=2026 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget7?year=2026 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget2?year=2026 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget3?year=2026 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:40:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut 304 - 6ms[39m
+[INCOMING] GET /api/currentUser
+[32m[Nest] 47096  - [39m24/03/2026 20:45:54 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/currentUser 304 - 15ms[39m
+[INCOMING] GET /api/widget3?year=2026
+[INCOMING] GET /api/widget1?year=2026
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget3?year=2026 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget1?year=2026 304 - 2ms[39m
+[INCOMING] GET /api/widget2?year=2026
+[INCOMING] GET /api/widget7?year=2026
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget2?year=2026 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget7?year=2026 304 - 6ms[39m
+[INCOMING] GET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut
+[INCOMING] GET /api/demandes-admin
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-admin 304 - 4ms[39m
+[INCOMING] GET /api/message-fournisseur
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut 304 - 9ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/message-fournisseur 304 - 3ms[39m
+[INCOMING] GET /api/demandes-devis
+[INCOMING] GET /api/validation_produits
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-devis 304 - 3ms[39m
+[INCOMING] GET /api/acheteur-admin
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/validation_produits 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/acheteur-admin 304 - 2ms[39m
+[INCOMING] GET /api/fournisseurs-admin
+[INCOMING] GET /api/fournisseurs-collaps
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-admin 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-collaps 304 - 3ms[39m
+[INCOMING] GET /api/fournisseurs-provisoire
+[INCOMING] GET /api/abonnement-fournisseur
+[INCOMING] GET /api/commandes-jetons
+[INCOMING] GET /api/commandes-abonnements
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-provisoire 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-jetons 304 - 2ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/abonnement-fournisseur 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:45:55 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-abonnements 304 - 4ms[39m
+[INCOMING] GET /api/currentUser
+[32m[Nest] 47096  - [39m24/03/2026 20:46:26 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/currentUser 304 - 10ms[39m
+[INCOMING] GET /api/widget3?year=2026
+[INCOMING] GET /api/widget1?year=2026
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget3?year=2026 304 - 5ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget1?year=2026 304 - 6ms[39m
+[INCOMING] GET /api/widget2?year=2026
+[INCOMING] GET /api/widget7?year=2026
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget2?year=2026 304 - 6ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget7?year=2026 304 - 5ms[39m
+[INCOMING] GET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut
+[INCOMING] GET /api/demandes-admin
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-admin 304 - 5ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut 304 - 9ms[39m
+[INCOMING] GET /api/demandes-devis
+[INCOMING] GET /api/message-fournisseur
+[INCOMING] GET /api/validation_produits
+[INCOMING] GET /api/acheteur-admin
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-devis 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/message-fournisseur 304 - 4ms[39m
+[INCOMING] GET /api/fournisseurs-collaps
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/acheteur-admin 304 - 5ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/validation_produits 304 - 7ms[39m
+[INCOMING] GET /api/fournisseurs-admin
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-collaps 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-admin 304 - 2ms[39m
+[INCOMING] GET /api/fournisseurs-provisoire
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-provisoire 304 - 2ms[39m
+[INCOMING] GET /api/commandes-abonnements
+[INCOMING] GET /api/abonnement-fournisseur
+[INCOMING] GET /api/commandes-jetons
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-abonnements 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/abonnement-fournisseur 304 - 2ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:46:27 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-jetons 304 - 2ms[39m
+[INCOMING] GET /api/currentUser
+[32m[Nest] 47096  - [39m24/03/2026 20:49:12 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/currentUser 304 - 6ms[39m
+[INCOMING] GET /api/demandes-admin
+[INCOMING] GET /api/message-fournisseur
+[INCOMING] GET /api/demandes-devis
+[INCOMING] GET /api/validation_produits
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-admin 304 - 4ms[39m
+[INCOMING] GET /api/acheteur-admin
+[INCOMING] GET /api/fournisseurs-collaps
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/message-fournisseur 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-devis 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/validation_produits 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/acheteur-admin 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-collaps 304 - 4ms[39m
+[INCOMING] GET /api/fournisseurs-provisoire
+[INCOMING] GET /api/fournisseurs-admin
+[INCOMING] GET /api/abonnement-fournisseur
+[INCOMING] GET /api/commandes-abonnements
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-provisoire 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-admin 304 - 2ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/abonnement-fournisseur 304 - 3ms[39m
+[INCOMING] GET /api/commandes-jetons
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-abonnements 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-jetons 304 - 2ms[39m
+[INCOMING] GET /api/widget1?year=2026
+[INCOMING] GET /api/widget2?year=2026
+[INCOMING] GET /api/widget3?year=2026
+[INCOMING] GET /api/widget7?year=2026
+[INCOMING] GET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget1?year=2026 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget2?year=2026 304 - 4ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget3?year=2026 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget7?year=2026 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:13 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut 304 - 4ms[39m
+[INCOMING] GET /api/currentUser
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/currentUser 304 - 6ms[39m
+[INCOMING] GET /api/demandes-admin
+[INCOMING] GET /api/message-fournisseur
+[INCOMING] GET /api/demandes-devis
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-admin 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/message-fournisseur 304 - 2ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demandes-devis 304 - 2ms[39m
+[INCOMING] GET /api/validation_produits
+[INCOMING] GET /api/acheteur-admin
+[INCOMING] GET /api/fournisseurs-collaps
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/validation_produits 304 - 2ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/acheteur-admin 304 - 1ms[39m
+[INCOMING] GET /api/fournisseurs-admin
+[INCOMING] GET /api/fournisseurs-provisoire
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-collaps 304 - 3ms[39m
+[INCOMING] GET /api/abonnement-fournisseur
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-provisoire 304 - 2ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/fournisseurs-admin 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/abonnement-fournisseur 304 - 2ms[39m
+[INCOMING] GET /api/commandes-abonnements
+[INCOMING] GET /api/commandes-jetons
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-abonnements 304 - 2ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/commandes-jetons 304 - 2ms[39m
+[INCOMING] GET /api/widget3?year=2026
+[INCOMING] GET /api/widget2?year=2026
+[INCOMING] GET /api/widget1?year=2026
+[INCOMING] GET /api/widget7?year=2026
+[INCOMING] GET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget3?year=2026 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget1?year=2026 304 - 2ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget2?year=2026 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/widget7?year=2026 304 - 3ms[39m
+[32m[Nest] 47096  - [39m24/03/2026 20:49:42 [32m    LOG[39m [38;5;3m[HTTP] [39m[32mGET /api/demande_abonnements?itemsPerPage=5&order[created]=desc&props[]=fournisseur&props[]=offre&props[]=created&props[]=statut 304 - 3ms[39m

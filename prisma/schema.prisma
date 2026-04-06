@@ -1,0 +1,947 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model abonnement {
+  id                      Int                       @id @default(autoincrement())
+  offre_id                Int?
+  demande_id              Int?
+  fournisseur_id          Int?
+  zone_id                 Int?
+  commercial_id           Int?
+  mode_id                 Int?
+  reference               String                    @db.VarChar(50)
+  statut                  Boolean
+  prix                    Float
+  created                 DateTime                  @db.DateTime(0)
+  expired                 DateTime?                 @db.DateTime(0)
+  date_peiment            DateTime?                 @db.DateTime(0)
+  duree_id                Int?
+  remise                  Float
+  currency_id             Int?
+  commentaire             String?                   @db.VarChar(1000)
+  type                    Boolean
+  prix_admin              Float
+  currency                currency?                 @relation(fields: [currency_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_351268BB38248176")
+  offre                   offre?                    @relation(fields: [offre_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_351268BB4CC8505A")
+  fournisseur             fournisseur?              @relation(fields: [fournisseur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_351268BB670C757F")
+  paiement                paiement?                 @relation(fields: [mode_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_351268BB77E5854A")
+  commercial              commercial?               @relation(fields: [commercial_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_351268BB7854071C")
+  demande_abonnement      demande_abonnement?       @relation(fields: [demande_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_351268BB80E95E18")
+  zone_commercial         zone_commercial?          @relation(fields: [zone_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_351268BB9F2C3FAB")
+  duree                   duree?                    @relation(fields: [duree_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_351268BBD13C140")
+  abonnement_sous_secteur abonnement_sous_secteur[]
+
+  @@index([currency_id], map: "IDX_351268BB38248176")
+  @@index([offre_id], map: "IDX_351268BB4CC8505A")
+  @@index([fournisseur_id], map: "IDX_351268BB670C757F")
+  @@index([mode_id], map: "IDX_351268BB77E5854A")
+  @@index([commercial_id], map: "IDX_351268BB7854071C")
+  @@index([demande_id], map: "IDX_351268BB80E95E18")
+  @@index([zone_id], map: "IDX_351268BB9F2C3FAB")
+  @@index([duree_id], map: "IDX_351268BBD13C140")
+}
+
+model abonnement_sous_secteur {
+  abonnement_id   Int
+  sous_secteur_id Int
+  sous_secteur    sous_secteur @relation(fields: [sous_secteur_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_EFD366E0790611EF")
+  abonnement      abonnement   @relation(fields: [abonnement_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_EFD366E0F1D74413")
+
+  @@id([abonnement_id, sous_secteur_id])
+  @@index([sous_secteur_id], map: "IDX_EFD366E0790611EF")
+  @@index([abonnement_id], map: "IDX_EFD366E0F1D74413")
+}
+
+model acheteur {
+  id                  Int                   @id
+  pays_id             Int?
+  ville_id            Int?
+  societe             String                @db.VarChar(255)
+  role                String                @db.VarChar(50)
+  civilite            String                @db.VarChar(5)
+  ice                 String?               @db.VarChar(15)
+  fix                 String?               @db.VarChar(30)
+  website             String?               @db.VarChar(30)
+  description         String?               @db.LongText
+  secteur_id          Int?
+  currency_id         Int?
+  step                Int
+  is_complet          Boolean
+  code_client         String?               @db.VarChar(30)
+  autre_ville         String?               @db.VarChar(50)
+  autre_currency      String?               @db.VarChar(10)
+  parent2             Int?
+  currency            currency?             @relation(fields: [currency_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_304AFF9D38248176")
+  secteur             secteur?              @relation(fields: [secteur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_304AFF9D9F7E4405")
+  pays                pays?                 @relation(fields: [pays_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_304AFF9DA6E44244")
+  ville               ville?                @relation(fields: [ville_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_304AFF9DA73F0036")
+  user                user                  @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_304AFF9DBF396750")
+  acheteur            acheteur?             @relation("acheteurToacheteur", fields: [parent2], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_304AFF9DFC8B6C6C")
+  other_acheteur      acheteur[]            @relation("acheteurToacheteur")
+  acheteur_provisoire acheteur_provisoire[]
+  black_listes        black_listes[]
+  demande_achat       demande_achat[]
+  mediateur           mediateur[]
+  team                team[]
+
+  @@index([currency_id], map: "IDX_304AFF9D38248176")
+  @@index([secteur_id], map: "IDX_304AFF9D9F7E4405")
+  @@index([pays_id], map: "IDX_304AFF9DA6E44244")
+  @@index([ville_id], map: "IDX_304AFF9DA73F0036")
+  @@index([parent2], map: "IDX_304AFF9DFC8B6C6C")
+}
+
+model acheteur_provisoire {
+  id                 Int       @id @default(autoincrement())
+  acheteur_parent_id Int?
+  civilite           String    @db.VarChar(5)
+  societe            String    @db.VarChar(90)
+  first_name         String    @db.VarChar(50)
+  last_name          String    @db.VarChar(50)
+  phone              String    @db.VarChar(35)
+  email              String    @db.VarChar(255)
+  password           String    @db.VarChar(255)
+  created            DateTime  @db.DateTime(0)
+  type               Int       @db.SmallInt
+  acheteur           acheteur? @relation(fields: [acheteur_parent_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_86004DB452C21F08")
+
+  @@index([acheteur_parent_id], map: "IDX_86004DB452C21F08")
+  @@index([type], map: "indexes_type")
+}
+
+model actualite {
+  id              Int              @id @default(autoincrement())
+  image_id        Int?
+  titre           String           @db.VarChar(255)
+  description     String           @db.LongText
+  created         DateTime         @db.DateTime(0)
+  is_active       Boolean
+  keywords        String?          @db.VarChar(255)
+  source          String           @db.VarChar(255)
+  slug            String           @unique(map: "UNIQ_54928197989D9B62") @db.VarChar(128)
+  apercu          String           @db.LongText
+  actualite_image actualite_image? @relation(fields: [image_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_549281973DA5256D")
+
+  @@index([image_id], map: "IDX_549281973DA5256D")
+}
+
+model actualite_image {
+  id        Int         @id @default(autoincrement())
+  url       String?     @db.VarChar(255)
+  actualite actualite[]
+}
+
+model admin {
+  id   Int  @id
+  user user @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_880E0D76BF396750")
+}
+
+model attachement {
+  id                        Int                         @id @default(autoincrement())
+  url                       String?                     @db.VarChar(255)
+  file_size                 Int
+  type                      String?                     @db.VarChar(255)
+  demande_achat_attachement demande_achat_attachement[]
+}
+
+model avatar {
+  id        Int         @id @default(autoincrement())
+  url       String?     @db.VarChar(255)
+  personnel personnel[]
+  team      team[]
+  user      user[]
+}
+
+model black_listes {
+  id             Int          @id @default(autoincrement())
+  fournisseur_id Int?
+  raison         String       @db.LongText
+  created        DateTime     @db.DateTime(0)
+  acheteur_id    Int?
+  deblacklister  DateTime?    @db.DateTime(0)
+  etat           Boolean
+  ice            String?      @db.VarChar(255)
+  siret          String?      @db.VarChar(255)
+  fournisseurEx  String?      @db.VarChar(255)
+  email          String?      @db.VarChar(255)
+  pays           String?      @db.VarChar(255)
+  ville          String?      @db.VarChar(255)
+  fournisseur    fournisseur? @relation(fields: [fournisseur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_F6456D1C670C757F")
+  acheteur       acheteur?    @relation(fields: [acheteur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_F6456D1C96A7BB5F")
+
+  @@index([fournisseur_id], map: "IDX_F6456D1C670C757F")
+  @@index([acheteur_id], map: "IDX_F6456D1C96A7BB5F")
+}
+
+model categorie {
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @db.VarChar(150)
+  del                    Boolean
+  slug                   String                   @unique(map: "UNIQ_497DD634989D9B62") @db.VarChar(128)
+  categorie_sous_secteur categorie_sous_secteur[]
+  demande_ha_categories  demande_ha_categories[]
+  fournisseur_categories fournisseur_categories[]
+  produit                produit[]
+
+  @@index([name], map: "indexes_categorie")
+  @@index([del], map: "indexes_categorie2")
+}
+
+model categorie_sous_secteur {
+  categorie_id    Int
+  sous_secteur_id Int
+  sous_secteur    sous_secteur @relation(fields: [sous_secteur_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_DA4F1BD0790611EF")
+  categorie       categorie    @relation(fields: [categorie_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_DA4F1BD0BCF5E72D")
+
+  @@id([categorie_id, sous_secteur_id])
+  @@index([sous_secteur_id], map: "IDX_DA4F1BD0790611EF")
+  @@index([categorie_id], map: "IDX_DA4F1BD0BCF5E72D")
+}
+
+model commercial {
+  id                 Int                  @id
+  abonnement         abonnement[]
+  user               user                 @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_7653F3AEBF396750")
+  commercial_ville   commercial_ville[]
+  demande_abonnement demande_abonnement[]
+}
+
+model commercial_ville {
+  commercial_id Int
+  ville_id      Int
+  commercial    commercial @relation(fields: [commercial_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_6CBDDBE27854071C")
+  ville         ville      @relation(fields: [ville_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_6CBDDBE2A73F0036")
+
+  @@id([commercial_id, ville_id])
+  @@index([commercial_id], map: "IDX_6CBDDBE27854071C")
+  @@index([ville_id], map: "IDX_6CBDDBE2A73F0036")
+}
+
+model condition_generale {
+  id      Int    @id @default(autoincrement())
+  titre   String @db.VarChar(255)
+  contenu String @db.LongText
+  slug    String @unique(map: "UNIQ_5E5B29FB989D9B62") @db.VarChar(128)
+}
+
+model contact_fournisseur {
+  id              Int          @id @default(autoincrement())
+  fournisseur_id  Int?
+  contact         String       @db.VarChar(100)
+  phone           String       @db.VarChar(50)
+  email           String       @db.VarChar(50)
+  message         String       @db.Text
+  created         DateTime     @db.DateTime(0)
+  date_validation DateTime?    @db.DateTime(0)
+  statut          Boolean
+  is_read         Boolean
+  date_read       DateTime?    @db.DateTime(0)
+  del             Boolean
+  fournisseur     fournisseur? @relation(fields: [fournisseur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_5832758C670C757F")
+
+  @@index([fournisseur_id], map: "IDX_5832758C670C757F")
+}
+
+model currency {
+  id            Int             @id @default(autoincrement())
+  currency      String          @db.VarChar(5)
+  del           Boolean
+  abonnement    abonnement[]
+  acheteur      acheteur[]
+  demande_achat demande_achat[]
+  fournisseur   fournisseur[]
+  produit       produit[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model demande_abonnement {
+  id                              Int                               @id @default(autoincrement())
+  offre_id                        Int?
+  fournisseur_id                  Int?
+  zone_id                         Int?
+  commercial_id                   Int?
+  reference                       String                            @db.VarChar(50)
+  statut                          Boolean
+  created                         DateTime                          @db.DateTime(0)
+  mode_id                         Int?
+  duree_id                        Int?
+  prix                            Float
+  currency                        String                            @db.VarChar(5)
+  type                            Boolean
+  suggestions                     String?                           @db.LongText
+  abonnement                      abonnement[]
+  offre                           offre?                            @relation(fields: [offre_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_C3DE621A4CC8505A")
+  fournisseur                     fournisseur?                      @relation(fields: [fournisseur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_C3DE621A670C757F")
+  paiement                        paiement?                         @relation(fields: [mode_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_C3DE621A77E5854A")
+  commercial                      commercial?                       @relation(fields: [commercial_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_C3DE621A7854071C")
+  zone_commercial                 zone_commercial?                  @relation(fields: [zone_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_C3DE621A9F2C3FAB")
+  duree                           duree?                            @relation(fields: [duree_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_C3DE621AD13C140")
+  demande_abonnement_sous_secteur demande_abonnement_sous_secteur[]
+
+  @@index([offre_id], map: "IDX_C3DE621A4CC8505A")
+  @@index([fournisseur_id], map: "IDX_C3DE621A670C757F")
+  @@index([mode_id], map: "IDX_C3DE621A77E5854A")
+  @@index([commercial_id], map: "IDX_C3DE621A7854071C")
+  @@index([zone_id], map: "IDX_C3DE621A9F2C3FAB")
+  @@index([duree_id], map: "IDX_C3DE621AD13C140")
+}
+
+model demande_abonnement_sous_secteur {
+  demande_abonnement_id Int
+  sous_secteur_id       Int
+  demande_abonnement    demande_abonnement @relation(fields: [demande_abonnement_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_7D877B8F415015A3")
+  sous_secteur          sous_secteur       @relation(fields: [sous_secteur_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_7D877B8F790611EF")
+
+  @@id([demande_abonnement_id, sous_secteur_id])
+  @@index([demande_abonnement_id], map: "IDX_7D877B8F415015A3")
+  @@index([sous_secteur_id], map: "IDX_7D877B8F790611EF")
+}
+
+model demande_achat {
+  id                        Int                         @id @default(autoincrement())
+  acheteur_id               Int?
+  team_id                   Int?
+  statut                    Int                         @db.SmallInt
+  reference                 String?                     @db.VarChar(50)
+  description               String                      @db.LongText
+  date_expiration           DateTime?                   @db.DateTime(0)
+  is_public                 Boolean
+  nbr_visite                Int?
+  nbr_share                 Int?
+  created                   DateTime                    @db.DateTime(0)
+  date_modification         DateTime                    @db.DateTime(0)
+  is_alerted                Boolean
+  is_anonyme                Boolean
+  budget                    Float
+  del                       Boolean
+  motif_rejet_id            Int?
+  currency_id               Int?
+  titre                     String                      @db.VarChar(255)
+  pays                      String?                     @db.VarChar(255)
+  ville                     String?                     @db.VarChar(255)
+  slug                      String                      @unique(map: "UNIQ_D077077F989D9B62") @db.VarChar(128)
+  localisation              String?                     @db.VarChar(255)
+  fournisseur_gagne_id      Int?
+  autre_categories          String?                     @db.VarChar(250)
+  is_sent                   Boolean
+  team                      team?                       @relation(fields: [team_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_D077077F296CD8AE")
+  currency                  currency?                   @relation(fields: [currency_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_D077077F38248176")
+  acheteur                  acheteur?                   @relation(fields: [acheteur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_D077077F96A7BB5F")
+  fournisseur               fournisseur?                @relation(fields: [fournisseur_gagne_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_D077077F9C73C35D")
+  motif                     motif?                      @relation(fields: [motif_rejet_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_D077077FCC36B3F")
+  demande_achat_attachement demande_achat_attachement[]
+  demande_ha_categories     demande_ha_categories[]
+  detail_visite             detail_visite[]
+  diffusion_demande         diffusion_demande[]
+  historique_visite         historique_visite[]
+
+  @@index([team_id], map: "IDX_D077077F296CD8AE")
+  @@index([currency_id], map: "IDX_D077077F38248176")
+  @@index([acheteur_id], map: "IDX_D077077F96A7BB5F")
+  @@index([fournisseur_gagne_id], map: "IDX_D077077F9C73C35D")
+  @@index([motif_rejet_id], map: "IDX_D077077FCC36B3F")
+  @@index([del], map: "del_Index")
+  @@index([statut], map: "statut_Index")
+  @@fulltext([description], map: "desc_Index")
+}
+
+model demande_achat_attachement {
+  demande_achat_id Int
+  attachement_id   Int
+  attachement      attachement   @relation(fields: [attachement_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_B1D67F41A05591E0")
+  demande_achat    demande_achat @relation(fields: [demande_achat_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_B1D67F41B8CC98D5")
+
+  @@id([demande_achat_id, attachement_id])
+  @@index([attachement_id], map: "IDX_B1D67F41A05591E0")
+  @@index([demande_achat_id], map: "IDX_B1D67F41B8CC98D5")
+}
+
+model demande_devis {
+  id              Int          @id @default(autoincrement())
+  produit_id      Int?
+  contact         String       @db.VarChar(100)
+  societe         String?      @db.VarChar(50)
+  phone           String       @db.VarChar(50)
+  email           String       @db.VarChar(50)
+  message         String       @db.LongText
+  created         DateTime     @db.DateTime(0)
+  adresse         String       @db.VarChar(100)
+  statut          Boolean
+  del             Boolean
+  date_validation DateTime?    @db.DateTime(0)
+  quantity        Int?         @db.SmallInt
+  fournisseur_id  Int?
+  is_read         Boolean
+  date_read       DateTime?    @db.DateTime(0)
+  fournisseur     fournisseur? @relation(fields: [fournisseur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_7DF94602670C757F")
+  produit         produit?     @relation(fields: [produit_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_7DF94602F347EFB")
+
+  @@index([fournisseur_id], map: "IDX_7DF94602670C757F")
+  @@index([produit_id], map: "IDX_7DF94602F347EFB")
+}
+
+model demande_ha_categories {
+  demande_achat_id Int
+  categorie_id     Int
+  demande_achat    demande_achat @relation(fields: [demande_achat_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_6ACB399AB8CC98D5")
+  categorie        categorie     @relation(fields: [categorie_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_6ACB399ABCF5E72D")
+
+  @@id([demande_achat_id, categorie_id])
+  @@index([demande_achat_id], map: "IDX_6ACB399AB8CC98D5")
+  @@index([categorie_id], map: "IDX_6ACB399ABCF5E72D")
+}
+
+model demande_jeton {
+  id             Int          @id @default(autoincrement())
+  fournisseur_id Int?
+  nbr_jeton      Int          @db.SmallInt
+  is_use         Boolean
+  created        DateTime     @db.DateTime(0)
+  fournisseur    fournisseur? @relation(fields: [fournisseur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_F411E752670C757F")
+  jeton          jeton?
+
+  @@index([fournisseur_id], map: "IDX_F411E752670C757F")
+}
+
+model detail_visite {
+  id             Int            @id @default(autoincrement())
+  fournisseur_id Int?
+  demande_id     Int?
+  created        DateTime       @db.DateTime(0)
+  budget         Float
+  statut         Int            @db.SmallInt
+  personnel_id   Int?
+  personnel      personnel?     @relation(fields: [personnel_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_A25695201C109075")
+  fournisseur    fournisseur?   @relation(fields: [fournisseur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_A2569520670C757F")
+  demande_achat  demande_achat? @relation(fields: [demande_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_A256952080E95E18")
+
+  @@index([personnel_id], map: "IDX_A25695201C109075")
+  @@index([fournisseur_id], map: "IDX_A2569520670C757F")
+  @@index([demande_id], map: "IDX_A256952080E95E18")
+}
+
+model diffusion_demande {
+  id             Int            @id @default(autoincrement())
+  fournisseur_id Int?
+  demande_id     Int?
+  date_diffusion DateTime       @db.DateTime(0)
+  fournisseur    fournisseur?   @relation(fields: [fournisseur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_65C68FFF670C757F")
+  demande_achat  demande_achat? @relation(fields: [demande_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_65C68FFF80E95E18")
+
+  @@index([fournisseur_id], map: "IDX_65C68FFF670C757F")
+  @@index([demande_id], map: "IDX_65C68FFF80E95E18")
+}
+
+model directeur_achat {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(255)
+}
+
+model directeurachat {
+  id        Int    @id @default(autoincrement())
+  name      String @db.VarChar(255)
+  acheteurs Int
+}
+
+model duree {
+  id                 Int                  @id @default(autoincrement())
+  name               Int                  @db.SmallInt
+  remise             Int                  @db.SmallInt
+  created            DateTime             @db.DateTime(0)
+  abonnement         abonnement[]
+  demande_abonnement demande_abonnement[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ext_log_entries {
+  id           Int      @id @default(autoincrement())
+  action       String   @db.VarChar(8)
+  logged_at    DateTime @db.DateTime(0)
+  object_id    String?  @db.VarChar(64)
+  object_class String   @db.VarChar(255)
+  version      Int
+  data         String?  @db.LongText
+  username     String?  @db.VarChar(255)
+
+  @@index([object_class], map: "log_class_lookup_idx")
+  @@index([logged_at], map: "log_date_lookup_idx")
+  @@index([username], map: "log_user_lookup_idx")
+  @@index([object_id, object_class, version], map: "log_version_lookup_idx")
+}
+
+model faq {
+  id            Int            @id @default(autoincrement())
+  question      String         @db.VarChar(255)
+  reponse       String         @db.LongText
+  categorie_id  Int?
+  faq_categorie faq_categorie? @relation(fields: [categorie_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_E8FF75CCBCF5E72D")
+
+  @@index([categorie_id], map: "IDX_E8FF75CCBCF5E72D")
+}
+
+model faq_categorie {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(255)
+  faq  faq[]
+}
+
+model fiche {
+  id        Int       @id @default(autoincrement())
+  url       String?   @db.VarChar(255)
+  file_size Int
+  type      String?   @db.VarChar(255)
+  produit   produit[]
+}
+
+model fournisseur {
+  id                     Int                      @id
+  pays_id                Int?
+  ville_id               Int?
+  societe                String                   @db.VarChar(255)
+  civilite               String                   @db.VarChar(5)
+  ice                    String?                  @db.VarChar(15)
+  fix                    String?                  @db.VarChar(30)
+  website                String?                  @db.VarChar(30)
+  description            String?                  @db.LongText
+  currency_id            Int?
+  slug                   String                   @unique(map: "UNIQ_369ECA32989D9B62") @db.VarChar(128)
+  phone_vu               Int
+  visite                 Int
+  societe_lower          String?                  @db.VarChar(255)
+  step                   Int
+  is_complet             Boolean
+  code_client            String?                  @db.VarChar(30)
+  autre_ville            String?                  @db.VarChar(50)
+  autre_categories       String?                  @db.VarChar(250)
+  autre_currency         String?                  @db.VarChar(10)
+  parent                 Int?
+  abonnement             abonnement[]
+  black_listes           black_listes[]
+  contact_fournisseur    contact_fournisseur[]
+  demande_abonnement     demande_abonnement[]
+  demande_achat          demande_achat[]
+  demande_devis          demande_devis[]
+  demande_jeton          demande_jeton[]
+  detail_visite          detail_visite[]
+  diffusion_demande      diffusion_demande[]
+  currency               currency?                @relation(fields: [currency_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_369ECA3238248176")
+  fournisseur            fournisseur?             @relation("fournisseurTofournisseur", fields: [parent], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_369ECA323D8E604F")
+  other_fournisseur      fournisseur[]            @relation("fournisseurTofournisseur")
+  pays                   pays?                    @relation(fields: [pays_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_369ECA32A6E44244")
+  ville                  ville?                   @relation(fields: [ville_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_369ECA32A73F0036")
+  user                   user                     @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_369ECA32BF396750")
+  fournisseur_categories fournisseur_categories[]
+  fournisseur_provisoire fournisseur_provisoire[]
+  historique_visite      historique_visite[]
+  jeton                  jeton[]
+  mediateur              mediateur[]
+  personnel              personnel[]
+  produit                produit[]
+
+  @@index([currency_id], map: "IDX_369ECA3238248176")
+  @@index([parent], map: "IDX_369ECA323D8E604F")
+  @@index([pays_id], map: "IDX_369ECA32A6E44244")
+  @@index([ville_id], map: "IDX_369ECA32A73F0036")
+  @@index([societe], map: "indexe_fournisseur")
+  @@index([societe_lower], map: "indexe_societe")
+}
+
+model fournisseur_categories {
+  fournisseur_id Int
+  categorie_id   Int
+  fournisseur    fournisseur @relation(fields: [fournisseur_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_7D619F3670C757F")
+  categorie      categorie   @relation(fields: [categorie_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_7D619F3BCF5E72D")
+
+  @@id([fournisseur_id, categorie_id])
+  @@index([fournisseur_id], map: "IDX_7D619F3670C757F")
+  @@index([categorie_id], map: "IDX_7D619F3BCF5E72D")
+}
+
+model fournisseur_import {
+  id        Int     @id @default(autoincrement())
+  nom       String  @db.VarChar(255)
+  adresse   String  @db.VarChar(255)
+  user_id   Int     @default(1)
+  email     String? @db.VarChar(255)
+  telephone String? @db.VarChar(255)
+}
+
+model fournisseur_provisoire {
+  id                    Int          @id @default(autoincrement())
+  fournisseur_parent_id Int?
+  civilite              String       @db.VarChar(5)
+  societe               String       @db.VarChar(90)
+  first_name            String       @db.VarChar(50)
+  last_name             String       @db.VarChar(50)
+  phone                 String       @db.VarChar(35)
+  email                 String       @db.VarChar(255)
+  password              String       @db.VarChar(255)
+  created               DateTime     @db.DateTime(0)
+  type                  Int          @db.SmallInt
+  fournisseur           fournisseur? @relation(fields: [fournisseur_parent_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_E5DB53F48FB08615")
+
+  @@index([fournisseur_parent_id], map: "IDX_E5DB53F48FB08615")
+  @@index([type], map: "indexes_type")
+}
+
+model historique_visite {
+  id             Int            @id @default(autoincrement())
+  fournisseur_id Int?
+  demande_id     Int?
+  created        DateTime       @db.DateTime(0)
+  fournisseur    fournisseur?   @relation(fields: [fournisseur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_79DE2CE7670C757F")
+  demande_achat  demande_achat? @relation(fields: [demande_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_79DE2CE780E95E18")
+
+  @@index([fournisseur_id], map: "IDX_79DE2CE7670C757F")
+  @@index([demande_id], map: "IDX_79DE2CE780E95E18")
+}
+
+model image_produit {
+  id                    Int                     @id @default(autoincrement())
+  url                   String?                 @db.VarChar(255)
+  produit               produit[]
+  produit_image_produit produit_image_produit[]
+}
+
+model image_secteur {
+  id      Int       @id @default(autoincrement())
+  url     String?   @db.VarChar(255)
+  secteur secteur[]
+}
+
+model jeton {
+  id             Int            @id @default(autoincrement())
+  fournisseur_id Int?
+  paiement_id    Int?
+  demande_id     Int?           @unique(map: "UNIQ_2CF647B80E95E18")
+  nbr_jeton      Int            @db.SmallInt
+  prix           Float
+  is_payed       Boolean
+  created        DateTime       @db.DateTime(0)
+  del            Boolean
+  paiement       paiement?      @relation(fields: [paiement_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_2CF647B2A4C4478")
+  fournisseur    fournisseur?   @relation(fields: [fournisseur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_2CF647B670C757F")
+  demande_jeton  demande_jeton? @relation(fields: [demande_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_2CF647B80E95E18")
+
+  @@index([paiement_id], map: "IDX_2CF647B2A4C4478")
+  @@index([fournisseur_id], map: "IDX_2CF647B670C757F")
+}
+
+model mediateur {
+  id             Int          @id @default(autoincrement())
+  fournisseur_id Int?
+  acheteur_id    Int?
+  raison         String       @db.LongText
+  created        DateTime     @db.DateTime(0)
+  etat           Boolean
+  deblacklister  DateTime?    @db.DateTime(0)
+  fournisseur    fournisseur? @relation(fields: [fournisseur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_617C17B8670C757F")
+  acheteur       acheteur?    @relation(fields: [acheteur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_617C17B896A7BB5F")
+
+  @@index([fournisseur_id], map: "IDX_617C17B8670C757F")
+  @@index([acheteur_id], map: "IDX_617C17B896A7BB5F")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model migration_versions {
+  version     String   @id @db.VarChar(14)
+  executed_at DateTime @db.DateTime(0)
+}
+
+model motif {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(255)
+  demande_achat demande_achat[]
+}
+
+model offre {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(50)
+  prix_mad           Float
+  prix_eur           Float
+  nb_activite        Int                  @db.SmallInt
+  description        String               @db.VarChar(255)
+  focus_produit      String               @db.VarChar(25)
+  nb_page_catalogue  Int                  @db.SmallInt
+  has_commercial     Boolean
+  has_banner         Boolean
+  abonnement         abonnement[]
+  demande_abonnement demande_abonnement[]
+}
+
+model paiement {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(50)
+  abonnement         abonnement[]
+  demande_abonnement demande_abonnement[]
+  jeton              jeton[]
+}
+
+model pays {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar(50)
+  del                  Boolean
+  slug                 String                 @unique(map: "UNIQ_349F3CAE989D9B62") @db.VarChar(128)
+  acheteur             acheteur[]
+  fournisseur          fournisseur[]
+  produit              produit[]
+  ville                ville[]
+  zone_commercial_pays zone_commercial_pays[]
+}
+
+model personnel {
+  id             Int             @id @default(autoincrement())
+  fournisseur_id Int?
+  email          String          @db.VarChar(100)
+  phone          String          @db.VarChar(20)
+  del            Boolean
+  created        DateTime        @db.DateTime(0)
+  fullName       String          @db.VarChar(150)
+  avatar_id      Int?
+  agence         String?         @db.VarChar(20)
+  ville          String?         @db.VarChar(20)
+  detail_visite  detail_visite[]
+  fournisseur    fournisseur?    @relation(fields: [fournisseur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_A6BCF3DE670C757F")
+  avatar         avatar?         @relation(fields: [avatar_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_A6BCF3DE86383B10")
+
+  @@index([fournisseur_id], map: "IDX_A6BCF3DE670C757F")
+  @@index([avatar_id], map: "IDX_A6BCF3DE86383B10")
+}
+
+model produit {
+  id                    Int                     @id @default(autoincrement())
+  secteur_id            Int?
+  sous_secteurs_id      Int?
+  fournisseur_id        Int?
+  fiche_technique_id    Int?
+  reference             String                  @db.VarChar(50)
+  description           String                  @db.LongText
+  pu                    Float
+  del                   Boolean
+  is_select             Boolean
+  is_valid              Boolean
+  created               DateTime                @db.DateTime(0)
+  videos                String?                 @db.VarChar(255)
+  categorie_id          Int?
+  featured_image_id_id  Int?
+  titre                 String                  @db.VarChar(100)
+  currency_id           Int?
+  date_validation       DateTime?               @db.DateTime(0)
+  pays_id               Int?
+  slug                  String                  @unique(map: "UNIQ_29A5EC27989D9B62") @db.VarChar(128)
+  phone_vu              Int
+  titre_lower           String?                 @db.VarChar(100)
+  ville_id              Int?
+  free                  Boolean
+  autre_secteur         String?                 @db.VarChar(80)
+  autre_activite        String?                 @db.VarChar(80)
+  autre_produit         String?                 @db.VarChar(80)
+  demande_devis         demande_devis[]
+  currency              currency?               @relation(fields: [currency_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_29A5EC2738248176")
+  fiche                 fiche?                  @relation(fields: [fiche_technique_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_29A5EC27431AD613")
+  fournisseur           fournisseur?            @relation(fields: [fournisseur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_29A5EC27670C757F")
+  image_produit         image_produit?          @relation(fields: [featured_image_id_id], references: [id], onUpdate: Restrict, map: "FK_29A5EC276E694C1F")
+  secteur               secteur?                @relation(fields: [secteur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_29A5EC279F7E4405")
+  pays                  pays?                   @relation(fields: [pays_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_29A5EC27A6E44244")
+  ville                 ville?                  @relation(fields: [ville_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_29A5EC27A73F0036")
+  categorie             categorie?              @relation(fields: [categorie_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_29A5EC27BCF5E72D")
+  sous_secteur          sous_secteur?           @relation(fields: [sous_secteurs_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_29A5EC27D7BD44DD")
+  produit_image_produit produit_image_produit[]
+  select_produit        select_produit[]
+
+  @@index([currency_id], map: "IDX_29A5EC2738248176")
+  @@index([fiche_technique_id], map: "IDX_29A5EC27431AD613")
+  @@index([fournisseur_id], map: "IDX_29A5EC27670C757F")
+  @@index([featured_image_id_id], map: "IDX_29A5EC276E694C1F")
+  @@index([secteur_id], map: "IDX_29A5EC279F7E4405")
+  @@index([pays_id], map: "IDX_29A5EC27A6E44244")
+  @@index([ville_id], map: "IDX_29A5EC27A73F0036")
+  @@index([categorie_id], map: "IDX_29A5EC27BCF5E72D")
+  @@index([sous_secteurs_id], map: "IDX_29A5EC27D7BD44DD")
+  @@index([is_valid], map: "indexes_produit2")
+  @@index([del], map: "indexes_produit3")
+  @@fulltext([description], map: "description_index")
+  @@fulltext([titre_lower, description], map: "titre_desc_index")
+  @@fulltext([titre_lower], map: "titre_index")
+}
+
+model produit_image_produit {
+  produit_id       Int
+  image_produit_id Int
+  image_produit    image_produit @relation(fields: [image_produit_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_92EB1D2563EA69CD")
+  produit          produit       @relation(fields: [produit_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_92EB1D25F347EFB")
+
+  @@id([produit_id, image_produit_id])
+  @@index([image_produit_id], map: "IDX_92EB1D2563EA69CD")
+  @@index([produit_id], map: "IDX_92EB1D25F347EFB")
+}
+
+model secteur {
+  id            Int            @id @default(autoincrement())
+  image_id      Int?
+  name          String         @db.VarChar(100)
+  del           Boolean
+  slug          String         @unique(map: "UNIQ_8045251F989D9B62") @db.VarChar(128)
+  acheteur      acheteur[]
+  produit       produit[]
+  image_secteur image_secteur? @relation(fields: [image_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_8045251F3DA5256D")
+  sous_secteur  sous_secteur[]
+
+  @@index([image_id], map: "IDX_8045251F3DA5256D")
+}
+
+model select_produit {
+  id         Int      @id @default(autoincrement())
+  produit_id Int?
+  updated    DateTime @db.DateTime(0)
+  produit    produit? @relation(fields: [produit_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_F7E2627EF347EFB")
+
+  @@index([produit_id], map: "IDX_F7E2627EF347EFB")
+}
+
+model sous_secteur {
+  id                              Int                               @id @default(autoincrement())
+  secteur_id                      Int?
+  name                            String                            @db.VarChar(150)
+  name_lower                      String                            @db.VarChar(150)
+  del                             Boolean
+  slug                            String                            @unique(map: "UNIQ_A34C5D52989D9B62") @db.VarChar(128)
+  abonnement_sous_secteur         abonnement_sous_secteur[]
+  categorie_sous_secteur          categorie_sous_secteur[]
+  demande_abonnement_sous_secteur demande_abonnement_sous_secteur[]
+  produit                         produit[]
+  secteur                         secteur?                          @relation(fields: [secteur_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_A34C5D529F7E4405")
+
+  @@index([secteur_id], map: "IDX_A34C5D529F7E4405")
+  @@index([name_lower], map: "indexe_ss_name")
+  @@index([del], map: "indexes_sous_secteur2")
+}
+
+model suggestion {
+  id          Int       @id @default(autoincrement())
+  user_id     Int
+  name        String?   @db.VarChar(255)
+  description String?   @db.LongText
+  created     DateTime? @db.DateTime(0)
+  etat        String?   @db.VarChar(255)
+  user        user      @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "FK_DD80F31BA76ED395")
+
+  @@index([user_id], map: "IDX_DD80F31B9D86650F")
+}
+
+model suggestion_secteur {
+  id              Int      @id @default(autoincrement())
+  user_id         Int?
+  secteur         String   @db.VarChar(100)
+  sous_secteur    String   @db.VarChar(100)
+  categorie       String?  @db.VarChar(100)
+  page_suggestion String   @db.VarChar(100)
+  etat            Boolean
+  created         DateTime @db.DateTime(0)
+  user            user?    @relation(fields: [user_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_EF9F666BA76ED395")
+
+  @@index([user_id], map: "IDX_EF9F666BA76ED395")
+}
+
+model team {
+  id            Int             @id @default(autoincrement())
+  acheteur_id   Int
+  first_name    String?         @db.VarChar(255)
+  last_name     String?         @db.VarChar(255)
+  avatar_id     Int?
+  zz            String?         @db.VarChar(255)
+  name          String?         @db.VarChar(150)
+  email         String          @db.VarChar(100)
+  phone         String?         @db.VarChar(20)
+  del           Boolean?
+  fullName      String?         @db.VarChar(150)
+  created       DateTime        @db.DateTime(0)
+  agence        String?         @db.VarChar(20)
+  ville         String?         @db.VarChar(20)
+  demande_achat demande_achat[]
+  avatar        avatar?         @relation(fields: [avatar_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_C4E0A61F86383B10")
+  acheteur      acheteur        @relation(fields: [acheteur_id], references: [id], onUpdate: Restrict, map: "FK_C4E0A61F96A7BB5F")
+
+  @@index([avatar_id], map: "IDX_C4E0A61F86383B10")
+  @@index([acheteur_id], map: "IDX_C4E0A61F96A7BB5F")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user {
+  id                   Int                  @id @default(autoincrement())
+  adresse1             String?              @db.VarChar(255)
+  adresse2             String?              @db.VarChar(255)
+  codepostal           Int?
+  phone                String               @db.VarChar(35)
+  email                String               @db.VarChar(255)
+  password             String               @db.VarChar(255)
+  del                  Boolean
+  isactif              Boolean
+  created              DateTime             @db.DateTime(0)
+  first_name           String               @db.VarChar(255)
+  last_name            String               @db.VarChar(255)
+  discr                String               @db.VarChar(255)
+  roles                String               @db.TinyText
+  password_change_date Int?
+  parent1              Int?
+  confirmation_token   String?              @db.VarChar(40)
+  avatar_id            Int?
+  redirect             String               @db.VarChar(255)
+  password_reset_date  DateTime?            @db.DateTime(0)
+  forgot_token         String?              @db.VarChar(40)
+  acheteur             acheteur?
+  admin                admin?
+  commercial           commercial?
+  fournisseur          fournisseur?
+  suggestion           suggestion[]
+  suggestion_secteur   suggestion_secteur[]
+  user                 user?                @relation("userTouser", fields: [parent1], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_8D93D64965823DD6")
+  other_user           user[]               @relation("userTouser")
+  avatar               avatar?              @relation(fields: [avatar_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_8D93D64986383B10")
+  zone_commercial      zone_commercial?
+
+  @@index([parent1], map: "IDX_8D93D64965823DD6")
+  @@index([avatar_id], map: "IDX_8D93D64986383B10")
+  @@index([del], map: "indexes_user")
+  @@index([isactif], map: "indexes_user2")
+}
+
+model ville {
+  id               Int                @id @default(autoincrement())
+  name             String             @db.VarChar(50)
+  pays_id          Int?
+  del              Boolean
+  slug             String             @unique(map: "UNIQ_43C3D9C3989D9B62") @db.VarChar(128)
+  acheteur         acheteur[]
+  commercial_ville commercial_ville[]
+  fournisseur      fournisseur[]
+  produit          produit[]
+  pays             pays?              @relation(fields: [pays_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_43C3D9C3A6E44244")
+
+  @@index([pays_id], map: "IDX_43C3D9C3A6E44244")
+}
+
+model zone_commercial {
+  id                   Int                    @id
+  abonnement           abonnement[]
+  demande_abonnement   demande_abonnement[]
+  user                 user                   @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_56B2E04EBF396750")
+  zone_commercial_pays zone_commercial_pays[]
+}
+
+model zone_commercial_pays {
+  zone_commercial_id Int
+  pays_id            Int
+  zone_commercial    zone_commercial @relation(fields: [zone_commercial_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_723D3B09675444E0")
+  pays               pays            @relation(fields: [pays_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "FK_723D3B09A6E44244")
+
+  @@id([zone_commercial_id, pays_id])
+  @@index([zone_commercial_id], map: "IDX_723D3B09675444E0")
+  @@index([pays_id], map: "IDX_723D3B09A6E44244")
+}
