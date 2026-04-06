@@ -18,10 +18,15 @@ async function bootstrap() {
     app.use('/images', express.static((0, path_1.join)(process.cwd(), 'public/images')));
     app.use('/attachement', express.static((0, path_1.join)(process.cwd(), 'public/attachement')));
     app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true, transform: true }));
-    const port = +process.env.PORT;
-    await app.listen(port);
-    console.log(`\n🚀 Backend NestJS démarré sur : http://localhost:${port}`);
-    console.log(`📂 Modèle de données : 60 tables MySQL synchronisées via Prisma`);
+    await app.init();
+    const expressApp = app.getHttpAdapter().getInstance();
+    return expressApp;
 }
-bootstrap();
+let server;
+module.exports = async (req, res) => {
+    if (!server) {
+        server = await bootstrap();
+    }
+    return server(req, res);
+};
 //# sourceMappingURL=main.js.map
