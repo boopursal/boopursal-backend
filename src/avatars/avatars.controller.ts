@@ -11,7 +11,11 @@ export class AvatarsController {
     @Post()
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
-            destination: './public/images/avatars',
+            // Vercel only allows writing to /tmp
+            destination: (req, file, cb) => {
+               const path = process.env.NODE_ENV === 'production' ? '/tmp' : './public/images/avatars';
+               cb(null, path);
+            },
             filename: (req, file, cb) => {
                 const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
                 return cb(null, `${randomName}${extname(file.originalname)}`);
@@ -19,8 +23,6 @@ export class AvatarsController {
         })
     }))
     async uploadFile(@UploadedFile() file: any) {
-        // file.path contains something like "public\images\avatars\..."
-        // but we want the URL to be relative to the public root for serving
         const url = file.filename;
         const savedAvatar = await this.avatarsService.create({
             url: `avatars/${url}`,
