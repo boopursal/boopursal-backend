@@ -5,33 +5,28 @@ import { ValidationPipe } from '@nestjs/common';
 import * as express from 'express';
 import { join } from 'path';
 
+let cachedHandler;
+
 async function bootstrap() {
+  if (cachedHandler) return cachedHandler;
+
   const app = await NestFactory.create(AppModule);
-
+  
+  // Configuration indispensable pour Vercel
   app.setGlobalPrefix('api');
+  app.enableCors({ origin: '*', credentials: true });
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
-  app.enableCors({
-    origin: '*',
-    credentials: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Accept, Authorization',
-  });
-
+  // Dossiers statiques (Note: Vercel préfère S3, mais on garde pour compatibilité)
   app.use('/images', express.static(join(process.cwd(), 'public/images')));
   app.use('/attachement', express.static(join(process.cwd(), 'public/attachement')));
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-
   await app.init();
-  const expressApp = app.getHttpAdapter().getInstance();
-  return expressApp;
+  cachedHandler = app.getHttpAdapter().getInstance();
+  return cachedHandler;
 }
 
-// Export de l'application pour Vercel
-let server;
-module.exports = async (req, res) => {
-  if (!server) {
-    server = await bootstrap();
-  }
-  return server(req, res);
+export default async (req, res) => {
+  const handler = await bootstrap();
+  return handler(req, res);
 };
