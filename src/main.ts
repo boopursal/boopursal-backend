@@ -12,15 +12,10 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
   
-  // Configuration indispensable pour Vercel
   app.setGlobalPrefix('api');
   
-  // Activation de CORS (Portes ouvertes pour le Frontend)
-  app.enableCors({
-    origin: true, 
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
-  });
+  // Ouverture totale du CORS (Simple et efficace pour JWT)
+  app.enableCors(); 
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
