@@ -12,10 +12,8 @@ export class AuthService {
 
     async login(email: string, password: string) {
         const cleanEmail = (email || '').trim().toLowerCase();
-        const fs = require('fs');
-        const logToDisk = (msg: string) => fs.appendFileSync('debug-auth.txt', `\n[${new Date().toISOString()}] ${msg}`);
-
-        logToDisk(`Tentative: ${cleanEmail}`);
+        
+        console.log(`[AUTH] Tentative de connexion pour : ${cleanEmail}`);
 
         const user = await this.prisma.user.findFirst({
             where: { email: cleanEmail },
@@ -27,18 +25,20 @@ export class AuthService {
         });
 
         if (!user) {
-            logToDisk(` -> KO: Email non trouve (${cleanEmail})`);
+            console.log(`[AUTH] KO: Email non trouvé (${cleanEmail})`);
             throw new UnauthorizedException('Identifiants invalides');
         }
 
+        // Symfony utilise parfois $2y$, bcryptJS/Node préfère $2a$
         const hash = user.password.replace(/^\$2y\$/, '$2a$');
         const isMatch = await bcrypt.compare(password, hash);
 
         if (!isMatch) {
-            logToDisk(` -> KO: Pass incorrect pour ${cleanEmail}`);
+            console.log(`[AUTH] KO: Mot de passe incorrect pour ${cleanEmail}`);
             throw new UnauthorizedException('Identifiants invalides');
         }
 
+        // Parsing des rôles (compatibilité Symfony serialized array)
         let roles = [];
         try {
             if (user.roles) {
@@ -60,7 +60,7 @@ export class AuthService {
         const type = user.acheteur ? 'acheteur' : user.fournisseur ? 'fournisseur' : 'admin';
         const payload = { sub: user.id, email: user.email, roles: roles, type: type };
 
-        logToDisk(` -> OK: Succes pour ${cleanEmail}`);
+        console.log(`[AUTH] OK: Succès pour ${cleanEmail}`);
 
         return {
             token: await this.jwtService.signAsync(payload),
@@ -71,7 +71,7 @@ export class AuthService {
     private formatUser(user: any, roles: string[], type: string) {
         const mainRole = roles[0] || 'ROLE_USER';
         return {
-            role: mainRole, // Renvoi en String pour la compatibilité avec filterNavigationByUser
+            role: mainRole, 
             from: 'jwt',
             data: {
                 id: user.id,
@@ -90,10 +90,7 @@ export class AuthService {
     }
 
     async validateUser(payload: any) {
-        const fs = require('fs');
-        const logToDisk = (msg: string) => fs.appendFileSync('debug-auth.txt', `\n[${new Date().toISOString()}] ${msg}`);
-
-        logToDisk(`AutoLogin pour ID: ${payload.sub} (${payload.email})`);
+        console.log(`[AUTH] Validation session pour ID: ${payload.sub}`);
 
         const user = await this.prisma.user.findUnique({
             where: { id: payload.sub },
@@ -105,11 +102,10 @@ export class AuthService {
         });
 
         if (!user) {
-            logToDisk(` -> AutoLogin KO: User ${payload.sub} introuvable`);
+            console.log(`[AUTH] Validation KO: Utilisateur introuvable`);
             return null;
         }
 
-        // On refait le parsing des rôles pour le retour de session
         let roles = [];
         try {
             if (user.roles) {
