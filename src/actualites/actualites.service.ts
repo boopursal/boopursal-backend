@@ -25,7 +25,7 @@ export class ActualitesService {
         return {
             'hydra:member': data.map(item => ({
                 ...item,
-                image: item.actualite_image ? { url: `/images/actualite/${item.actualite_image.url}` } : null
+                image: item.actualite_image ? { url: `https://boopursal-backend.vercel.app/images/actualite/${item.actualite_image.url}` } : null
             })),
             'hydra:totalItems': total,
         };
@@ -39,7 +39,7 @@ export class ActualitesService {
         if (!item) return null;
         return {
             ...item,
-            image: item.actualite_image ? { url: `/images/actualite/${item.actualite_image.url}` } : null
+            image: item.actualite_image ? { url: `https://boopursal-backend.vercel.app/images/actualite/${item.actualite_image.url}` } : null
         };
     }
 
@@ -51,7 +51,7 @@ export class ActualitesService {
         if (!item) return null;
         return {
             ...item,
-            image: item.actualite_image ? { url: `/images/actualite/${item.actualite_image.url}` } : null
+            image: item.actualite_image ? { url: `https://boopursal-backend.vercel.app/images/actualite/${item.actualite_image.url}` } : null
         };
     }
 }

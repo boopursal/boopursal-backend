@@ -82,7 +82,7 @@ export class AuthService {
                 type: type,
                 role: mainRole,
                 roles: roles,
-                photoURL: user.avatar ? `/images/avatar/${user.avatar.url}` : null,
+                photoURL: user.avatar ? `https://boopursal-backend.vercel.app/images/avatar/${user.avatar.url}` : null,
                 settings: {},
                 shortcuts: []
             }
