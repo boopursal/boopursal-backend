@@ -134,7 +134,10 @@ export class FournisseursService {
 
         const flattenedData = data.map(item => ({
             ...item,
-            avatar: item.user?.avatar,
+            avatar: item.user?.avatar ? {
+                ...item.user.avatar,
+                url: `https://boopursal-backend.vercel.app/images/avatar/${item.user.avatar.url}`
+            } : null,
             firstName: item.user?.first_name,
             lastName: item.user?.last_name,
             email: item.user?.email,
@@ -293,7 +296,7 @@ export class FournisseursService {
             isSelect: item.is_select,
             featuredImageId: item.image_produit ? {
                 ...item.image_produit,
-                url: `/images/produits/${item.image_produit.url}`
+                url: `https://boopursal-backend.vercel.app/images/produits/${item.image_produit.url}`
             } : null,
             sousSecteurs: item.sous_secteur
         }));

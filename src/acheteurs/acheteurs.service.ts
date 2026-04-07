@@ -26,7 +26,7 @@ export class AcheteursService {
                 skip,
                 take: limit,
                 include: {
-                    user: true,
+                    user: { include: { avatar: true } },
                     ville: true,
                     pays: true,
                     secteur: true,
@@ -38,6 +38,10 @@ export class AcheteursService {
 
         const flattenedData = data.map(item => ({
             ...item,
+            avatar: item.user?.avatar ? {
+                ...item.user.avatar,
+                url: `https://boopursal-backend.vercel.app/images/avatar/${item.user.avatar.url}`
+            } : null,
             firstName: item.user?.first_name,
             lastName: item.user?.last_name,
             email: item.user?.email,
@@ -56,7 +60,7 @@ export class AcheteursService {
         const item = await this.prisma.acheteur.findUnique({
             where: { id },
             include: {
-                user: true,
+                user: { include: { avatar: true } },
                 ville: true,
                 pays: true,
                 secteur: true,
@@ -71,6 +75,10 @@ export class AcheteursService {
 
         return {
             ...item,
+            avatar: item.user?.avatar ? {
+                ...item.user.avatar,
+                url: `https://boopursal-backend.vercel.app/images/avatar/${item.user.avatar.url}`
+            } : null,
             firstName: item.user?.first_name,
             lastName: item.user?.last_name,
             email: item.user?.email,
