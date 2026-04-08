@@ -9,26 +9,31 @@ export class ActualitesService {
         const skip = (page - 1) * limit;
         const where: any = search ? { is_active: true, titre: { contains: search } } : { is_active: true };
 
-        const [data, total] = await Promise.all([
-            this.prisma.actualite.findMany({
-                where,
-                skip,
-                take: limit,
-                include: {
-                    actualite_image: true
-                },
-                orderBy: orderBy,
-            }),
-            this.prisma.actualite.count({ where }),
-        ]);
+        try {
+            const [data, total] = await Promise.all([
+                this.prisma.actualite.findMany({
+                    where,
+                    skip,
+                    take: limit,
+                    include: {
+                        actualite_image: true
+                    },
+                    orderBy: orderBy,
+                }),
+                this.prisma.actualite.count({ where }),
+            ]);
 
-        return {
-            'hydra:member': data.map(item => ({
-                ...item,
-                image: item.actualite_image ? { url: item.actualite_image.url } : null
-            })),
-            'hydra:totalItems': total,
-        };
+            return {
+                'hydra:member': data.map(item => ({
+                    ...item,
+                    image: item.actualite_image ? { url: item.actualite_image.url } : null
+                })),
+                'hydra:totalItems': total,
+            };
+        } catch (error) {
+            console.error('[ActualitesService] Error in findAll:', error);
+            throw error;
+        }
     }
 
     async findOne(id: number) {

@@ -93,24 +93,29 @@ export class DemandesAchatService {
             orderBy.id = 'desc';
         }
 
-        const [data, total] = await Promise.all([
-            this.prisma.demande_achat.findMany({
-                where,
-                skip,
-                take: limit,
-                include: {
-                    acheteur: true,
-                    currency: true,
-                },
-                orderBy,
-            }),
-            this.prisma.demande_achat.count({ where }),
-        ]);
+        try {
+            const [data, total] = await Promise.all([
+                this.prisma.demande_achat.findMany({
+                    where,
+                    skip,
+                    take: limit,
+                    include: {
+                        acheteur: true,
+                        currency: true,
+                    },
+                    orderBy,
+                }),
+                this.prisma.demande_achat.count({ where }),
+            ]);
 
-        return {
-            'hydra:member': data,
-            'hydra:totalItems': total,
-        };
+            return {
+                'hydra:member': data,
+                'hydra:totalItems': total,
+            };
+        } catch (error) {
+            console.error('[DemandesAchatService] Error in findAll:', error);
+            throw error;
+        }
     }
 
     private extractId(idOrSlug: string): number {
