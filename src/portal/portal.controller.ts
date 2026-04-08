@@ -15,6 +15,22 @@ export class PortalController {
         return this.portalService.getParcourirSecteurs();
     }
 
+    @Get('debug-images')
+    debugImages() {
+        const fs = require('fs');
+        const path = require('path');
+        const dir = path.join(process.cwd(), 'public/images/actualite');
+        try {
+            return {
+                cwd: process.cwd(),
+                exists: fs.existsSync(dir),
+                files: fs.existsSync(dir) ? fs.readdirSync(dir).slice(0, 10) : []
+            };
+        } catch (e) {
+            return { error: e.message };
+        }
+    }
+
     @Get('select_produits')
     getSelectProduits() {
         return this.portalService.getSelectProduits();
