@@ -108,8 +108,17 @@ export class DemandesAchatService {
                 this.prisma.demande_achat.count({ where }),
             ]);
 
+            const flattenedData = data.map(item => ({
+                ...item,
+                acheteur: item.acheteur ? {
+                    id: item.acheteur.id,
+                    societe: item.acheteur.societe,
+                } : null,
+                currency: item.currency ? item.currency.currency : 'MAD'
+            }));
+
             return {
-                'hydra:member': data,
+                'hydra:member': flattenedData,
                 'hydra:totalItems': total,
             };
         } catch (error) {

@@ -49,7 +49,12 @@ export class PortalService {
             include: {
                 produit: {
                     include: {
-                        fournisseur: true,
+                        fournisseur: {
+                            select: {
+                                id: true,
+                                societe: true,
+                            }
+                        },
                         currency: true,
                         image_produit: true,
                         secteur: true,
@@ -58,7 +63,7 @@ export class PortalService {
                     }
                 }
             },
-            orderBy: { updated: 'desc' },
+            orderBy: { id: 'desc' }, // Updated is often more reliable
             take: 8
         });
 
