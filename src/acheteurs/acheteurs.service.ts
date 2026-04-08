@@ -40,7 +40,7 @@ export class AcheteursService {
             ...item,
             avatar: item.user?.avatar ? {
                 ...item.user.avatar,
-                url: `https://boopursal-backend.vercel.app/images/avatar/${item.user.avatar.url}`
+                url: item.user.avatar.url
             } : null,
             firstName: item.user?.first_name,
             lastName: item.user?.last_name,
@@ -77,7 +77,7 @@ export class AcheteursService {
             ...item,
             avatar: item.user?.avatar ? {
                 ...item.user.avatar,
-                url: `https://boopursal-backend.vercel.app/images/avatar/${item.user.avatar.url}`
+                url: item.user.avatar.url
             } : null,
             firstName: item.user?.first_name,
             lastName: item.user?.last_name,

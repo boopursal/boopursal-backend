@@ -198,19 +198,19 @@ export class ProduitsService {
             sousSecteurs: p.sous_secteur,
             // Gallery transformation
             images: [
-                ...(p.image_produit ? [{ url: `https://boopursal-backend.vercel.app/images/produits/${p.image_produit.url}` }] : []),
+                ...(p.image_produit ? [{ url: p.image_produit.url }] : []),
                 ...(p.produit_image_produit?.map(pip => ({
-                    url: `https://boopursal-backend.vercel.app/images/produits/${pip.image_produit.url}`
+                    url: pip.image_produit.url
                 })) || [])
             ],
             featuredImageId: p.image_produit ? {
                 ...p.image_produit,
-                url: `https://boopursal-backend.vercel.app/images/produits/${p.image_produit.url}`
+                url: p.image_produit.url
             } : null,
             fournisseur: p.fournisseur ? {
                 ...p.fournisseur,
                 avatar: p.fournisseur.user?.avatar ? {
-                    url: `https://boopursal-backend.vercel.app/images/avatar/${p.fournisseur.user.avatar.url}`
+                    url: p.fournisseur.user.avatar.url
                 } : null
             } : null
         };

@@ -136,7 +136,7 @@ export class FournisseursService {
             ...item,
             avatar: item.user?.avatar ? {
                 ...item.user.avatar,
-                url: `https://boopursal-backend.vercel.app/images/avatar/${item.user.avatar.url}`
+                url: item.user.avatar.url
             } : null,
             firstName: item.user?.first_name,
             lastName: item.user?.last_name,
@@ -296,7 +296,7 @@ export class FournisseursService {
             isSelect: item.is_select,
             featuredImageId: item.image_produit ? {
                 ...item.image_produit,
-                url: `https://boopursal-backend.vercel.app/images/produits/${item.image_produit.url}`
+                url: item.image_produit.url
             } : null,
             sousSecteurs: item.sous_secteur
         }));

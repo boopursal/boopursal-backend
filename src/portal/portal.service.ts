@@ -17,9 +17,9 @@ export class PortalService {
             id: s.id,
             name: s.name,
             slug: s.slug,
-            url: s.image_secteur?.url ? `https://boopursal-backend.vercel.app/images/secteur/${s.image_secteur.url}` : null,
-            image: s.image_secteur?.url ? `https://boopursal-backend.vercel.app/images/secteur/${s.image_secteur.url}` : null,
-            logo: s.image_secteur?.url ? `https://boopursal-backend.vercel.app/images/secteur/${s.image_secteur.url}` : null
+            url: s.image_secteur?.url || null,
+            image: s.image_secteur?.url || null,
+            logo: s.image_secteur?.url || null
         }));
     }
 
@@ -38,9 +38,9 @@ export class PortalService {
         // Le frontend attend souvent un format hydra ou une liste simple selon pSecteurs.actions.js
         return secteurs.map(s => ({
             ...s,
-            url: s.image_secteur?.url ? `https://boopursal-backend.vercel.app/images/secteur/${s.image_secteur.url}` : null,
-            image: s.image_secteur?.url ? `https://boopursal-backend.vercel.app/images/secteur/${s.image_secteur.url}` : null,
-            logo: s.image_secteur?.url ? `https://boopursal-backend.vercel.app/images/secteur/${s.image_secteur.url}` : null
+            url: s.image_secteur?.url || null,
+            image: s.image_secteur?.url || null,
+            logo: s.image_secteur?.url || null
         }));
     }
 
@@ -73,7 +73,7 @@ export class PortalService {
                     categorie: s.produit.categorie || { slug: 'inconnu', name: 'Inconnu' },
                     featuredImageId: s.produit.image_produit ? {
                         ...s.produit.image_produit,
-                        url: `https://boopursal-backend.vercel.app/images/produits/${s.produit.image_produit.url}`
+                        url: s.produit.image_produit.url
                     } : null,
                 }
             }));
