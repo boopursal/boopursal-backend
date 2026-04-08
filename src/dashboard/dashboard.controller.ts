@@ -139,83 +139,83 @@ export class DashboardController {
 
     // Badge navigation endpoints
     @Get('demandes-admin')
-    getBadgeDemandes() {
-        return this.dashboardService.getBadgeCount('demandes-admin');
+    async getBadgeDemandes() {
+        return { count: await this.dashboardService.getBadgeCount('demandes-admin') };
     }
 
     @Get('demandes-devis')
-    getBadgeDemandesDevis() {
-        return this.dashboardService.getBadgeCount('demandes-devis');
+    async getBadgeDemandesDevis() {
+        return { count: await this.dashboardService.getBadgeCount('demandes-devis') };
     }
 
     @Get('message-fournisseur')
-    getBadgeMessageFournisseur() {
-        return this.dashboardService.getBadgeCount('message-fournisseur');
+    async getBadgeMessageFournisseur() {
+        return { count: await this.dashboardService.getBadgeCount('message-fournisseur') };
     }
 
     @Get('validation_produits')
-    getBadgeValidationProduits() {
-        return this.dashboardService.getBadgeCount('validation_produits');
+    async getBadgeValidationProduits() {
+        return { count: await this.dashboardService.getBadgeCount('validation_produits') };
     }
 
     @Get('acheteur-admin')
-    getBadgeAcheteurs() {
-        return this.dashboardService.getBadgeCount('acheteur-admin');
+    async getBadgeAcheteurs() {
+        return { count: await this.dashboardService.getBadgeCount('acheteur-admin') };
     }
 
     @Get('fournisseurs-admin')
-    getBadgeFournisseursAdmin() {
-        return this.dashboardService.getBadgeCount('fournisseurs-admin');
+    async getBadgeFournisseursAdmin() {
+        return { count: await this.dashboardService.getBadgeCount('fournisseurs-admin') };
     }
 
     @Get('fournisseurs-collaps')
-    getBadgeFournisseursCollaps() {
-        return this.dashboardService.getBadgeCount('fournisseurs-collaps');
+    async getBadgeFournisseursCollaps() {
+        return { count: await this.dashboardService.getBadgeCount('fournisseurs-collaps') };
     }
 
     @Get('fournisseurs-provisoire')
-    getBadgeFournisseursProvisoire() {
-        return this.dashboardService.getBadgeCount('fournisseurs-provisoire');
+    async getBadgeFournisseursProvisoire() {
+        return { count: await this.dashboardService.getBadgeCount('fournisseurs-provisoire') };
     }
 
     @Get('commandes-abonnements')
-    getBadgeCommandesAbonnements() {
-        return this.dashboardService.getBadgeCount('commandes-abonnements');
+    async getBadgeCommandesAbonnements() {
+        return { count: await this.dashboardService.getBadgeCount('commandes-abonnements') };
     }
 
     @Get('commandes-jetons')
-    getBadgeCommandesJetons() {
-        return this.dashboardService.getBadgeCount('commandes-jetons');
+    async getBadgeCommandesJetons() {
+        return { count: await this.dashboardService.getBadgeCount('commandes-jetons') };
     }
 
     @Get('abonnement-fournisseur')
-    getBadgeAbonnementFournisseur() {
-        return this.dashboardService.getBadgeCount('abonnement-fournisseur');
+    async getBadgeAbonnementFournisseur() {
+        return { count: await this.dashboardService.getBadgeCount('abonnement-fournisseur') };
     }
 
     @Get('demandes_prix')
-    getBadgePrix() {
-        return this.dashboardService.getBadgeCount('demandes_prix');
+    async getBadgePrix() {
+        return { count: await this.dashboardService.getBadgeCount('demandes_prix') };
     }
 
     @Get('messages')
-    getBadgeMessages() {
-        return this.dashboardService.getBadgeCount('messages');
+    async getBadgeMessages() {
+        return { count: await this.dashboardService.getBadgeCount('messages') };
     }
 
     @Get('product-devis')
-    getBadgeProductDevis() {
-        return this.dashboardService.getBadgeCount('product-devis');
+    async getBadgeProductDevis() {
+        return { count: await this.dashboardService.getBadgeCount('product-devis') };
     }
 
     @Get('fournisseurs-tentatives')
-    getBadgeFournisseursTentatives() {
-        return this.dashboardService.getBadgeCount('fournisseurs-tentatives');
+    async getBadgeFournisseursTentatives() {
+        return { count: await this.dashboardService.getBadgeCount('fournisseurs-tentatives') };
     }
 
     @Get('acheteurs-tentatives')
-    getBadgeAcheteursTentatives() {
-        return this.dashboardService.getBadgeCount('acheteurs-tentatives');
+    async getBadgeAcheteursTentatives() {
+        return { count: await this.dashboardService.getBadgeCount('acheteurs-tentatives') };
     }
 
     @Get('geolocation')
