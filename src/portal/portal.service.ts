@@ -63,7 +63,7 @@ export class PortalService {
                     }
                 }
             },
-            orderBy: { id: 'desc' }, // Updated is often more reliable
+            orderBy: { updated: 'desc' }, 
             take: 8
         });
 
