@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, ParseIntPipe, Put, Body, Post, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseIntPipe, Put, Body, Post, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { FournisseursService } from './fournisseurs.service';
 
 @Controller()
@@ -6,18 +6,32 @@ export class FournisseursController {
     constructor(private readonly fournisseursService: FournisseursService) { }
 
     @Get('fournisseurs')
-    findAll(@Query() query: any) {
-        const page = +(query.page || 1);
-        const limit = +(query.itemsPerPage || query.limit || 20);
-        return this.fournisseursService.findAll(page, limit, query);
+    async findAll(@Query() query: any) {
+        try {
+            const page = +(query.page || 1);
+            const limit = +(query.itemsPerPage || query.limit || 20);
+            return await this.fournisseursService.findAll(page, limit, query);
+        } catch (error: any) {
+            console.error('[FournisseursController.findAll] Error:', error?.message);
+            throw new InternalServerErrorException({ message: 'Erreur lors de la récupération', detail: error?.message });
+        }
     }
 
     @Post('fournisseurs')
     async create(@Body() data: any) {
+        console.log('[FournisseursController.create] Body keys received:', Object.keys(data || {}));
         try {
             return await this.fournisseursService.create(data);
-        } catch (error) {
-            throw new BadRequestException({ Erreur: error.message });
+        } catch (error: any) {
+            console.error('[FournisseursController.create] Error:', error?.message);
+            if (error?.isValidation) {
+                throw new BadRequestException({ Erreur: error.message });
+            }
+            if (error?.isDb) {
+                throw new InternalServerErrorException({ Erreur: error.message });
+            }
+            // Fallback
+            throw new BadRequestException({ Erreur: error?.message || 'Erreur inconnue' });
         }
     }
 

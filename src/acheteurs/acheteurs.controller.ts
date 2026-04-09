@@ -10,7 +10,8 @@ import {
     HttpStatus,
     Put,
     Post,
-    BadRequestException
+    BadRequestException,
+    InternalServerErrorException
 } from '@nestjs/common';
 import { AcheteursService } from './acheteurs.service';
 
@@ -23,20 +24,33 @@ export class AcheteursController {
      * Liste paginée des acheteurs avec recherche optionnelle
      */
     @Get()
-    findAll(
+    async findAll(
         @Query('page') page = '1',
         @Query('limit') limit = '20',
         @Query('search') search?: string,
     ) {
-        return this.acheteursService.findAll(+page, +limit, search);
+        try {
+            return await this.acheteursService.findAll(+page, +limit, search);
+        } catch (error) {
+            throw new InternalServerErrorException({ message: 'Erreur serveur lors de la récupération des acheteurs', detail: error?.message });
+        }
     }
 
     @Post()
     async create(@Body() data: any) {
+        console.log('[AcheteursController.create] Body keys received:', Object.keys(data || {}));
         try {
             return await this.acheteursService.create(data);
-        } catch (error) {
-            throw new BadRequestException({ Erreur: error.message });
+        } catch (error: any) {
+            console.error('[AcheteursController.create] Error:', error?.message);
+            if (error?.isValidation) {
+                throw new BadRequestException({ Erreur: error.message });
+            }
+            if (error?.isDb) {
+                throw new InternalServerErrorException({ Erreur: error.message });
+            }
+            // Fallback: treat unknown errors as 400 for backward compat
+            throw new BadRequestException({ Erreur: error?.message || 'Erreur inconnue' });
         }
     }
 

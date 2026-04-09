@@ -166,22 +166,29 @@ export class AcheteursService {
 
     async create(data: any) {
         console.log('[AcheteursService.create] Incoming data keys:', Object.keys(data || {}));
+        console.log('[AcheteursService.create] Body email:', data?.email, '| has password:', !!data?.password);
+
+        // Validation basique — erreur métier (400)
         if (!data.email || !data.password) {
             console.error('[AcheteursService.create] Missing email or password. Body received:', JSON.stringify(data));
-            throw new Error('Email et mot de passe requis');
+            const err: any = new Error('Email et mot de passe requis');
+            err.isValidation = true;
+            throw err;
         }
-
-        const existing = await this.prisma.user.findFirst({
-            where: { email: data.email.trim() }
-        });
-
-        if (existing) {
-            throw new Error('Cet email existe déjà.');
-        }
-
-        const hashedPassword = await bcrypt.hash(data.password, 10);
 
         try {
+            const existing = await this.prisma.user.findFirst({
+                where: { email: data.email.trim() }
+            });
+
+            if (existing) {
+                const err: any = new Error('Cet email existe déjà.');
+                err.isValidation = true;
+                throw err;
+            }
+
+            const hashedPassword = await bcrypt.hash(data.password, 10);
+
             const newUser = await this.prisma.user.create({
                 data: {
                     first_name: data.firstName || '',
@@ -208,6 +215,7 @@ export class AcheteursService {
                 include: { acheteur: true }
             });
 
+            console.log('[AcheteursService.create] ✅ Acheteur créé:', newUser.id);
             const returnAcheteur: any = newUser.acheteur;
 
             return {
@@ -217,10 +225,15 @@ export class AcheteursService {
                 lastName: newUser.last_name,
                 '@id': returnAcheteur ? `/api/acheteurs/${returnAcheteur.id}` : null
             };
-        } catch (dbError) {
-            console.error('[AcheteursService.create] DB Error:', dbError?.message || dbError);
-            console.error('[AcheteursService.create] Stack:', dbError?.stack);
-            throw new Error(`Erreur DB: ${dbError?.message || 'Création compte impossible'}`);
+        } catch (err: any) {
+            // Re-throw validation errors as-is (handled as 400 in controller)
+            if (err.isValidation) throw err;
+            // Wrap DB/unexpected errors
+            console.error('[AcheteursService.create] DB Error:', err?.message || err);
+            console.error('[AcheteursService.create] Stack:', err?.stack);
+            const dbErr: any = new Error(`Erreur DB: ${err?.message || 'Création compte impossible'}`);
+            dbErr.isDb = true;
+            throw dbErr;
         }
     }
 }

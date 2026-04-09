@@ -603,26 +603,33 @@ export class FournisseursService {
 
     async create(data: any) {
         console.log('[FournisseursService.create] Incoming data keys:', Object.keys(data || {}));
+        console.log('[FournisseursService.create] Body email:', data?.email, '| has password:', !!data?.password);
 
-        // Validation basique
+        // Validation basique — erreur métier (400)
         if (!data.email || !data.password) {
             console.error('[FournisseursService.create] Missing email or password. Body received:', JSON.stringify(data));
-            throw new Error('Email et mot de passe requis');
+            const err: any = new Error('Email et mot de passe requis');
+            err.isValidation = true;
+            throw err;
         }
-
-        // Vérifier si l'email existe déjà
-        const existing = await this.prisma.user.findFirst({
-            where: { email: data.email.trim() }
-        });
-
-        if (existing) {
-            throw new Error('Cet email existe déjà.');
-        }
-
-        const hashedPassword = await bcrypt.hash(data.password, 10);
-        const slug = (data.societe ? data.societe.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'societe') + '-' + Date.now();
 
         try {
+            // Vérifier si l'email existe déjà
+            const existing = await this.prisma.user.findFirst({
+                where: { email: data.email.trim() }
+            });
+
+            if (existing) {
+                const err: any = new Error('Cet email existe déjà.');
+                err.isValidation = true;
+                throw err;
+            }
+
+            const hashedPassword = await bcrypt.hash(data.password, 10);
+            const slug = (data.societe
+                ? data.societe.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+                : 'societe') + '-' + Date.now();
+
             const newUser = await this.prisma.user.create({
                 data: {
                     first_name: data.firstName || '',
@@ -648,11 +655,10 @@ export class FournisseursService {
                         }
                     }
                 },
-                include: {
-                    fournisseur: true
-                }
+                include: { fournisseur: true }
             });
 
+            console.log('[FournisseursService.create] ✅ Fournisseur créé:', newUser.id);
             const returnFournisseur: any = newUser.fournisseur;
             return {
                 ...returnFournisseur,
@@ -661,10 +667,15 @@ export class FournisseursService {
                 lastName: newUser.last_name,
                 '@id': returnFournisseur ? `/api/fournisseurs/${returnFournisseur.id}` : null
             };
-        } catch (dbError) {
-            console.error('[FournisseursService.create] DB Error:', dbError?.message || dbError);
-            console.error('[FournisseursService.create] Stack:', dbError?.stack);
-            throw new Error(`Erreur DB: ${dbError?.message || 'Création compte impossible'}`);
+        } catch (err: any) {
+            // Re-throw validation errors as-is
+            if (err.isValidation) throw err;
+            // Wrap DB/unexpected errors
+            console.error('[FournisseursService.create] Error:', err?.message || err);
+            console.error('[FournisseursService.create] Stack:', err?.stack);
+            const dbErr: any = new Error(`Erreur DB: ${err?.message || 'Création compte impossible'}`);
+            dbErr.isDb = true;
+            throw dbErr;
         }
     }
 }
