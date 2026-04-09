@@ -15,8 +15,19 @@ export class ActualitesService {
                     where,
                     skip,
                     take: limit,
-                    include: {
-                        actualite_image: true
+                    select: {
+                        id: true,
+                        titre: true,
+                        description: true,
+                        apercu: true,
+                        created: true,
+                        is_active: true,
+                        keywords: true,
+                        source: true,
+                        slug: true,
+                        actualite_image: {
+                            select: { id: true, url: true }
+                        },
                     },
                     orderBy: orderBy,
                 }),
@@ -31,7 +42,8 @@ export class ActualitesService {
                 'hydra:totalItems': total,
             };
         } catch (error) {
-            console.error('[ActualitesService] Error in findAll:', error);
+            console.error('[ActualitesService] Error in findAll:', error?.message || error);
+            console.error('[ActualitesService] Stack:', error?.stack);
             throw error;
         }
     }

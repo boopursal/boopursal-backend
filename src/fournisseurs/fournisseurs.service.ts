@@ -602,8 +602,11 @@ export class FournisseursService {
     }
 
     async create(data: any) {
+        console.log('[FournisseursService.create] Incoming data keys:', Object.keys(data || {}));
+
         // Validation basique
         if (!data.email || !data.password) {
+            console.error('[FournisseursService.create] Missing email or password. Body received:', JSON.stringify(data));
             throw new Error('Email et mot de passe requis');
         }
 
@@ -613,52 +616,55 @@ export class FournisseursService {
         });
 
         if (existing) {
-            // Note: Le front-end s'attend à "Erreur: email existe déjà"
             throw new Error('Cet email existe déjà.');
         }
 
         const hashedPassword = await bcrypt.hash(data.password, 10);
         const slug = (data.societe ? data.societe.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'societe') + '-' + Date.now();
 
-        const newUser = await this.prisma.user.create({
-            data: {
-                first_name: data.firstName || '',
-                last_name: data.lastName || '',
-                email: data.email.trim().toLowerCase(),
-                phone: data.phone || '',
-                password: hashedPassword,
-                del: false,
-                isactif: true, // Ou false si mail de confirmation requis
-                created: new Date(),
-                discr: 'fournisseur',
-                roles: '["ROLE_FOURNISSEUR"]',
-                redirect: '/boopursal/fournisseur/dashboard',
-                fournisseur: {
-                    create: {
-                        societe: data.societe || '',
-                        civilite: data.civilite || 'M.',
-                        is_complet: false,
-                        step: 1,
-                        slug: slug,
-                        visite: 0,
-                        phone_vu: 0,
+        try {
+            const newUser = await this.prisma.user.create({
+                data: {
+                    first_name: data.firstName || '',
+                    last_name: data.lastName || '',
+                    email: data.email.trim().toLowerCase(),
+                    phone: data.phone || '',
+                    password: hashedPassword,
+                    del: false,
+                    isactif: true,
+                    created: new Date(),
+                    discr: 'fournisseur',
+                    roles: '["ROLE_FOURNISSEUR"]',
+                    redirect: '/boopursal/fournisseur/dashboard',
+                    fournisseur: {
+                        create: {
+                            societe: data.societe || '',
+                            civilite: data.civilite || 'M.',
+                            is_complet: false,
+                            step: 1,
+                            slug: slug,
+                            visite: 0,
+                            phone_vu: 0,
+                        }
                     }
+                },
+                include: {
+                    fournisseur: true
                 }
-            },
-            include: {
-                fournisseur: true
-            }
-        });
+            });
 
-        const returnFournisseur: any = newUser.fournisseur;
-        
-        // Retourner le format attendu par le frontend (uniquement le profil sans mdp)
-        return {
-            ...returnFournisseur,
-            email: newUser.email,
-            firstName: newUser.first_name,
-            lastName: newUser.last_name,
-            '@id': returnFournisseur ? `/api/fournisseurs/${returnFournisseur.id}` : null
-        };
+            const returnFournisseur: any = newUser.fournisseur;
+            return {
+                ...returnFournisseur,
+                email: newUser.email,
+                firstName: newUser.first_name,
+                lastName: newUser.last_name,
+                '@id': returnFournisseur ? `/api/fournisseurs/${returnFournisseur.id}` : null
+            };
+        } catch (dbError) {
+            console.error('[FournisseursService.create] DB Error:', dbError?.message || dbError);
+            console.error('[FournisseursService.create] Stack:', dbError?.stack);
+            throw new Error(`Erreur DB: ${dbError?.message || 'Création compte impossible'}`);
+        }
     }
 }

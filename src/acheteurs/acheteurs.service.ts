@@ -165,7 +165,9 @@ export class AcheteursService {
     }
 
     async create(data: any) {
+        console.log('[AcheteursService.create] Incoming data keys:', Object.keys(data || {}));
         if (!data.email || !data.password) {
+            console.error('[AcheteursService.create] Missing email or password. Body received:', JSON.stringify(data));
             throw new Error('Email et mot de passe requis');
         }
 
@@ -179,40 +181,46 @@ export class AcheteursService {
 
         const hashedPassword = await bcrypt.hash(data.password, 10);
 
-        const newUser = await this.prisma.user.create({
-            data: {
-                first_name: data.firstName || '',
-                last_name: data.lastName || '',
-                email: data.email.trim().toLowerCase(),
-                phone: data.phone || '',
-                password: hashedPassword,
-                del: false,
-                isactif: true, // Ou false si mail de confirmation requis
-                created: new Date(),
-                discr: 'acheteur',
-                roles: '["ROLE_ACHETEUR"]',
-                redirect: '/boopursal/acheteur/dashboard',
-                acheteur: {
-                    create: {
-                        societe: data.societe || '',
-                        civilite: data.civilite || 'M.',
-                        role: 'ROLE_ACHETEUR',
-                        is_complet: false,
-                        step: 1,
+        try {
+            const newUser = await this.prisma.user.create({
+                data: {
+                    first_name: data.firstName || '',
+                    last_name: data.lastName || '',
+                    email: data.email.trim().toLowerCase(),
+                    phone: data.phone || '',
+                    password: hashedPassword,
+                    del: false,
+                    isactif: true,
+                    created: new Date(),
+                    discr: 'acheteur',
+                    roles: '["ROLE_ACHETEUR"]',
+                    redirect: '/boopursal/acheteur/dashboard',
+                    acheteur: {
+                        create: {
+                            societe: data.societe || '',
+                            civilite: data.civilite || 'M.',
+                            role: 'ROLE_ACHETEUR',
+                            is_complet: false,
+                            step: 1,
+                        }
                     }
-                }
-            },
-            include: { acheteur: true }
-        });
+                },
+                include: { acheteur: true }
+            });
 
-        const returnAcheteur: any = newUser.acheteur;
+            const returnAcheteur: any = newUser.acheteur;
 
-        return {
-            ...returnAcheteur,
-            email: newUser.email,
-            firstName: newUser.first_name,
-            lastName: newUser.last_name,
-            '@id': returnAcheteur ? `/api/acheteurs/${returnAcheteur.id}` : null
-        };
+            return {
+                ...returnAcheteur,
+                email: newUser.email,
+                firstName: newUser.first_name,
+                lastName: newUser.last_name,
+                '@id': returnAcheteur ? `/api/acheteurs/${returnAcheteur.id}` : null
+            };
+        } catch (dbError) {
+            console.error('[AcheteursService.create] DB Error:', dbError?.message || dbError);
+            console.error('[AcheteursService.create] Stack:', dbError?.stack);
+            throw new Error(`Erreur DB: ${dbError?.message || 'Création compte impossible'}`);
+        }
     }
 }

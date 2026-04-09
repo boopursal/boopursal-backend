@@ -17,7 +17,9 @@ async function bootstrap() {
   // Ouverture totale du CORS (Simple et efficace pour JWT)
   app.enableCors(); 
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  // IMPORTANT: do NOT use whitelist:true globally — it strips all fields from @Body() data: any endpoints (no DTO).
+  // This caused POST /api/fournisseurs and /api/acheteurs to receive empty bodies.
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   // Dossiers statiques
   app.use('/images', express.static(join(process.cwd(), 'public/images')));

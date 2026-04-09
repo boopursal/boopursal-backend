@@ -118,9 +118,26 @@ export class DemandesAchatService {
                     where,
                     skip,
                     take: limit,
-                    include: {
-                        acheteur: true,
-                        currency: true,
+                    select: {
+                        id: true,
+                        reference: true,
+                        titre: true,
+                        description: true,
+                        pays: true,
+                        ville: true,
+                        date_expiration: true,
+                        created: true,
+                        slug: true,
+                        statut: true,
+                        is_public: true,
+                        budget: true,
+                        del: true,
+                        acheteur: {
+                            select: { id: true, societe: true }
+                        },
+                        currency: {
+                            select: { currency: true }
+                        },
                     },
                     orderBy,
                 }),
@@ -129,6 +146,9 @@ export class DemandesAchatService {
 
             const flattenedData = data.map(item => ({
                 ...item,
+                pays: item.pays || null,
+                ville: item.ville || null,
+                dateExpiration: item.date_expiration,
                 acheteur: item.acheteur ? {
                     id: item.acheteur.id,
                     societe: item.acheteur.societe,
@@ -141,7 +161,8 @@ export class DemandesAchatService {
                 'hydra:totalItems': total,
             };
         } catch (error) {
-            console.error('[DemandesAchatService] Error in findAll:', error);
+            console.error('[DemandesAchatService] Error in findAll:', error?.message || error);
+            console.error('[DemandesAchatService] Stack:', error?.stack);
             throw error;
         }
     }
