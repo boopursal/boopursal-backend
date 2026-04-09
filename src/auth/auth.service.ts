@@ -90,10 +90,20 @@ export class AuthService {
     }
 
     async validateUser(payload: any) {
-        console.log(`[AUTH] Validation session pour ID: ${payload.sub}`);
+        // Compatibilité avec les tokens LexikJWT (Symfony) qui utilisaient username au lieu de sub
+        const userId = payload.sub;
+        const usernameEmail = payload.username || payload.email;
 
-        const user = await this.prisma.user.findUnique({
-            where: { id: payload.sub },
+        console.log(`[AUTH] Validation session - Sub: ${userId}, Username: ${usernameEmail}`);
+
+        if (!userId && !usernameEmail) {
+            console.log(`[AUTH] Validation KO: Payload invalide (pas de sub/username)`);
+            return null; // Retourne proprement 401 au lieu de 500
+        }
+
+        // Recherche par ID préférentiellement, ou par email pour les anciens tokens
+        const user = await this.prisma.user.findFirst({
+            where: userId ? { id: userId } : { email: usernameEmail },
             include: {
                 acheteur: true,
                 fournisseur: true,
