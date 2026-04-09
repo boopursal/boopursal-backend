@@ -8,12 +8,30 @@ export class ActualitesController {
     @Get()
     findAll(
         @Query('page') page = '1',
-        @Query('limit') limit = '10',
+        @Query('itemsPerPage') itemsPerPage = '10',
+        @Query('limit') limit?: string,
         @Query('search') search?: string,
-        @Query('order') order?: { [key: string]: string }
+        @Query() allQuery?: any,
     ) {
-        const orderBy = order ? Object.entries(order).map(([k, v]) => ({ [k]: v }))[0] : { created: 'desc' };
-        return this.actualitesService.findAll(+page, +limit, search, orderBy);
+        const finalLimit = itemsPerPage || limit || '10';
+
+        // Support bracket notation: order[created]=desc
+        let orderBy: any = { created: 'desc' };
+        if (allQuery) {
+            const orderBracketKey = Object.keys(allQuery).find(k => k.startsWith('order[') && k.endsWith(']'));
+            if (orderBracketKey) {
+                const field = orderBracketKey.replace('order[', '').replace(']', '');
+                const direction = (allQuery[orderBracketKey] || 'desc').toLowerCase();
+                orderBy = { [field]: direction };
+            } else if (allQuery.order && typeof allQuery.order === 'object') {
+                const keys = Object.keys(allQuery.order);
+                if (keys.length > 0) {
+                    orderBy = { [keys[0]]: allQuery.order[keys[0]] };
+                }
+            }
+        }
+
+        return this.actualitesService.findAll(+page, +finalLimit, search, orderBy);
     }
 
     @Get(':id')

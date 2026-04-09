@@ -74,13 +74,30 @@ export class DemandesAchatService {
             };
         }
 
-        // Tri
+        // Filtre isPublic → is_public
+        if (query.isPublic !== undefined) {
+            where.is_public = query.isPublic === '1' || query.isPublic === 'true' || query.isPublic === true;
+        }
+
+        // Tri - Support du format bracket: order[created]=desc
         const orderBy: any = {};
-        if (query.order) {
+        // Chercher une clé du type order[xxx] dans le query object
+        const orderBracketKey = Object.keys(query).find(k => k.startsWith('order[') && k.endsWith(']'));
+        if (orderBracketKey) {
+            const field = orderBracketKey.replace('order[', '').replace(']', '');
+            const direction = (query[orderBracketKey] || 'desc').toLowerCase();
+            if (field === 'created' || field === 'createdAt') {
+                orderBy.created = direction;
+            } else if (field === 'dateExpiration') {
+                orderBy.date_expiration = direction;
+            } else {
+                orderBy[field] = direction;
+            }
+        } else if (query.order && typeof query.order === 'object') {
             const keys = Object.keys(query.order);
             if (keys.length > 0) {
                 const key = keys[0];
-                const direction = query.order[key].toLowerCase();
+                const direction = (query.order[key] || 'desc').toLowerCase();
                 if (key === 'created' || key === 'createdAt') {
                     orderBy.created = direction;
                 } else if (key === 'dateExpiration') {
@@ -89,7 +106,9 @@ export class DemandesAchatService {
                     orderBy[key] = direction;
                 }
             }
-        } else {
+        }
+
+        if (Object.keys(orderBy).length === 0) {
             orderBy.id = 'desc';
         }
 

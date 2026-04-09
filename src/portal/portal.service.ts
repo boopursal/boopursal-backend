@@ -45,48 +45,53 @@ export class PortalService {
     }
 
     async getSelectProduits() {
-        const selections = await this.prisma.select_produit.findMany({
-            include: {
-                produit: {
-                    include: {
-                        fournisseur: {
-                            select: {
-                                id: true,
-                                societe: true,
-                            }
-                        },
-                        currency: true,
-                        image_produit: true,
-                        secteur: true,
-                        sous_secteur: true,
-                        categorie: true,
+        try {
+            const selections = await this.prisma.select_produit.findMany({
+                include: {
+                    produit: {
+                        include: {
+                            fournisseur: {
+                                select: {
+                                    id: true,
+                                    societe: true,
+                                }
+                            },
+                            currency: true,
+                            image_produit: true,
+                            secteur: true,
+                            sous_secteur: true,
+                            categorie: true,
+                        }
                     }
-                }
-            },
-            orderBy: { updated: 'desc' }, 
-            take: 8
-        });
+                },
+                orderBy: { updated: 'desc' },
+                take: 8
+            });
 
-        const member = selections
-            .filter(s => s.produit !== null)
-            .map(s => ({
-                ...s,
-                produit: {
-                    ...s.produit,
-                    '@id': `/api/produits/${s.produit.id}`,
-                    sousSecteurs: s.produit.sous_secteur || { slug: 'inconnu', name: 'Inconnu' },
-                    categorie: s.produit.categorie || { slug: 'inconnu', name: 'Inconnu' },
-                    featuredImageId: s.produit.image_produit ? {
-                        ...s.produit.image_produit,
-                        url: s.produit.image_produit.url
-                    } : null,
-                }
-            }));
+            const member = selections
+                .filter(s => s.produit !== null)
+                .map(s => ({
+                    ...s,
+                    produit: {
+                        ...s.produit,
+                        '@id': `/api/produits/${s.produit!.id}`,
+                        sousSecteurs: s.produit!.sous_secteur || { slug: 'inconnu', name: 'Inconnu' },
+                        categorie: s.produit!.categorie || { slug: 'inconnu', name: 'Inconnu' },
+                        featuredImageId: s.produit!.image_produit ? {
+                            ...s.produit!.image_produit,
+                            url: s.produit!.image_produit.url
+                        } : null,
+                    }
+                }));
 
-        return {
-            'hydra:member': member,
-            'hydra:totalItems': member.length
-        };
+            return {
+                'hydra:member': member,
+                'hydra:totalItems': member.length
+            };
+        } catch (error) {
+            console.error('[PortalService] Error in getSelectProduits:', error);
+            return { 'hydra:member': [], 'hydra:totalItems': 0 };
+        }
     }
 
     async getParcourirActivites(idOrSlug: string) {
