@@ -9,6 +9,8 @@ import {
     HttpCode,
     HttpStatus,
     Put,
+    Post,
+    BadRequestException
 } from '@nestjs/common';
 import { AcheteursService } from './acheteurs.service';
 
@@ -27,6 +29,15 @@ export class AcheteursController {
         @Query('search') search?: string,
     ) {
         return this.acheteursService.findAll(+page, +limit, search);
+    }
+
+    @Post()
+    async create(@Body() data: any) {
+        try {
+            return await this.acheteursService.create(data);
+        } catch (error) {
+            throw new BadRequestException({ Erreur: error.message });
+        }
     }
 
     /**

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AcheteursService {
@@ -160,6 +161,58 @@ export class AcheteursService {
             actifs,
             inactifs,
             recents: 0,
+        };
+    }
+
+    async create(data: any) {
+        if (!data.email || !data.password) {
+            throw new Error('Email et mot de passe requis');
+        }
+
+        const existing = await this.prisma.user.findFirst({
+            where: { email: data.email.trim() }
+        });
+
+        if (existing) {
+            throw new Error('Cet email existe déjà.');
+        }
+
+        const hashedPassword = await bcrypt.hash(data.password, 10);
+
+        const newUser = await this.prisma.user.create({
+            data: {
+                first_name: data.firstName || '',
+                last_name: data.lastName || '',
+                email: data.email.trim().toLowerCase(),
+                phone: data.phone || '',
+                password: hashedPassword,
+                del: false,
+                isactif: true, // Ou false si mail de confirmation requis
+                created: new Date(),
+                discr: 'acheteur',
+                roles: '["ROLE_ACHETEUR"]',
+                redirect: '/boopursal/acheteur/dashboard',
+                acheteur: {
+                    create: {
+                        societe: data.societe || '',
+                        civilite: data.civilite || 'M.',
+                        role: 'ROLE_ACHETEUR',
+                        is_complet: false,
+                        step: 1,
+                    }
+                }
+            },
+            include: { acheteur: true }
+        });
+
+        const returnAcheteur: any = newUser.acheteur;
+
+        return {
+            ...returnAcheteur,
+            email: newUser.email,
+            firstName: newUser.first_name,
+            lastName: newUser.last_name,
+            '@id': returnAcheteur ? `/api/acheteurs/${returnAcheteur.id}` : null
         };
     }
 }

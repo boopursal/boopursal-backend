@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, ParseIntPipe, Put, Body } from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseIntPipe, Put, Body, Post, BadRequestException } from '@nestjs/common';
 import { FournisseursService } from './fournisseurs.service';
 
 @Controller()
@@ -10,6 +10,15 @@ export class FournisseursController {
         const page = +(query.page || 1);
         const limit = +(query.itemsPerPage || query.limit || 20);
         return this.fournisseursService.findAll(page, limit, query);
+    }
+
+    @Post('fournisseurs')
+    async create(@Body() data: any) {
+        try {
+            return await this.fournisseursService.create(data);
+        } catch (error) {
+            throw new BadRequestException({ Erreur: error.message });
+        }
     }
 
     @Get('count_fournisseur_categorie')
