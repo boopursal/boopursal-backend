@@ -33,10 +33,6 @@ export class MailService {
   }
 
   async sendConfirmationEmail(email: string, token: string) {
-    if (!process.env.MAILER_HOST) {
-      this.logger.warn('Email de confirmation ignoré: MAILER_HOST non configuré');
-      return;
-    }
     try {
       await this.mailerService.sendMail({
         to: email,
@@ -50,10 +46,6 @@ export class MailService {
   }
 
   async newRegister(email: string, type: string) {
-    if (!process.env.MAILER_HOST) {
-      this.logger.warn('Email admin ignoré: MAILER_HOST non configuré');
-      return;
-    }
     try {
       await this.mailerService.sendMail({
         to: this.adminEmail,

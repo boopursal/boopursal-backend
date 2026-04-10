@@ -7,16 +7,16 @@ import { MailService } from './mail.service';
     MailerModule.forRootAsync({
       useFactory: () => ({
         transport: {
-          host: process.env.MAILER_HOST || 'smtp.gmail.com',
-          port: Number(process.env.MAILER_PORT) || 465,
-          secure: process.env.MAILER_SECURE !== 'false', // true for 465, false for other ports
+          host: process.env.MAILER_HOST || 'mail.boopursal.com',
+          port: Number(process.env.MAILER_PORT) || 587,
+          secure: process.env.MAILER_SECURE === 'true' ? true : false,
           auth: {
-            user: process.env.MAILER_USER,
-            pass: process.env.MAILER_PASS,
+            user: process.env.MAILER_USER || 'adherent@boopursal.com',
+            pass: process.env.MAILER_PASS || 'Y6.v8;cON9c(',
           },
         },
         defaults: {
-          from: '"Boopursal" <contact@boopursal.com>',
+          from: '"Boopursal" <adherent@boopursal.com>',
         },
       }),
     }),
