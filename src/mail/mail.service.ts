@@ -5,7 +5,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class MailService {
   private readonly logger = new Logger(MailService.name);
   private adminEmail = 'administrateur@boopursal.com';
-  private urlSite = 'https://www.boopursal.com/';
+  private urlSite = 'https://boopursal-frontend.vercel.app/';
 
   constructor(private readonly mailerService: MailerService) {}
 

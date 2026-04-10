@@ -8,12 +8,15 @@ import { MailService } from './mail.service';
       useFactory: () => ({
         transport: {
           host: process.env.MAILER_HOST || 'mail.boopursal.com',
-          port: Number(process.env.MAILER_PORT) || 587,
-          secure: process.env.MAILER_SECURE === 'true' ? true : false,
+          port: Number(process.env.MAILER_PORT) || 465,
+          secure: true, // true pour port 465
           auth: {
             user: process.env.MAILER_USER || 'adherent@boopursal.com',
             pass: process.env.MAILER_PASS || 'Y6.v8;cON9c(',
           },
+          tls: {
+            rejectUnauthorized: false
+          }
         },
         defaults: {
           from: '"Boopursal" <adherent@boopursal.com>',
