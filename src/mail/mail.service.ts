@@ -12,14 +12,14 @@ export class MailService {
   public getConfirmationHtml(token: string): string {
     const confirmUrl = `${this.urlSite}register/confirm/${token}`;
     return `
-    <div style="font-family: Arial, sans-serif; text-align: center; color: #555; padding: 20px;">
-      <img src="https://www.3findustrie.com/wp-content/uploads/2025/03/Boopursal2025-1.png" width="200" alt="Boopursal" />
-      <h2>Confirmez votre adresse email</h2>
-      <p>Afin de vérifier que votre adresse mail est valide, veuillez cliquer sur le lien suivant :</p>
+    <div style="font-family: Arial, sans-serif; text-align: center; color: #555; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
+      <h2 style="color: #387ca3;">Confirmez votre adresse email</h2>
+      <p>Bienvenue sur Boopursal !</p>
+      <p>Afin de vérifier que votre adresse mail est valide, veuillez cliquer sur le bouton suivant :</p>
       <div style="margin: 30px 0;">
-        <a href="${confirmUrl}" style="background: #387ca3; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px;">Confirmez votre email</a>
+        <a href="${confirmUrl}" style="background: #387ca3; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Confirmer mon compte</a>
       </div>
-      <p>Ou copiez ce lien dans votre navigateur : <br><a href="${confirmUrl}">${confirmUrl}</a></p>
+      <p style="font-size: 12px; color: #999;">Ou copiez ce lien dans votre navigateur : <br><a href="${confirmUrl}">${confirmUrl}</a></p>
     </div>`;
   }
 
