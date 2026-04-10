@@ -204,7 +204,7 @@ export class AcheteursService {
                     isactif: true,
                     created: new Date(),
                     discr: 'acheteur',
-                    roles: '["ROLE_ACHETEUR"]',
+                    roles: '["ROLE_ACHETEUR_PRE"]',
                     redirect: '/boopursal/acheteur/dashboard',
                     acheteur: {
                         create: {

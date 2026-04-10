@@ -641,10 +641,10 @@ export class FournisseursService {
                     password: hashedPassword,
                     confirmation_token: confirmationToken,
                     del: false,
-                    isactif: true,
+                    isactif: false,
                     created: new Date(),
                     discr: 'fournisseur',
-                    roles: '["ROLE_FOURNISSEUR"]',
+                    roles: '["ROLE_FOURNISSEUR_PRE"]',
                     redirect: '/boopursal/fournisseur/dashboard',
                     fournisseur: {
                         create: {

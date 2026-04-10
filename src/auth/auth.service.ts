@@ -87,7 +87,19 @@ export class AuthService {
                 roles: roles,
                 photoURL: user.avatar ? user.avatar.url : null,
                 settings: {},
-                shortcuts: []
+                shortcuts: [],
+                // Ajout des objets liés
+                fournisseur: user.fournisseur ? {
+                    ...user.fournisseur,
+                    id: user.fournisseur.id
+                } : null,
+                acheteur: user.acheteur ? {
+                    ...user.acheteur,
+                    id: user.acheteur.id
+                } : null,
+                // Champs pour compatibilité directe (société, ville, etc.)
+                societe: user.fournisseur?.societe || user.acheteur?.societe,
+                villeId: user.fournisseur?.ville_id || user.acheteur?.ville_id,
             }
         };
     }
