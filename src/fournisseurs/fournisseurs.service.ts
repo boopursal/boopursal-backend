@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class FournisseursService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(private readonly prisma: PrismaService, private readonly mailService: MailService) { }
 
     async findAll(page = 1, limit = 20, query: any = {}) {
         const skip = (page - 1) * limit;
@@ -614,7 +615,6 @@ export class FournisseursService {
         }
 
         try {
-            // Vérifier si l'email existe déjà
             const existing = await this.prisma.user.findFirst({
                 where: { email: data.email.trim() }
             });
@@ -626,6 +626,7 @@ export class FournisseursService {
             }
 
             const hashedPassword = await bcrypt.hash(data.password, 10);
+            const confirmationToken = require('crypto').randomBytes(20).toString('hex');
             const slug = (data.societe
                 ? data.societe.toLowerCase().replace(/[^a-z0-9]+/g, '-')
                 : 'societe') + '-' + Date.now();
@@ -637,6 +638,7 @@ export class FournisseursService {
                     email: data.email.trim().toLowerCase(),
                     phone: data.phone || '',
                     password: hashedPassword,
+                    confirmation_token: confirmationToken,
                     del: false,
                     isactif: true,
                     created: new Date(),
@@ -659,6 +661,11 @@ export class FournisseursService {
             });
 
             console.log('[FournisseursService.create] ✅ Fournisseur créé:', newUser.id);
+            
+            // Dispatch emails asynchronously 
+            this.mailService.sendConfirmationEmail(newUser.email, confirmationToken).catch(console.error);
+            this.mailService.newRegister(newUser.email, 'Fournisseur').catch(console.error);
+
             const returnFournisseur: any = newUser.fournisseur;
             return {
                 ...returnFournisseur,

@@ -29,6 +29,7 @@ import { SousSecteursModule } from './sous-secteurs/sous-secteurs.module';
 import { DemandeDevisModule } from './demande-devis/demande-devis.module';
 import { CommercialsModule } from './commercials/commercials.module';
 import { JetonsModule } from './jetons/jetons.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { JetonsModule } from './jetons/jetons.module';
     SearchModule,
     CommercialsModule,
     JetonsModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

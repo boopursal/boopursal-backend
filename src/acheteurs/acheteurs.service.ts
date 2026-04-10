@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AcheteursService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(private readonly prisma: PrismaService, private readonly mailService: MailService) { }
 
     async findAll(page = 1, limit = 20, search?: string) {
         const skip = (page - 1) * limit;
@@ -188,6 +189,7 @@ export class AcheteursService {
             }
 
             const hashedPassword = await bcrypt.hash(data.password, 10);
+            const confirmationToken = require('crypto').randomBytes(20).toString('hex');
 
             const newUser = await this.prisma.user.create({
                 data: {
@@ -196,6 +198,7 @@ export class AcheteursService {
                     email: data.email.trim().toLowerCase(),
                     phone: data.phone || '',
                     password: hashedPassword,
+                    confirmation_token: confirmationToken,
                     del: false,
                     isactif: true,
                     created: new Date(),
@@ -216,6 +219,11 @@ export class AcheteursService {
             });
 
             console.log('[AcheteursService.create] ✅ Acheteur créé:', newUser.id);
+            
+            // Dispatch emails asynchronously 
+            this.mailService.sendConfirmationEmail(newUser.email, confirmationToken).catch(console.error);
+            this.mailService.newRegister(newUser.email, 'Acheteur').catch(console.error);
+
             const returnAcheteur: any = newUser.acheteur;
 
             return {
