@@ -34,16 +34,17 @@ export class MailService {
 
   async sendConfirmationEmail(email: string, token: string) {
     const confirmUrl = `${this.urlSite}register/confirm/${token}`;
+    const targetEmail = email.trim();
     try {
       await this.mailerService.sendMail({
-        to: email,
-        subject: 'Confirmez votre compte Boopursal',
+        to: targetEmail,
+        subject: 'Confirmation de votre compte Boopursal',
         text: `Bienvenue sur Boopursal. Veuillez confirmer votre adresse email en cliquant sur ce lien : ${confirmUrl}`,
         html: this.getConfirmationHtml(token),
       });
-      this.logger.log(`[Mail] Confirmation envoyée à ${email}`);
+      this.logger.log(`[Mail] Confirmation envoyée à ${targetEmail}`);
     } catch (err) {
-      this.logger.error(`Erreur lors de l'envoi de mail à ${email}`, err?.stack || err);
+      this.logger.error(`Erreur lors de l'envoi de mail à ${targetEmail}`, err?.stack || err);
     }
   }
 
