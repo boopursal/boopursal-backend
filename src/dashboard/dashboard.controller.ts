@@ -13,7 +13,7 @@ export class DashboardController {
     @UseGuards(AuthGuard('jwt'))
     @Get('demandes/widgets')
     async getAcheteurWidgets(@Req() req) {
-        return { data: await this.dashboardService.getAcheteurWidgets(req.user.data.id) };
+        return await this.dashboardService.getAcheteurWidgets(req.user.data.id);
     }
 
     @UseGuards(AuthGuard('jwt'))
@@ -39,13 +39,13 @@ export class DashboardController {
     @UseGuards(AuthGuard('jwt'))
     @Get('fournisseur/widgets')
     async getFournisseurWidgets(@Req() req) {
-        return { data: await this.dashboardService.getFournisseurWidgets(req.user.data.id) };
+        return await this.dashboardService.getFournisseurWidgets(req.user.data.id);
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Get('fournisseur/doughnut')
     async getFournisseurDoughnut(@Req() req, @Query('year') year: string) {
-        return { doughnut: await this.dashboardService.getFournisseurDoughnut(req.user.data.id, +year || currentYear()) };
+        return await this.dashboardService.getFournisseurDoughnut(req.user.data.id, +year || currentYear());
     }
 
     @UseGuards(AuthGuard('jwt'))
