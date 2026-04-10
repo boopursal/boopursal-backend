@@ -79,35 +79,50 @@ export class ReferentielService {
 
     // ===== PAYS =====
     async findAllPays(page = 1, limit = 200, name?: string) {
-        const skip = (page - 1) * limit;
-        const where: any = {};
-        if (name) where.name = { contains: name };
+        try {
+            const skip = (page - 1) * limit;
+            const where: any = {};
+            if (name) where.name = { contains: name };
 
-        const [data, total] = await Promise.all([
-            (this.prisma.pays as any).findMany({ where, skip, take: limit, orderBy: { name: 'asc' } }),
-            (this.prisma.pays as any).count({ where }),
-        ]);
+            const [data, total] = await Promise.all([
+                (this.prisma.pays as any).findMany({ 
+                    where, 
+                    skip, 
+                    take: limit, 
+                    orderBy: { name: 'asc' } 
+                }),
+                (this.prisma.pays as any).count({ where }),
+            ]);
 
-        return {
-            'hydra:member': (data as any[]).map(item => ({
-                ...item,
-                '@id': `/api/pays/${item.id}`,
-                '@type': 'Pays',
-                label: item.name,
-                value: `/api/pays/${item.id}`
-            })),
-            'hydra:totalItems': total,
-        };
+            return {
+                'hydra:member': (data as any[]).map(item => ({
+                    ...item,
+                    '@id': `/api/pays/${item.id}`,
+                    '@type': 'Pays',
+                    label: item.name,
+                    value: `/api/pays/${item.id}`
+                })),
+                'hydra:totalItems': total,
+            };
+        } catch (error) {
+            console.error('[ReferentielService] Error in findAllPays:', error?.message || error);
+            return { 'hydra:member': [], 'hydra:totalItems': 0 };
+        }
     }
 
     async findOnePays(id: number) {
-        const item = await (this.prisma.pays as any).findUnique({ where: { id } });
-        if (!item) return null;
-        return {
-            ...item,
-            '@id': `/api/pays/${item.id}`,
-            '@type': 'Pays',
-        };
+        try {
+            const item = await (this.prisma.pays as any).findUnique({ where: { id } });
+            if (!item) return null;
+            return {
+                ...item,
+                '@id': `/api/pays/${item.id}`,
+                '@type': 'Pays',
+            };
+        } catch (error) {
+            console.error('[ReferentielService] Error in findOnePays:', error?.message || error);
+            return null;
+        }
     }
 
     async createPays(name: string) {
@@ -121,38 +136,50 @@ export class ReferentielService {
 
     // ===== VILLES =====
     async findAllVilles(page = 1, limit = 200, name?: string, paysIri?: string) {
-        const skip = (page - 1) * limit;
-        const where: any = {};
-        if (name) where.name = { contains: name };
-        if (paysIri) {
-            const parts = paysIri.split('/');
-            where.pays_id = parseInt(parts[parts.length - 1]);
+        try {
+            const skip = (page - 1) * limit;
+            const where: any = {};
+            if (name) where.name = { contains: name };
+            if (paysIri) {
+                const parts = paysIri.split('/');
+                const idString = parts[parts.length - 1];
+                const pays_id = parseInt(idString);
+                if (!isNaN(pays_id)) {
+                    where.pays_id = pays_id;
+                }
+            }
+
+            const [data, total] = await Promise.all([
+                (this.prisma.ville as any).findMany({
+                    where,
+                    skip,
+                    take: limit,
+                    include: { pays: true },
+                    orderBy: { name: 'asc' },
+                }),
+                (this.prisma.ville as any).count({ where }),
+            ]);
+
+            return {
+                'hydra:member': (data as any[]).map(item => ({
+                    ...item,
+                    '@id': `/api/villes/${item.id}`,
+                    '@type': 'Ville',
+                    pays: item.pays ? {
+                        '@id': `/api/pays/${item.pays.id}`,
+                        name: item.pays.name,
+                    } : null,
+                    label: item.name,
+                    value: `/api/villes/${item.id}`
+                })),
+                'hydra:totalItems': total,
+            };
+        } catch (error) {
+            console.error('[ReferentielService] Error in findAllVilles:', error?.message || error);
+            return { 'hydra:member': [], 'hydra:totalItems': 0 };
         }
-
-        const [data, total] = await Promise.all([
-            (this.prisma.ville as any).findMany({
-                where,
-                skip,
-                take: limit,
-                include: { pays: true },
-                orderBy: { name: 'asc' },
-            }),
-            (this.prisma.ville as any).count({ where }),
-        ]);
-
-        return {
-            'hydra:member': (data as any[]).map(item => ({
-                ...item,
-                '@id': `/api/villes/${item.id}`,
-                '@type': 'Ville',
-                pays: item.pays ? {
-                    '@id': `/api/pays/${item.pays.id}`,
-                    name: item.pays.name,
-                } : null,
-            })),
-            'hydra:totalItems': total,
-        };
     }
+
 
     async findOneVille(id: number) {
         const item = await (this.prisma.ville as any).findUnique({ where: { id }, include: { pays: true } });
