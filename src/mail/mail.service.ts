@@ -33,10 +33,12 @@ export class MailService {
   }
 
   async sendConfirmationEmail(email: string, token: string) {
+    const confirmUrl = `${this.urlSite}register/confirm/${token}`;
     try {
       await this.mailerService.sendMail({
         to: email,
-        subject: 'Vérifiez votre adresse email | Boopursal',
+        subject: 'Confirmez votre compte Boopursal',
+        text: `Bienvenue sur Boopursal. Veuillez confirmer votre adresse email en cliquant sur ce lien : ${confirmUrl}`,
         html: this.getConfirmationHtml(token),
       });
       this.logger.log(`[Mail] Confirmation envoyée à ${email}`);
