@@ -111,4 +111,14 @@ export class FournisseursController {
         const orderBy = order ? Object.entries(order).map(([k, v]) => ({ [k]: v }))[0] : { created: 'desc' };
         return this.fournisseursService.getProduits(id, +page, +limit, orderBy);
     }
+
+    @Get('fournisseurs/:id/messages')
+    async getMessages(@Param('id') id: string) {
+        return { 'hydra:member': [], 'hydra:totalItems': 0 };
+    }
+
+    @Get('fournisseurs/:id/childs')
+    async getChilds(@Param('id') id: string) {
+        return { 'hydra:member': [], 'hydra:totalItems': 0 };
+    }
 }

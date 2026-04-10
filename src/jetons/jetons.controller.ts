@@ -18,4 +18,16 @@ export class JetonsController {
     findOne(@Param('id', ParseIntPipe) id: number) {
         return this.jetonsService.findOne(id);
     }
+
+    @Get('fournisseur')
+    findForFournisseur() {
+        // En attendant une implémentation réelle filtrée par user
+        return { 'hydra:member': [], 'hydra:totalItems': 0 };
+    }
+
+    // Support de la typo présente dans le frontend
+    @Get('founrisseur')
+    findForFounrisseur() {
+        return { 'hydra:member': [], 'hydra:totalItems': 0 };
+    }
 }
