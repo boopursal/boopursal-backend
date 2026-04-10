@@ -221,9 +221,9 @@ export class AcheteursService {
 
             console.log('[AcheteursService.create] ✅ Acheteur créé:', newUser.id);
             
-            // Dispatch emails asynchronously 
-            this.mailService.sendConfirmationEmail(newUser.email, confirmationToken).catch(console.error);
-            this.mailService.newRegister(newUser.email, 'Acheteur').catch(console.error);
+            // Dispatch emails (await for serverless reliability)
+            await this.mailService.sendConfirmationEmail(newUser.email, confirmationToken).catch(console.error);
+            await this.mailService.newRegister(newUser.email, 'Acheteur').catch(console.error);
 
             const returnAcheteur: any = newUser.acheteur;
 

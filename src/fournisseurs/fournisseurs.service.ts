@@ -663,9 +663,9 @@ export class FournisseursService {
 
             console.log('[FournisseursService.create] ✅ Fournisseur créé:', newUser.id);
             
-            // Dispatch emails asynchronously 
-            this.mailService.sendConfirmationEmail(newUser.email, confirmationToken).catch(console.error);
-            this.mailService.newRegister(newUser.email, 'Fournisseur').catch(console.error);
+            // Dispatch emails (await for serverless reliability)
+            await this.mailService.sendConfirmationEmail(newUser.email, confirmationToken).catch(console.error);
+            await this.mailService.newRegister(newUser.email, 'Fournisseur').catch(console.error);
 
             const returnFournisseur: any = newUser.fournisseur;
             return {
