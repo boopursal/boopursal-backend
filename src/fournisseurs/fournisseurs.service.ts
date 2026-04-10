@@ -645,7 +645,7 @@ export class FournisseursService {
                     created: new Date(),
                     discr: 'fournisseur',
                     roles: '["ROLE_FOURNISSEUR_PRE"]',
-                    redirect: '/boopursal/fournisseur/dashboard',
+                    redirect: '/register/fournisseur',
                     fournisseur: {
                         create: {
                             societe: data.societe || '',

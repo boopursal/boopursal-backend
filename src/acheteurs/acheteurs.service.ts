@@ -201,11 +201,11 @@ export class AcheteursService {
                     password: hashedPassword,
                     confirmation_token: confirmationToken,
                     del: false,
-                    isactif: true,
+                    isactif: false,
                     created: new Date(),
                     discr: 'acheteur',
                     roles: '["ROLE_ACHETEUR_PRE"]',
-                    redirect: '/boopursal/acheteur/dashboard',
+                    redirect: '/register/acheteur',
                     acheteur: {
                         create: {
                             societe: data.societe || '',
