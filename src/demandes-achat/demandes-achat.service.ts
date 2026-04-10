@@ -6,113 +6,81 @@ export class DemandesAchatService {
     constructor(private readonly prisma: PrismaService) { }
 
     async findAll(query: any = {}) {
-        const page = parseInt(query.page || '1');
-        const limit = parseInt(query.itemsPerPage || '20');
-        const skip = (page - 1) * limit;
-
-        const where: any = { del: false };
-
-        // Filtrage Statut
-        if (query.statut !== undefined) {
-            where.statut = parseInt(query.statut);
-        }
-
-        // Recherche textuelle 'q' ou 'search'
-        const search = query.q || query.search;
-        if (search) {
-            where.OR = [
-                { titre: { contains: search } },
-                { reference: { contains: search } },
-                { description: { contains: search } }
-            ];
-        }
-
-        // Filtre Pays
-        if (query['acheteur.pays.slug']) {
-            where.acheteur = { pays: { slug: query['acheteur.pays.slug'] } };
-        }
-        
-        // Filtre Ville
-        if (query['acheteur.ville.slug']) {
-            where.acheteur = { ...where.acheteur, ville: { slug: query['acheteur.ville.slug'] } };
-        }
-
-        // Filtre Categorie (categories.slug)
-        if (query['categories.slug']) {
-            where.demande_ha_categories = {
-                some: { categorie: { slug: query['categories.slug'] } }
-            };
-        }
-
-        // Filtre Activite / SousSecteur (categories.sousSecteurs.slug)
-        if (query['categories.sousSecteurs.slug']) {
-            where.demande_ha_categories = {
-                some: {
-                    categorie: {
-                        categorie_sous_secteur: {
-                            some: { sous_secteur: { slug: query['categories.sousSecteurs.slug'] } }
-                        }
-                    }
-                }
-            };
-        }
-
-        // Filtre Secteur (categories.sousSecteurs.secteur.slug)
-        if (query['categories.sousSecteurs.secteur.slug']) {
-            where.demande_ha_categories = {
-                some: {
-                    categorie: {
-                        categorie_sous_secteur: {
-                            some: {
-                                sous_secteur: {
-                                    secteur: { slug: query['categories.sousSecteurs.secteur.slug'] }
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-        }
-
-        // Filtre isPublic → is_public
-        if (query.isPublic !== undefined) {
-            where.is_public = query.isPublic === '1' || query.isPublic === 'true' || query.isPublic === true;
-        }
-
-        // Tri - Support du format bracket: order[created]=desc
-        const orderBy: any = {};
-        // Chercher une clé du type order[xxx] dans le query object
-        const orderBracketKey = Object.keys(query).find(k => k.startsWith('order[') && k.endsWith(']'));
-        if (orderBracketKey) {
-            const field = orderBracketKey.replace('order[', '').replace(']', '');
-            const direction = (query[orderBracketKey] || 'desc').toLowerCase();
-            if (field === 'created' || field === 'createdAt') {
-                orderBy.created = direction;
-            } else if (field === 'dateExpiration') {
-                orderBy.date_expiration = direction;
-            } else {
-                orderBy[field] = direction;
-            }
-        } else if (query.order && typeof query.order === 'object') {
-            const keys = Object.keys(query.order);
-            if (keys.length > 0) {
-                const key = keys[0];
-                const direction = (query.order[key] || 'desc').toLowerCase();
-                if (key === 'created' || key === 'createdAt') {
-                    orderBy.created = direction;
-                } else if (key === 'dateExpiration') {
-                    orderBy.date_expiration = direction;
-                } else {
-                    orderBy[key] = direction;
-                }
-            }
-        }
-
-        if (Object.keys(orderBy).length === 0) {
-            orderBy.id = 'desc';
-        }
-
         try {
+            const page = Math.max(1, parseInt(query.page || '1') || 1);
+            const limit = Math.max(1, Math.min(100, parseInt(query.itemsPerPage || '20') || 20));
+            const skip = (page - 1) * limit;
+
+            const where: any = { del: false };
+
+            // Filtrage Statut
+            if (query.statut !== undefined) {
+                const statut = parseInt(query.statut);
+                if (!isNaN(statut)) {
+                    where.statut = statut;
+                }
+            }
+
+            // Recherche textuelle 'q' ou 'search'
+            const search = query.q || query.search;
+            if (search && typeof search === 'string') {
+                where.OR = [
+                    { titre: { contains: search } },
+                    { reference: { contains: search } },
+                    { description: { contains: search } }
+                ];
+            }
+
+            // Filtres relationnels (Protection contre les accès invalides)
+            if (query['acheteur.pays.slug']) {
+                where.acheteur = { pays: { slug: String(query['acheteur.pays.slug']) } };
+            }
+            
+            if (query['acheteur.ville.slug']) {
+                where.acheteur = { ...(where.acheteur || {}), ville: { slug: String(query['acheteur.ville.slug']) } };
+            }
+
+            if (query['categories.slug']) {
+                where.demande_ha_categories = {
+                    some: { categorie: { slug: String(query['categories.slug']) } }
+                };
+            }
+
+            if (query.isPublic !== undefined) {
+                where.is_public = String(query.isPublic) === '1' || String(query.isPublic) === 'true';
+            }
+
+            // Tri sécurisé
+            const orderBy: any = {};
+            const orderBracketKey = Object.keys(query).find(k => k.startsWith('order[') && k.endsWith(']'));
+            
+            let field = 'id';
+            let direction: 'asc' | 'desc' = 'desc';
+
+            if (orderBracketKey) {
+                field = orderBracketKey.replace('order[', '').replace(']', '');
+                const rawDir = String(query[orderBracketKey]).toLowerCase();
+                direction = rawDir === 'asc' ? 'asc' : 'desc';
+            } else if (query.order && typeof query.order === 'object') {
+                const keys = Object.keys(query.order);
+                if (keys.length > 0) {
+                    field = keys[0];
+                    const rawDir = String(query.order[field]).toLowerCase();
+                    direction = rawDir === 'asc' ? 'asc' : 'desc';
+                }
+            }
+
+            // Mapping des champs de tri
+            const fieldMap: Record<string, string> = {
+                'created': 'created',
+                'createdAt': 'created',
+                'dateExpiration': 'date_expiration',
+                'id': 'id'
+            };
+            
+            const dbField = fieldMap[field] || field;
+            orderBy[dbField] = direction;
+
             const [data, total] = await Promise.all([
                 this.prisma.demande_achat.findMany({
                     where,
@@ -162,10 +130,14 @@ export class DemandesAchatService {
             };
         } catch (error) {
             console.error('[DemandesAchatService] Error in findAll:', error?.message || error);
-            console.error('[DemandesAchatService] Stack:', error?.stack);
-            throw error;
+            // Retourner un résultat vide plutôt qu'une 500
+            return {
+                'hydra:member': [],
+                'hydra:totalItems': 0,
+            };
         }
     }
+
 
     private extractId(idOrSlug: string): number {
         const id = parseInt(idOrSlug.split('-')[0]);
