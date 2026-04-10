@@ -4,6 +4,10 @@ export declare class AcheteursController {
     constructor(acheteursService: AcheteursService);
     findAll(page?: string, limit?: string, search?: string): Promise<{
         'hydra:member': {
+            avatar: {
+                url: string;
+                id: number;
+            };
             firstName: string;
             lastName: string;
             email: string;
@@ -11,6 +15,11 @@ export declare class AcheteursController {
             isactif: boolean;
             created: Date;
             user: {
+                avatar: {
+                    id: number;
+                    url: string | null;
+                };
+            } & {
                 id: number;
                 adresse1: string | null;
                 adresse2: string | null;
@@ -74,6 +83,7 @@ export declare class AcheteursController {
         }[];
         'hydra:totalItems': number;
     }>;
+    create(data: any): Promise<any>;
     getStats(): Promise<{
         total: number;
         actifs: number;
@@ -81,6 +91,10 @@ export declare class AcheteursController {
         recents: number;
     }>;
     findOne(id: number): Promise<{
+        avatar: {
+            url: string;
+            id: number;
+        };
         firstName: string;
         lastName: string;
         email: string;
@@ -88,6 +102,11 @@ export declare class AcheteursController {
         isactif: boolean;
         created: Date;
         user: {
+            avatar: {
+                id: number;
+                url: string | null;
+            };
+        } & {
             id: number;
             adresse1: string | null;
             adresse2: string | null;
@@ -178,6 +197,10 @@ export declare class AcheteursController {
         parent2: number | null;
     }>;
     update(id: number, data: any): Promise<{
+        avatar: {
+            url: string;
+            id: number;
+        };
         firstName: string;
         lastName: string;
         email: string;
@@ -185,6 +208,11 @@ export declare class AcheteursController {
         isactif: boolean;
         created: Date;
         user: {
+            avatar: {
+                id: number;
+                url: string | null;
+            };
+        } & {
             id: number;
             adresse1: string | null;
             adresse2: string | null;

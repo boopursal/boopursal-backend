@@ -12,9 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FournisseursService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const mail_service_1 = require("../mail/mail.service");
+const bcrypt = require("bcrypt");
 let FournisseursService = class FournisseursService {
-    constructor(prisma) {
+    constructor(prisma, mailService) {
         this.prisma = prisma;
+        this.mailService = mailService;
     }
     async findAll(page = 1, limit = 20, query = {}) {
         const skip = (page - 1) * limit;
@@ -130,7 +133,10 @@ let FournisseursService = class FournisseursService {
         ]);
         const flattenedData = data.map(item => ({
             ...item,
-            avatar: item.user?.avatar,
+            avatar: item.user?.avatar ? {
+                ...item.user.avatar,
+                url: item.user.avatar.url
+            } : null,
             firstName: item.user?.first_name,
             lastName: item.user?.last_name,
             email: item.user?.email,
@@ -276,7 +282,7 @@ let FournisseursService = class FournisseursService {
             isSelect: item.is_select,
             featuredImageId: item.image_produit ? {
                 ...item.image_produit,
-                url: `/images/produits/${item.image_produit.url}`
+                url: item.image_produit.url
             } : null,
             sousSecteurs: item.sous_secteur
         }));
@@ -560,10 +566,83 @@ let FournisseursService = class FournisseursService {
             categories: item.fournisseur_categories.map(fc => fc.categorie)
         };
     }
+    async create(data) {
+        console.log('[FournisseursService.create] Incoming data keys:', Object.keys(data || {}));
+        console.log('[FournisseursService.create] Body email:', data?.email, '| has password:', !!data?.password);
+        if (!data.email || !data.password) {
+            console.error('[FournisseursService.create] Missing email or password. Body received:', JSON.stringify(data));
+            const err = new Error('Email et mot de passe requis');
+            err.isValidation = true;
+            throw err;
+        }
+        try {
+            const existing = await this.prisma.user.findFirst({
+                where: { email: data.email.trim() }
+            });
+            if (existing) {
+                const err = new Error('Cet email existe déjà.');
+                err.isValidation = true;
+                throw err;
+            }
+            const hashedPassword = await bcrypt.hash(data.password, 10);
+            const confirmationToken = require('crypto').randomBytes(20).toString('hex');
+            const slug = (data.societe
+                ? data.societe.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+                : 'societe') + '-' + Date.now();
+            const newUser = await this.prisma.user.create({
+                data: {
+                    first_name: data.firstName || '',
+                    last_name: data.lastName || '',
+                    email: data.email.trim().toLowerCase(),
+                    phone: data.phone || '',
+                    password: hashedPassword,
+                    confirmation_token: confirmationToken,
+                    del: false,
+                    isactif: true,
+                    created: new Date(),
+                    discr: 'fournisseur',
+                    roles: '["ROLE_FOURNISSEUR"]',
+                    redirect: '/boopursal/fournisseur/dashboard',
+                    fournisseur: {
+                        create: {
+                            societe: data.societe || '',
+                            civilite: data.civilite || 'M.',
+                            is_complet: false,
+                            step: 1,
+                            slug: slug,
+                            visite: 0,
+                            phone_vu: 0,
+                        }
+                    }
+                },
+                include: { fournisseur: true }
+            });
+            console.log('[FournisseursService.create] ✅ Fournisseur créé:', newUser.id);
+            this.mailService.sendConfirmationEmail(newUser.email, confirmationToken).catch(console.error);
+            this.mailService.newRegister(newUser.email, 'Fournisseur').catch(console.error);
+            const returnFournisseur = newUser.fournisseur;
+            return {
+                ...returnFournisseur,
+                email: newUser.email,
+                firstName: newUser.first_name,
+                lastName: newUser.last_name,
+                '@id': returnFournisseur ? `/api/fournisseurs/${returnFournisseur.id}` : null
+            };
+        }
+        catch (err) {
+            if (err.isValidation)
+                throw err;
+            console.error('[FournisseursService.create] Error:', err?.message || err);
+            console.error('[FournisseursService.create] Stack:', err?.stack);
+            const dbErr = new Error(`Erreur DB: ${err?.message || 'Création compte impossible'}`);
+            dbErr.isDb = true;
+            throw dbErr;
+        }
+    }
 };
 exports.FournisseursService = FournisseursService;
 exports.FournisseursService = FournisseursService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService, mail_service_1.MailService])
 ], FournisseursService);
 //# sourceMappingURL=fournisseurs.service.js.map

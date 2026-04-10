@@ -13,6 +13,12 @@ export declare class ProduitsController {
             'hydra:next': string;
             'hydra:previous': string;
         };
+        error?: undefined;
+    } | {
+        'hydra:member': any[];
+        'hydra:totalItems': number;
+        error: any;
+        'hydra:view'?: undefined;
     }>;
     countByCategorie(query: any): Promise<{
         id: number;

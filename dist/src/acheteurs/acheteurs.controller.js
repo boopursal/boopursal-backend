@@ -19,8 +19,29 @@ let AcheteursController = class AcheteursController {
     constructor(acheteursService) {
         this.acheteursService = acheteursService;
     }
-    findAll(page = '1', limit = '20', search) {
-        return this.acheteursService.findAll(+page, +limit, search);
+    async findAll(page = '1', limit = '20', search) {
+        try {
+            return await this.acheteursService.findAll(+page, +limit, search);
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException({ message: 'Erreur serveur lors de la récupération des acheteurs', detail: error?.message });
+        }
+    }
+    async create(data) {
+        console.log('[AcheteursController.create] Body keys received:', Object.keys(data || {}));
+        try {
+            return await this.acheteursService.create(data);
+        }
+        catch (error) {
+            console.error('[AcheteursController.create] Error:', error?.message);
+            if (error?.isValidation) {
+                throw new common_1.BadRequestException({ Erreur: error.message });
+            }
+            if (error?.isDb) {
+                throw new common_1.InternalServerErrorException({ Erreur: error.message });
+            }
+            throw new common_1.BadRequestException({ Erreur: error?.message || 'Erreur inconnue' });
+        }
     }
     getStats() {
         return this.acheteursService.getStats();
@@ -43,8 +64,15 @@ __decorate([
     __param(2, (0, common_1.Query)('search')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AcheteursController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AcheteursController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)('stats'),
     __metadata("design:type", Function),

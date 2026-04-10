@@ -36,9 +36,9 @@ let SecteursService = class SecteursService {
             'hydra:member': data.map(s => ({
                 ...s,
                 '@id': `/api/secteurs/${s.id}`,
-                url: s.image_secteur?.url ?? null,
-                image: s.image_secteur?.url ?? null,
-                logo: s.image_secteur?.url ?? null,
+                url: s.image_secteur?.url || null,
+                image: s.image_secteur?.url || null,
+                logo: s.image_secteur?.url || null,
             })),
             'hydra:totalItems': total,
         };
@@ -68,9 +68,9 @@ let SecteursService = class SecteursService {
         return {
             ...secteur,
             '@id': `/api/secteurs/${secteur.id}`,
-            url: secteur.image_secteur?.url ?? null,
-            image: secteur.image_secteur ?? null,
-            logo: secteur.image_secteur?.url ?? null,
+            url: secteur.image_secteur?.url || null,
+            image: secteur.image_secteur?.url || null,
+            logo: secteur.image_secteur?.url || null,
             sous_secteur: secteur.sous_secteur.map(ss => ({
                 ...ss,
                 '@id': `/api/sous_secteurs/${ss.id}`,
@@ -87,9 +87,9 @@ let SecteursService = class SecteursService {
         return {
             ...secteur,
             '@id': `/api/secteurs/${secteur.id}`,
-            url: secteur.image_secteur?.url ?? null,
-            image: secteur.image_secteur ?? null,
-            logo: secteur.image_secteur?.url ?? null,
+            url: secteur.image_secteur?.url || null,
+            image: secteur.image_secteur?.url || null,
+            logo: secteur.image_secteur?.url || null,
         };
     }
     async findSousSecteursBySlug(slug) {

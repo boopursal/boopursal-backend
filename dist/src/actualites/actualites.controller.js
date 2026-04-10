@@ -19,9 +19,24 @@ let ActualitesController = class ActualitesController {
     constructor(actualitesService) {
         this.actualitesService = actualitesService;
     }
-    findAll(page = '1', limit = '10', search, order) {
-        const orderBy = order ? Object.entries(order).map(([k, v]) => ({ [k]: v }))[0] : { created: 'desc' };
-        return this.actualitesService.findAll(+page, +limit, search, orderBy);
+    findAll(page = '1', itemsPerPage = '10', limit, search, allQuery) {
+        const finalLimit = itemsPerPage || limit || '10';
+        let orderBy = { created: 'desc' };
+        if (allQuery) {
+            const orderBracketKey = Object.keys(allQuery).find(k => k.startsWith('order[') && k.endsWith(']'));
+            if (orderBracketKey) {
+                const field = orderBracketKey.replace('order[', '').replace(']', '');
+                const direction = (allQuery[orderBracketKey] || 'desc').toLowerCase();
+                orderBy = { [field]: direction };
+            }
+            else if (allQuery.order && typeof allQuery.order === 'object') {
+                const keys = Object.keys(allQuery.order);
+                if (keys.length > 0) {
+                    orderBy = { [keys[0]]: allQuery.order[keys[0]] };
+                }
+            }
+        }
+        return this.actualitesService.findAll(+page, +finalLimit, search, orderBy);
     }
     findOne(idOrSlug) {
         const id = parseInt(idOrSlug.split('-')[0]);
@@ -35,11 +50,12 @@ exports.ActualitesController = ActualitesController;
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)('page')),
-    __param(1, (0, common_1.Query)('limit')),
-    __param(2, (0, common_1.Query)('search')),
-    __param(3, (0, common_1.Query)('order')),
+    __param(1, (0, common_1.Query)('itemsPerPage')),
+    __param(2, (0, common_1.Query)('limit')),
+    __param(3, (0, common_1.Query)('search')),
+    __param(4, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, String, Object]),
+    __metadata("design:paramtypes", [Object, Object, String, String, Object]),
     __metadata("design:returntype", void 0)
 ], ActualitesController.prototype, "findAll", null);
 __decorate([

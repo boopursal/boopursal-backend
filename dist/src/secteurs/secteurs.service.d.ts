@@ -42,10 +42,7 @@ export declare class SecteursService {
     findOne(id: number): Promise<{
         '@id': string;
         url: string;
-        image: {
-            id: number;
-            url: string | null;
-        };
+        image: string;
         logo: string;
         sous_secteur: {
             '@id': string;
@@ -69,10 +66,7 @@ export declare class SecteursService {
     findBySlug(slug: string): Promise<{
         '@id': string;
         url: string;
-        image: {
-            id: number;
-            url: string | null;
-        };
+        image: string;
         logo: string;
         image_secteur: {
             id: number;

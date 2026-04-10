@@ -18,7 +18,7 @@ export declare class JwtStrategy extends JwtStrategy_base {
             type: string;
             role: string;
             roles: string[];
-            photoURL: string;
+            photoURL: any;
             settings: {};
             shortcuts: any[];
         };

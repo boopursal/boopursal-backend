@@ -69,11 +69,11 @@ export declare class DashboardController {
     }[]>;
     getWidget1(year?: string): Promise<{
         value: number;
-        dataset: number[];
+        dataset: any[];
     }>;
     getWidget2(year?: string): Promise<{
         value: number;
-        dataset: number[];
+        dataset: any[];
     }>;
     getWidget3(year?: string): Promise<{
         value: number;
@@ -125,12 +125,17 @@ export declare class DashboardController {
     getWidget13(): Promise<{
         years: number[];
         totalFournisseurs: any;
-        totalAcheteurs: any;
+        totalAcheteurs: number;
         datasets: {
             label: string;
             data: any[];
             fill: string;
         }[];
+    } | {
+        years: any[];
+        datasets: any[];
+        totalFournisseurs?: undefined;
+        totalAcheteurs?: undefined;
     }>;
     getDemandeAbonnements(itemsPerPage?: string): Promise<{
         'hydra:member': ({
@@ -176,21 +181,53 @@ export declare class DashboardController {
         }[];
         'hydra:totalItems': number;
     }>;
-    getBadgeDemandes(): Promise<number>;
-    getBadgeDemandesDevis(): Promise<number>;
-    getBadgeMessageFournisseur(): Promise<number>;
-    getBadgeValidationProduits(): Promise<number>;
-    getBadgeAcheteurs(): Promise<number>;
-    getBadgeFournisseursAdmin(): Promise<number>;
-    getBadgeFournisseursCollaps(): Promise<number>;
-    getBadgeFournisseursProvisoire(): Promise<number>;
-    getBadgeCommandesAbonnements(): Promise<number>;
-    getBadgeCommandesJetons(): Promise<number>;
-    getBadgeAbonnementFournisseur(): Promise<number>;
-    getBadgePrix(): Promise<number>;
-    getBadgeMessages(): Promise<number>;
-    getBadgeProductDevis(): Promise<number>;
-    getBadgeFournisseursTentatives(): Promise<number>;
-    getBadgeAcheteursTentatives(): Promise<number>;
+    getBadgeDemandes(): Promise<{
+        count: number;
+    }>;
+    getBadgeDemandesDevis(): Promise<{
+        count: number;
+    }>;
+    getBadgeMessageFournisseur(): Promise<{
+        count: number;
+    }>;
+    getBadgeValidationProduits(): Promise<{
+        count: number;
+    }>;
+    getBadgeAcheteurs(): Promise<{
+        count: number;
+    }>;
+    getBadgeFournisseursAdmin(): Promise<{
+        count: number;
+    }>;
+    getBadgeFournisseursCollaps(): Promise<{
+        count: number;
+    }>;
+    getBadgeFournisseursProvisoire(): Promise<{
+        count: number;
+    }>;
+    getBadgeCommandesAbonnements(): Promise<{
+        count: number;
+    }>;
+    getBadgeCommandesJetons(): Promise<{
+        count: number;
+    }>;
+    getBadgeAbonnementFournisseur(): Promise<{
+        count: number;
+    }>;
+    getBadgePrix(): Promise<{
+        count: number;
+    }>;
+    getBadgeMessages(): Promise<{
+        count: number;
+    }>;
+    getBadgeProductDevis(): Promise<{
+        count: number;
+    }>;
+    getBadgeFournisseursTentatives(): Promise<{
+        count: number;
+    }>;
+    getBadgeAcheteursTentatives(): Promise<{
+        count: number;
+    }>;
     getGeolocation(): Promise<any>;
 }

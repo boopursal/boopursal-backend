@@ -69,12 +69,29 @@ let DemandesAchatService = class DemandesAchatService {
                 }
             };
         }
+        if (query.isPublic !== undefined) {
+            where.is_public = query.isPublic === '1' || query.isPublic === 'true' || query.isPublic === true;
+        }
         const orderBy = {};
-        if (query.order) {
+        const orderBracketKey = Object.keys(query).find(k => k.startsWith('order[') && k.endsWith(']'));
+        if (orderBracketKey) {
+            const field = orderBracketKey.replace('order[', '').replace(']', '');
+            const direction = (query[orderBracketKey] || 'desc').toLowerCase();
+            if (field === 'created' || field === 'createdAt') {
+                orderBy.created = direction;
+            }
+            else if (field === 'dateExpiration') {
+                orderBy.date_expiration = direction;
+            }
+            else {
+                orderBy[field] = direction;
+            }
+        }
+        else if (query.order && typeof query.order === 'object') {
             const keys = Object.keys(query.order);
             if (keys.length > 0) {
                 const key = keys[0];
-                const direction = query.order[key].toLowerCase();
+                const direction = (query.order[key] || 'desc').toLowerCase();
                 if (key === 'created' || key === 'createdAt') {
                     orderBy.created = direction;
                 }
@@ -86,26 +103,61 @@ let DemandesAchatService = class DemandesAchatService {
                 }
             }
         }
-        else {
+        if (Object.keys(orderBy).length === 0) {
             orderBy.id = 'desc';
         }
-        const [data, total] = await Promise.all([
-            this.prisma.demande_achat.findMany({
-                where,
-                skip,
-                take: limit,
-                include: {
-                    acheteur: true,
-                    currency: true,
-                },
-                orderBy,
-            }),
-            this.prisma.demande_achat.count({ where }),
-        ]);
-        return {
-            'hydra:member': data,
-            'hydra:totalItems': total,
-        };
+        try {
+            const [data, total] = await Promise.all([
+                this.prisma.demande_achat.findMany({
+                    where,
+                    skip,
+                    take: limit,
+                    select: {
+                        id: true,
+                        reference: true,
+                        titre: true,
+                        description: true,
+                        pays: true,
+                        ville: true,
+                        date_expiration: true,
+                        created: true,
+                        slug: true,
+                        statut: true,
+                        is_public: true,
+                        budget: true,
+                        del: true,
+                        acheteur: {
+                            select: { id: true, societe: true }
+                        },
+                        currency: {
+                            select: { currency: true }
+                        },
+                    },
+                    orderBy,
+                }),
+                this.prisma.demande_achat.count({ where }),
+            ]);
+            const flattenedData = data.map(item => ({
+                ...item,
+                pays: item.pays || null,
+                ville: item.ville || null,
+                dateExpiration: item.date_expiration,
+                acheteur: item.acheteur ? {
+                    id: item.acheteur.id,
+                    societe: item.acheteur.societe,
+                } : null,
+                currency: item.currency ? item.currency.currency : 'MAD'
+            }));
+            return {
+                'hydra:member': flattenedData,
+                'hydra:totalItems': total,
+            };
+        }
+        catch (error) {
+            console.error('[DemandesAchatService] Error in findAll:', error?.message || error);
+            console.error('[DemandesAchatService] Stack:', error?.stack);
+            throw error;
+        }
     }
     extractId(idOrSlug) {
         const id = parseInt(idOrSlug.split('-')[0]);

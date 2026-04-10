@@ -2,6 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class FournisseursService {
@@ -626,7 +627,7 @@ export class FournisseursService {
             }
 
             const hashedPassword = await bcrypt.hash(data.password, 10);
-            const confirmationToken = require('crypto').randomBytes(20).toString('hex');
+            const confirmationToken = crypto.randomBytes(20).toString('hex');
             const slug = (data.societe
                 ? data.societe.toLowerCase().replace(/[^a-z0-9]+/g, '-')
                 : 'societe') + '-' + Date.now();

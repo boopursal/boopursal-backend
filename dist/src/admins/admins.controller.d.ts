@@ -34,5 +34,10 @@ export declare class AdminsController {
             id: number;
         }[];
         'hydra:totalItems': number;
+        error?: undefined;
+    } | {
+        'hydra:member': any[];
+        'hydra:totalItems': number;
+        error: any;
     }>;
 }

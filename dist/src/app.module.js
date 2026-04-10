@@ -38,6 +38,7 @@ const sous_secteurs_module_1 = require("./sous-secteurs/sous-secteurs.module");
 const demande_devis_module_1 = require("./demande-devis/demande-devis.module");
 const commercials_module_1 = require("./commercials/commercials.module");
 const jetons_module_1 = require("./jetons/jetons.module");
+const mail_module_1 = require("./mail/mail.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(http_logger_middleware_1.HttpLoggerMiddleware).forRoutes('*');
@@ -74,6 +75,7 @@ exports.AppModule = AppModule = __decorate([
             search_module_1.SearchModule,
             commercials_module_1.CommercialsModule,
             jetons_module_1.JetonsModule,
+            mail_module_1.MailModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

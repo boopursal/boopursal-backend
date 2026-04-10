@@ -6,27 +6,29 @@ const app_module_1 = require("./app.module");
 const common_1 = require("@nestjs/common");
 const express = require("express");
 const path_1 = require("path");
+let cachedApp = null;
 async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    if (cachedApp)
+        return cachedApp;
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, { bodyParser: false });
     app.setGlobalPrefix('api');
     app.enableCors({
         origin: '*',
-        credentials: true,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-        allowedHeaders: 'Content-Type, Accept, Authorization',
+        allowedHeaders: 'Content-Type, Authorization, X-Requested-With',
+        credentials: true,
     });
+    app.use(express.json({ limit: '10mb' }));
+    app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+    app.useGlobalPipes(new common_1.ValidationPipe({ transform: true }));
     app.use('/images', express.static((0, path_1.join)(process.cwd(), 'public/images')));
     app.use('/attachement', express.static((0, path_1.join)(process.cwd(), 'public/attachement')));
-    app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true, transform: true }));
     await app.init();
-    const expressApp = app.getHttpAdapter().getInstance();
-    return expressApp;
+    cachedApp = app.getHttpAdapter().getInstance();
+    return cachedApp;
 }
-let server;
-module.exports = async (req, res) => {
-    if (!server) {
-        server = await bootstrap();
-    }
-    return server(req, res);
+exports.default = async (req, res) => {
+    const handler = await bootstrap();
+    return handler(req, res);
 };
 //# sourceMappingURL=main.js.map

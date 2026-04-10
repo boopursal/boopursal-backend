@@ -13,6 +13,12 @@ export declare class ProduitsService {
             'hydra:next': string;
             'hydra:previous': string;
         };
+        error?: undefined;
+    } | {
+        'hydra:member': any[];
+        'hydra:totalItems': number;
+        error: any;
+        'hydra:view'?: undefined;
     }>;
     findOne(id: number): Promise<any>;
     findBySlug(slug: string): Promise<any>;

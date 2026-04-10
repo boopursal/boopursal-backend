@@ -1,12 +1,14 @@
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 export declare class FournisseursService {
     private readonly prisma;
-    constructor(prisma: PrismaService);
+    private readonly mailService;
+    constructor(prisma: PrismaService, mailService: MailService);
     findAll(page?: number, limit?: number, query?: any): Promise<{
         'hydra:member': {
             avatar: {
+                url: string;
                 id: number;
-                url: string | null;
             };
             firstName: string;
             lastName: string;
@@ -707,4 +709,5 @@ export declare class FournisseursService {
         societe_lower: string | null;
         parent: number | null;
     }>;
+    create(data: any): Promise<any>;
 }

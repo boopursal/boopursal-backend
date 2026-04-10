@@ -17,40 +17,50 @@ let AdminsService = class AdminsService {
         this.prisma = prisma;
     }
     async findAll(page = 1, limit = 20, search) {
-        const skip = (page - 1) * limit;
-        const where = search
-            ? {
-                user: {
-                    OR: [
-                        { first_name: { contains: search } },
-                        { last_name: { contains: search } },
-                        { email: { contains: search } },
-                    ],
-                },
-            }
-            : {};
-        const [data, total] = await Promise.all([
-            this.prisma.admin.findMany({
-                where,
-                skip,
-                take: limit,
-                include: {
-                    user: true,
-                },
-                orderBy: { id: 'desc' },
-            }),
-            this.prisma.admin.count({ where }),
-        ]);
-        return {
-            'hydra:member': data.map(item => ({
-                ...item,
-                firstName: item.user?.first_name,
-                lastName: item.user?.last_name,
-                email: item.user?.email,
-                isactif: item.user?.isactif,
-            })),
-            'hydra:totalItems': total,
-        };
+        try {
+            const skip = (page - 1) * limit;
+            const where = search
+                ? {
+                    user: {
+                        OR: [
+                            { first_name: { contains: search } },
+                            { last_name: { contains: search } },
+                            { email: { contains: search } },
+                        ],
+                    },
+                }
+                : {};
+            const [data, total] = await Promise.all([
+                this.prisma.admin.findMany({
+                    where,
+                    skip,
+                    take: limit,
+                    include: {
+                        user: true,
+                    },
+                    orderBy: { id: 'desc' },
+                }),
+                this.prisma.admin.count({ where }),
+            ]);
+            return {
+                'hydra:member': data.map(item => ({
+                    ...item,
+                    firstName: item.user?.first_name,
+                    lastName: item.user?.last_name,
+                    email: item.user?.email,
+                    isactif: item.user?.isactif,
+                })),
+                'hydra:totalItems': total,
+            };
+        }
+        catch (error) {
+            console.error('[ADMINS_SERVICE] Error fetching admins:', error);
+            return {
+                'hydra:member': [],
+                'hydra:totalItems': 0,
+                'error': error.message
+            };
+        }
     }
 };
 exports.AdminsService = AdminsService;

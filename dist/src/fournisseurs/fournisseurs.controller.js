@@ -19,10 +19,32 @@ let FournisseursController = class FournisseursController {
     constructor(fournisseursService) {
         this.fournisseursService = fournisseursService;
     }
-    findAll(query) {
-        const page = +(query.page || 1);
-        const limit = +(query.itemsPerPage || query.limit || 20);
-        return this.fournisseursService.findAll(page, limit, query);
+    async findAll(query) {
+        try {
+            const page = +(query.page || 1);
+            const limit = +(query.itemsPerPage || query.limit || 20);
+            return await this.fournisseursService.findAll(page, limit, query);
+        }
+        catch (error) {
+            console.error('[FournisseursController.findAll] Error:', error?.message);
+            throw new common_1.InternalServerErrorException({ message: 'Erreur lors de la récupération', detail: error?.message });
+        }
+    }
+    async create(data) {
+        console.log('[FournisseursController.create] Body keys received:', Object.keys(data || {}));
+        try {
+            return await this.fournisseursService.create(data);
+        }
+        catch (error) {
+            console.error('[FournisseursController.create] Error:', error?.message);
+            if (error?.isValidation) {
+                throw new common_1.BadRequestException({ Erreur: error.message });
+            }
+            if (error?.isDb) {
+                throw new common_1.InternalServerErrorException({ Erreur: error.message });
+            }
+            throw new common_1.BadRequestException({ Erreur: error?.message || 'Erreur inconnue' });
+        }
     }
     countByCategorie(query) {
         return this.fournisseursService.countByCategorie(query);
@@ -81,8 +103,15 @@ __decorate([
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], FournisseursController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Post)('fournisseurs'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], FournisseursController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)('count_fournisseur_categorie'),
     __param(0, (0, common_1.Query)()),

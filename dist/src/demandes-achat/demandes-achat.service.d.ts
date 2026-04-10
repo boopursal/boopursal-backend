@@ -3,60 +3,27 @@ export declare class DemandesAchatService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     findAll(query?: any): Promise<{
-        'hydra:member': ({
+        'hydra:member': {
+            pays: string;
+            ville: string;
+            dateExpiration: Date;
             acheteur: {
                 id: number;
-                pays_id: number | null;
-                ville_id: number | null;
                 societe: string;
-                role: string;
-                civilite: string;
-                ice: string | null;
-                fix: string | null;
-                website: string | null;
-                description: string | null;
-                secteur_id: number | null;
-                currency_id: number | null;
-                step: number;
-                is_complet: boolean;
-                code_client: string | null;
-                autre_ville: string | null;
-                autre_currency: string | null;
-                parent2: number | null;
             };
-            currency: {
-                id: number;
-                del: boolean;
-                currency: string;
-            };
-        } & {
+            currency: string;
             id: number;
             del: boolean;
             created: Date;
-            pays: string | null;
-            ville: string | null;
             description: string;
-            currency_id: number | null;
             slug: string;
-            acheteur_id: number | null;
-            team_id: number | null;
             statut: number;
-            reference: string | null;
-            date_expiration: Date | null;
+            reference: string;
+            date_expiration: Date;
             is_public: boolean;
-            nbr_visite: number | null;
-            nbr_share: number | null;
-            date_modification: Date;
-            is_alerted: boolean;
-            is_anonyme: boolean;
             budget: number;
-            motif_rejet_id: number | null;
             titre: string;
-            localisation: string | null;
-            fournisseur_gagne_id: number | null;
-            autre_categories: string | null;
-            is_sent: boolean;
-        })[];
+        }[];
         'hydra:totalItems': number;
     }>;
     private extractId;
@@ -130,8 +97,8 @@ export declare class DemandesAchatService {
         demande_achat_attachement: ({
             attachement: {
                 id: number;
-                type: string | null;
                 url: string | null;
+                type: string | null;
                 file_size: number;
             };
         } & {

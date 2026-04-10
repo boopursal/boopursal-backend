@@ -15,7 +15,13 @@ const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
 let PrismaService = PrismaService_1 = class PrismaService extends client_1.PrismaClient {
     constructor() {
-        super();
+        super({
+            datasources: {
+                db: {
+                    url: process.env.DATABASE_URL,
+                },
+            },
+        });
         this.logger = new common_1.Logger(PrismaService_1.name);
     }
     async onModuleInit() {
@@ -25,7 +31,7 @@ let PrismaService = PrismaService_1 = class PrismaService extends client_1.Prism
             this.logger.log('✅ Connexion MySQL réussie !');
         }
         catch (error) {
-            this.logger.error('❌ Échec de la connexion MySQL', error);
+            this.logger.error('❌ Échec de la connexion MySQL', error.message);
         }
     }
     async onModuleDestroy() {

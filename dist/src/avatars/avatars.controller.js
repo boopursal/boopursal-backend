@@ -40,7 +40,10 @@ __decorate([
     (0, common_1.Post)(),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
         storage: (0, multer_1.diskStorage)({
-            destination: './public/images/avatars',
+            destination: (req, file, cb) => {
+                const path = process.env.NODE_ENV === 'production' ? '/tmp' : './public/images/avatars';
+                cb(null, path);
+            },
             filename: (req, file, cb) => {
                 const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
                 return cb(null, `${randomName}${(0, path_1.extname)(file.originalname)}`);

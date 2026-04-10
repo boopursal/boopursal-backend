@@ -2,6 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AcheteursService {
@@ -189,7 +190,7 @@ export class AcheteursService {
             }
 
             const hashedPassword = await bcrypt.hash(data.password, 10);
-            const confirmationToken = require('crypto').randomBytes(20).toString('hex');
+            const confirmationToken = crypto.randomBytes(20).toString('hex');
 
             const newUser = await this.prisma.user.create({
                 data: {

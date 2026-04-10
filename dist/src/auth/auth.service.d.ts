@@ -18,7 +18,7 @@ export declare class AuthService {
                 type: string;
                 role: string;
                 roles: string[];
-                photoURL: string;
+                photoURL: any;
                 settings: {};
                 shortcuts: any[];
             };
@@ -37,7 +37,7 @@ export declare class AuthService {
             type: string;
             role: string;
             roles: string[];
-            photoURL: string;
+            photoURL: any;
             settings: {};
             shortcuts: any[];
         };

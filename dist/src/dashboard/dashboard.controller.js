@@ -90,53 +90,53 @@ let DashboardController = class DashboardController {
     getDemandeJetons(itemsPerPage) {
         return this.dashboardService.getDemandeJetons(itemsPerPage ? +itemsPerPage : 5);
     }
-    getBadgeDemandes() {
-        return this.dashboardService.getBadgeCount('demandes-admin');
+    async getBadgeDemandes() {
+        return { count: await this.dashboardService.getBadgeCount('demandes-admin') };
     }
-    getBadgeDemandesDevis() {
-        return this.dashboardService.getBadgeCount('demandes-devis');
+    async getBadgeDemandesDevis() {
+        return { count: await this.dashboardService.getBadgeCount('demandes-devis') };
     }
-    getBadgeMessageFournisseur() {
-        return this.dashboardService.getBadgeCount('message-fournisseur');
+    async getBadgeMessageFournisseur() {
+        return { count: await this.dashboardService.getBadgeCount('message-fournisseur') };
     }
-    getBadgeValidationProduits() {
-        return this.dashboardService.getBadgeCount('validation_produits');
+    async getBadgeValidationProduits() {
+        return { count: await this.dashboardService.getBadgeCount('validation_produits') };
     }
-    getBadgeAcheteurs() {
-        return this.dashboardService.getBadgeCount('acheteur-admin');
+    async getBadgeAcheteurs() {
+        return { count: await this.dashboardService.getBadgeCount('acheteur-admin') };
     }
-    getBadgeFournisseursAdmin() {
-        return this.dashboardService.getBadgeCount('fournisseurs-admin');
+    async getBadgeFournisseursAdmin() {
+        return { count: await this.dashboardService.getBadgeCount('fournisseurs-admin') };
     }
-    getBadgeFournisseursCollaps() {
-        return this.dashboardService.getBadgeCount('fournisseurs-collaps');
+    async getBadgeFournisseursCollaps() {
+        return { count: await this.dashboardService.getBadgeCount('fournisseurs-collaps') };
     }
-    getBadgeFournisseursProvisoire() {
-        return this.dashboardService.getBadgeCount('fournisseurs-provisoire');
+    async getBadgeFournisseursProvisoire() {
+        return { count: await this.dashboardService.getBadgeCount('fournisseurs-provisoire') };
     }
-    getBadgeCommandesAbonnements() {
-        return this.dashboardService.getBadgeCount('commandes-abonnements');
+    async getBadgeCommandesAbonnements() {
+        return { count: await this.dashboardService.getBadgeCount('commandes-abonnements') };
     }
-    getBadgeCommandesJetons() {
-        return this.dashboardService.getBadgeCount('commandes-jetons');
+    async getBadgeCommandesJetons() {
+        return { count: await this.dashboardService.getBadgeCount('commandes-jetons') };
     }
-    getBadgeAbonnementFournisseur() {
-        return this.dashboardService.getBadgeCount('abonnement-fournisseur');
+    async getBadgeAbonnementFournisseur() {
+        return { count: await this.dashboardService.getBadgeCount('abonnement-fournisseur') };
     }
-    getBadgePrix() {
-        return this.dashboardService.getBadgeCount('demandes_prix');
+    async getBadgePrix() {
+        return { count: await this.dashboardService.getBadgeCount('demandes_prix') };
     }
-    getBadgeMessages() {
-        return this.dashboardService.getBadgeCount('messages');
+    async getBadgeMessages() {
+        return { count: await this.dashboardService.getBadgeCount('messages') };
     }
-    getBadgeProductDevis() {
-        return this.dashboardService.getBadgeCount('product-devis');
+    async getBadgeProductDevis() {
+        return { count: await this.dashboardService.getBadgeCount('product-devis') };
     }
-    getBadgeFournisseursTentatives() {
-        return this.dashboardService.getBadgeCount('fournisseurs-tentatives');
+    async getBadgeFournisseursTentatives() {
+        return { count: await this.dashboardService.getBadgeCount('fournisseurs-tentatives') };
     }
-    getBadgeAcheteursTentatives() {
-        return this.dashboardService.getBadgeCount('acheteurs-tentatives');
+    async getBadgeAcheteursTentatives() {
+        return { count: await this.dashboardService.getBadgeCount('acheteurs-tentatives') };
     }
     async getGeolocation() {
         try {
@@ -328,97 +328,97 @@ __decorate([
     (0, common_1.Get)('demandes-admin'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeDemandes", null);
 __decorate([
     (0, common_1.Get)('demandes-devis'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeDemandesDevis", null);
 __decorate([
     (0, common_1.Get)('message-fournisseur'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeMessageFournisseur", null);
 __decorate([
     (0, common_1.Get)('validation_produits'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeValidationProduits", null);
 __decorate([
     (0, common_1.Get)('acheteur-admin'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeAcheteurs", null);
 __decorate([
     (0, common_1.Get)('fournisseurs-admin'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeFournisseursAdmin", null);
 __decorate([
     (0, common_1.Get)('fournisseurs-collaps'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeFournisseursCollaps", null);
 __decorate([
     (0, common_1.Get)('fournisseurs-provisoire'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeFournisseursProvisoire", null);
 __decorate([
     (0, common_1.Get)('commandes-abonnements'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeCommandesAbonnements", null);
 __decorate([
     (0, common_1.Get)('commandes-jetons'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeCommandesJetons", null);
 __decorate([
     (0, common_1.Get)('abonnement-fournisseur'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeAbonnementFournisseur", null);
 __decorate([
     (0, common_1.Get)('demandes_prix'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgePrix", null);
 __decorate([
     (0, common_1.Get)('messages'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeMessages", null);
 __decorate([
     (0, common_1.Get)('product-devis'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeProductDevis", null);
 __decorate([
     (0, common_1.Get)('fournisseurs-tentatives'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeFournisseursTentatives", null);
 __decorate([
     (0, common_1.Get)('acheteurs-tentatives'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getBadgeAcheteursTentatives", null);
 __decorate([
     (0, common_1.Get)('geolocation'),

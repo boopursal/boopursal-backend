@@ -5,8 +5,8 @@ export declare class FournisseursController {
     findAll(query: any): Promise<{
         'hydra:member': {
             avatar: {
+                url: string;
                 id: number;
-                url: string | null;
             };
             firstName: string;
             lastName: string;
@@ -125,6 +125,7 @@ export declare class FournisseursController {
             'hydra:previous': string;
         };
     }>;
+    create(data: any): Promise<any>;
     countByCategorie(query: any): Promise<{
         id: number;
         name: string;

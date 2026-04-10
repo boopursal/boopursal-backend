@@ -1,9 +1,15 @@
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 export declare class AcheteursService {
     private readonly prisma;
-    constructor(prisma: PrismaService);
+    private readonly mailService;
+    constructor(prisma: PrismaService, mailService: MailService);
     findAll(page?: number, limit?: number, search?: string): Promise<{
         'hydra:member': {
+            avatar: {
+                url: string;
+                id: number;
+            };
             firstName: string;
             lastName: string;
             email: string;
@@ -11,6 +17,11 @@ export declare class AcheteursService {
             isactif: boolean;
             created: Date;
             user: {
+                avatar: {
+                    id: number;
+                    url: string | null;
+                };
+            } & {
                 id: number;
                 adresse1: string | null;
                 adresse2: string | null;
@@ -75,6 +86,10 @@ export declare class AcheteursService {
         'hydra:totalItems': number;
     }>;
     findOne(id: number): Promise<{
+        avatar: {
+            url: string;
+            id: number;
+        };
         firstName: string;
         lastName: string;
         email: string;
@@ -82,6 +97,11 @@ export declare class AcheteursService {
         isactif: boolean;
         created: Date;
         user: {
+            avatar: {
+                id: number;
+                url: string | null;
+            };
+        } & {
             id: number;
             adresse1: string | null;
             adresse2: string | null;
@@ -195,6 +215,10 @@ export declare class AcheteursService {
         forgot_token: string | null;
     }>;
     update(id: number, data: any): Promise<{
+        avatar: {
+            url: string;
+            id: number;
+        };
         firstName: string;
         lastName: string;
         email: string;
@@ -202,6 +226,11 @@ export declare class AcheteursService {
         isactif: boolean;
         created: Date;
         user: {
+            avatar: {
+                id: number;
+                url: string | null;
+            };
+        } & {
             id: number;
             adresse1: string | null;
             adresse2: string | null;
@@ -297,4 +326,5 @@ export declare class AcheteursService {
         inactifs: number;
         recents: number;
     }>;
+    create(data: any): Promise<any>;
 }

@@ -27,9 +27,9 @@ let PortalService = class PortalService {
             id: s.id,
             name: s.name,
             slug: s.slug,
-            url: s.image_secteur?.url ?? null,
-            image: s.image_secteur?.url ?? null,
-            logo: s.image_secteur?.url ?? null
+            url: s.image_secteur?.url || null,
+            image: s.image_secteur?.url || null,
+            logo: s.image_secteur?.url || null
         }));
     }
     async getParcourirSecteurs() {
@@ -45,47 +45,58 @@ let PortalService = class PortalService {
         });
         return secteurs.map(s => ({
             ...s,
-            url: s.image_secteur?.url ?? null,
-            image: s.image_secteur?.url ?? null,
-            logo: s.image_secteur?.url ?? null
+            url: s.image_secteur?.url || null,
+            image: s.image_secteur?.url || null,
+            logo: s.image_secteur?.url || null
         }));
     }
     async getSelectProduits() {
-        const selections = await this.prisma.select_produit.findMany({
-            include: {
-                produit: {
-                    include: {
-                        fournisseur: true,
-                        currency: true,
-                        image_produit: true,
-                        secteur: true,
-                        sous_secteur: true,
-                        categorie: true,
+        try {
+            const selections = await this.prisma.select_produit.findMany({
+                include: {
+                    produit: {
+                        include: {
+                            fournisseur: {
+                                select: {
+                                    id: true,
+                                    societe: true,
+                                }
+                            },
+                            currency: true,
+                            image_produit: true,
+                            secteur: true,
+                            sous_secteur: true,
+                            categorie: true,
+                        }
                     }
+                },
+                orderBy: { updated: 'desc' },
+                take: 8
+            });
+            const member = selections
+                .filter(s => s.produit !== null)
+                .map(s => ({
+                ...s,
+                produit: {
+                    ...s.produit,
+                    '@id': `/api/produits/${s.produit.id}`,
+                    sousSecteurs: s.produit.sous_secteur || { slug: 'inconnu', name: 'Inconnu' },
+                    categorie: s.produit.categorie || { slug: 'inconnu', name: 'Inconnu' },
+                    featuredImageId: s.produit.image_produit ? {
+                        ...s.produit.image_produit,
+                        url: s.produit.image_produit.url
+                    } : null,
                 }
-            },
-            orderBy: { updated: 'desc' },
-            take: 8
-        });
-        const member = selections
-            .filter(s => s.produit !== null)
-            .map(s => ({
-            ...s,
-            produit: {
-                ...s.produit,
-                '@id': `/api/produits/${s.produit.id}`,
-                sousSecteurs: s.produit.sous_secteur || { slug: 'inconnu', name: 'Inconnu' },
-                categorie: s.produit.categorie || { slug: 'inconnu', name: 'Inconnu' },
-                featuredImageId: s.produit.image_produit ? {
-                    ...s.produit.image_produit,
-                    url: `/images/produits/${s.produit.image_produit.url}`
-                } : null,
-            }
-        }));
-        return {
-            'hydra:member': member,
-            'hydra:totalItems': member.length
-        };
+            }));
+            return {
+                'hydra:member': member,
+                'hydra:totalItems': member.length
+            };
+        }
+        catch (error) {
+            console.error('[PortalService] Error in getSelectProduits:', error);
+            return { 'hydra:member': [], 'hydra:totalItems': 0 };
+        }
     }
     async getParcourirActivites(idOrSlug) {
         const id = parseInt(idOrSlug);

@@ -5,11 +5,11 @@ export declare class DashboardService {
     private getMonthlyDataset;
     getWidget1(year: number): Promise<{
         value: number;
-        dataset: number[];
+        dataset: any[];
     }>;
     getWidget2(year: number): Promise<{
         value: number;
-        dataset: number[];
+        dataset: any[];
     }>;
     getWidget3(year: number): Promise<{
         value: number;
@@ -61,12 +61,17 @@ export declare class DashboardService {
     getWidget13(): Promise<{
         years: number[];
         totalFournisseurs: any;
-        totalAcheteurs: any;
+        totalAcheteurs: number;
         datasets: {
             label: string;
             data: any[];
             fill: string;
         }[];
+    } | {
+        years: any[];
+        datasets: any[];
+        totalFournisseurs?: undefined;
+        totalAcheteurs?: undefined;
     }>;
     getDemandeAbonnements(itemsPerPage?: number): Promise<{
         'hydra:member': ({

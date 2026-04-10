@@ -21,9 +21,7 @@ let AuthService = class AuthService {
     }
     async login(email, password) {
         const cleanEmail = (email || '').trim().toLowerCase();
-        const fs = require('fs');
-        const logToDisk = (msg) => fs.appendFileSync('debug-auth.txt', `\n[${new Date().toISOString()}] ${msg}`);
-        logToDisk(`Tentative: ${cleanEmail}`);
+        console.log(`[AUTH] Tentative de connexion pour : ${cleanEmail}`);
         const user = await this.prisma.user.findFirst({
             where: { email: cleanEmail },
             include: {
@@ -33,13 +31,13 @@ let AuthService = class AuthService {
             },
         });
         if (!user) {
-            logToDisk(` -> KO: Email non trouve (${cleanEmail})`);
+            console.log(`[AUTH] KO: Email non trouvé (${cleanEmail})`);
             throw new common_1.UnauthorizedException('Identifiants invalides');
         }
         const hash = user.password.replace(/^\$2y\$/, '$2a$');
         const isMatch = await bcrypt.compare(password, hash);
         if (!isMatch) {
-            logToDisk(` -> KO: Pass incorrect pour ${cleanEmail}`);
+            console.log(`[AUTH] KO: Mot de passe incorrect pour ${cleanEmail}`);
             throw new common_1.UnauthorizedException('Identifiants invalides');
         }
         let roles = [];
@@ -65,7 +63,7 @@ let AuthService = class AuthService {
             roles = ['ROLE_USER'];
         const type = user.acheteur ? 'acheteur' : user.fournisseur ? 'fournisseur' : 'admin';
         const payload = { sub: user.id, email: user.email, roles: roles, type: type };
-        logToDisk(` -> OK: Succes pour ${cleanEmail}`);
+        console.log(`[AUTH] OK: Succès pour ${cleanEmail}`);
         return {
             token: await this.jwtService.signAsync(payload),
             user: this.formatUser(user, roles, type)
@@ -85,18 +83,22 @@ let AuthService = class AuthService {
                 type: type,
                 role: mainRole,
                 roles: roles,
-                photoURL: user.avatar ? `/images/avatar/${user.avatar.url}` : null,
+                photoURL: user.avatar ? user.avatar.url : null,
                 settings: {},
                 shortcuts: []
             }
         };
     }
     async validateUser(payload) {
-        const fs = require('fs');
-        const logToDisk = (msg) => fs.appendFileSync('debug-auth.txt', `\n[${new Date().toISOString()}] ${msg}`);
-        logToDisk(`AutoLogin pour ID: ${payload.sub} (${payload.email})`);
-        const user = await this.prisma.user.findUnique({
-            where: { id: payload.sub },
+        const userId = payload.sub;
+        const usernameEmail = payload.username || payload.email;
+        console.log(`[AUTH] Validation session - Sub: ${userId}, Username: ${usernameEmail}`);
+        if (!userId && !usernameEmail) {
+            console.log(`[AUTH] Validation KO: Payload invalide (pas de sub/username)`);
+            return null;
+        }
+        const user = await this.prisma.user.findFirst({
+            where: userId ? { id: userId } : { email: usernameEmail },
             include: {
                 acheteur: true,
                 fournisseur: true,
@@ -104,7 +106,7 @@ let AuthService = class AuthService {
             },
         });
         if (!user) {
-            logToDisk(` -> AutoLogin KO: User ${payload.sub} introuvable`);
+            console.log(`[AUTH] Validation KO: Utilisateur introuvable`);
             return null;
         }
         let roles = [];

@@ -19,7 +19,7 @@ export declare class AuthController {
                 type: string;
                 role: string;
                 roles: string[];
-                photoURL: string;
+                photoURL: any;
                 settings: {};
                 shortcuts: any[];
             };
