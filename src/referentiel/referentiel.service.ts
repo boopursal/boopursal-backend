@@ -93,6 +93,8 @@ export class ReferentielService {
                 ...item,
                 '@id': `/api/pays/${item.id}`,
                 '@type': 'Pays',
+                label: item.name,
+                value: `/api/pays/${item.id}`
             })),
             'hydra:totalItems': total,
         };
@@ -238,6 +240,22 @@ export class ReferentielService {
                 ...d,
                 '@id': `/api/durees/${d.id}`,
                 '@type': 'Duree',
+            })),
+            'hydra:totalItems': data.length,
+        };
+    }
+    async findAllCurrencies() {
+        const data = await (this.prisma.currency as any).findMany({
+            where: { del: false },
+            orderBy: { currency: 'asc' }
+        });
+        return {
+            'hydra:member': (data as any[]).map(c => ({
+                ...c,
+                '@id': `/api/currencies/${c.id}`,
+                '@type': 'Currency',
+                label: c.currency,
+                value: `/api/currencies/${c.id}`
             })),
             'hydra:totalItems': data.length,
         };

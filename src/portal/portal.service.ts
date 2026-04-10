@@ -6,21 +6,26 @@ export class PortalService {
     constructor(private readonly prisma: PrismaService) { }
 
     async getFocusCategories() {
-        const secteurs = await this.prisma.secteur.findMany({
-            where: { del: false },
-            include: { image_secteur: true },
-            take: 8,
-            orderBy: { name: 'asc' },
-        });
+        try {
+            const secteurs = await this.prisma.secteur.findMany({
+                where: { del: false },
+                include: { image_secteur: true },
+                take: 8,
+                orderBy: { name: 'asc' },
+            });
 
-        return secteurs.map(s => ({
-            id: s.id,
-            name: s.name,
-            slug: s.slug,
-            url: s.image_secteur?.url || null,
-            image: s.image_secteur?.url || null,
-            logo: s.image_secteur?.url || null
-        }));
+            return secteurs.map(s => ({
+                id: s.id,
+                name: s.name,
+                slug: s.slug,
+                url: s.image_secteur?.url || null,
+                image: s.image_secteur?.url || null,
+                logo: s.image_secteur?.url || null
+            }));
+        } catch (error) {
+            console.error('[PortalService] Error in getFocusCategories:', error);
+            return [];
+        }
     }
 
     async getParcourirSecteurs() {

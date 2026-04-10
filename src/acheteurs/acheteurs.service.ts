@@ -166,6 +166,69 @@ export class AcheteursService {
         };
     }
 
+    async update(id: number, data: any) {
+        console.log(`[AcheteursService.update] ID: ${id}, keys:`, Object.keys(data || {}));
+
+        const getID = (iri: any) => {
+            if (typeof iri === 'string' && iri.startsWith('/api/')) {
+                const parts = iri.split('/');
+                return parseInt(parts[parts.length - 1]);
+            }
+            return iri;
+        };
+
+        const updateData: any = {};
+        if (data.societe !== undefined) updateData.societe = data.societe;
+        if (data.civilite !== undefined) updateData.civilite = data.civilite;
+        if (data.ice !== undefined) updateData.ice = data.ice;
+        if (data.fix !== undefined) updateData.fix = data.fix;
+        if (data.website !== undefined) updateData.website = data.website;
+        if (data.description !== undefined) updateData.description = data.description;
+        if (data.step !== undefined) updateData.step = +data.step;
+        if (data.is_complet !== undefined) updateData.is_complet = !!data.is_complet;
+        if (data.autreVille !== undefined) updateData.autre_ville = data.autreVille;
+        if (data.autreCurrency !== undefined) updateData.autre_currency = data.autreCurrency;
+        
+        if (data.pays !== undefined) {
+            const paysId = getID(data.pays);
+            if (paysId) updateData.pays = { connect: { id: paysId } };
+        }
+        if (data.ville !== undefined) {
+            const villeId = getID(data.ville);
+            if (villeId) updateData.ville = { connect: { id: villeId } };
+        }
+        if (data.currency !== undefined) {
+            const curId = getID(data.currency);
+            if (curId) updateData.currency = { connect: { id: curId } };
+        }
+        if (data.secteur !== undefined) {
+            const sectId = getID(data.secteur);
+            if (sectId) updateData.secteur = { connect: { id: sectId } };
+        }
+
+        const updated = await this.prisma.acheteur.update({
+            where: { id },
+            data: updateData,
+            include: { user: true }
+        });
+
+        // Sync with User table if redirect or roles provided
+        if (data.redirect || data.roles) {
+            const userUpdate: any = {};
+            if (data.redirect) userUpdate.redirect = data.redirect;
+            if (data.roles) {
+                userUpdate.roles = Array.isArray(data.roles) ? JSON.stringify(data.roles) : data.roles;
+            }
+            
+            await this.prisma.user.update({
+                where: { id },
+                data: userUpdate
+            });
+        }
+
+        return updated;
+    }
+
     async create(data: any) {
         console.log('[AcheteursService.create] Incoming data keys:', Object.keys(data || {}));
         console.log('[AcheteursService.create] Body email:', data?.email, '| has password:', !!data?.password);
