@@ -30,6 +30,7 @@ import { DemandeDevisModule } from './demande-devis/demande-devis.module';
 import { CommercialsModule } from './commercials/commercials.module';
 import { JetonsModule } from './jetons/jetons.module';
 import { MailModule } from './mail/mail.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { MailModule } from './mail/mail.module';
     CommercialsModule,
     JetonsModule,
     MailModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

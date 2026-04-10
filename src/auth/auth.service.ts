@@ -58,13 +58,16 @@ export class AuthService {
         if (!roles.length) roles = ['ROLE_USER'];
 
         const type = user.acheteur ? 'acheteur' : user.fournisseur ? 'fournisseur' : 'admin';
-        const payload = { sub: user.id, email: user.email, roles: roles, type: type };
+        return this.loginWithUser(user, roles, type);
+    }
 
-        console.log(`[AUTH] OK: Succès pour ${cleanEmail}`);
+    async loginWithUser(user: any, roles: string[], type?: string) {
+        const finalType = type || (user.acheteur ? 'acheteur' : user.fournisseur ? 'fournisseur' : 'admin');
+        const payload = { sub: user.id, email: user.email, roles: roles, type: finalType };
 
         return {
             token: await this.jwtService.signAsync(payload),
-            user: this.formatUser(user, roles, type)
+            user: this.formatUser(user, roles, finalType)
         };
     }
 
