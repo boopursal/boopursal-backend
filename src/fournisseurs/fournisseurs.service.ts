@@ -579,6 +579,30 @@ export class FournisseursService {
             include: { user: true }
         });
 
+        // 🟢 NOUVEAU: Gestion des catégories (Produits/Catalogue)
+        if (data.categories !== undefined && Array.isArray(data.categories)) {
+            console.log(`[FournisseursService.update] Mise à jour des catégories pour ID: ${id}`);
+            const categoryIds = data.categories.map(getID);
+            await this.prisma.fournisseur_categories.deleteMany({
+                where: { fournisseur_id: id }
+            });
+
+            if (categoryIds.length > 0) {
+                await this.prisma.fournisseur_categories.createMany({
+                    data: categoryIds.map(catId => ({
+                        fournisseur_id: id,
+                        categorie_id: catId
+                    }))
+                });
+                
+                // Si on a des catégories, le profil est considéré comme complet
+                await this.prisma.fournisseur.update({
+                    where: { id },
+                    data: { is_complet: true, step: 3 }
+                });
+            }
+        }
+
         // Sync with User table if redirect or roles provided
         if (data.redirect || data.roles) {
             const userUpdate: any = {};
