@@ -95,6 +95,18 @@ export class ReferentielController {
         return this.referentielService.createVille(data.name, pays_id);
     }
 
+    // ===== CATEGORIES =====
+    @Get('categories')
+    findAllCategories(
+        @Query('page') page = '1',
+        @Query('limit') limit = '100',
+        @Query('pagination') pagination?: string,
+        @Query('name') name?: string,
+    ) {
+        const lim = pagination === 'false' ? 9999 : +limit;
+        return this.referentielService.findAllCategories(+page, lim, name);
+    }
+
     // ===== ZONE COMMERCIALES =====
     @Get('zone_commercials')
     findAllZoneCommercials(

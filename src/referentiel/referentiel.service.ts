@@ -208,7 +208,38 @@ export class ReferentielService {
     }
 
     // ===== ZONE COMPERCIALES =====
-    async findAllZoneCommercials(page = 1, limit = 200, name?: string) {
+    async findAllCategories(page: number, limit: number, name?: string) {
+        try {
+            const skip = (page - 1) * limit;
+            const where: any = { del: false };
+            if (name) {
+                where.name = { contains: name };
+            }
+            const [data, total] = await Promise.all([
+                this.prisma.categorie.findMany({
+                    where,
+                    skip,
+                    take: limit,
+                    orderBy: { name: 'asc' },
+                }),
+                this.prisma.categorie.count({ where }),
+            ]);
+
+            return {
+                'hydra:member': data.map(c => ({
+                    ...c,
+                    '@id': `/api/categories/${c.id}`,
+                    '@type': 'Categorie'
+                })),
+                'hydra:totalItems': total,
+            };
+        } catch (error) {
+            console.error("[REFERENTIEL SERVICE] Error in findAllCategories:", error);
+            return { 'hydra:member': [], 'hydra:totalItems': 0 };
+        }
+    }
+
+    async findAllZoneCommercials(page: number, limit: number, name?: string) {
         const skip = (page - 1) * limit;
         const where: any = {};
         if (name) where.name = { contains: name };
