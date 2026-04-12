@@ -310,73 +310,7 @@ export class FournisseursService {
         };
     }
 
-    async update(id: number, data: any) {
-        const getID = (iri: any) => {
-            if (typeof iri === 'string' && iri.startsWith('/api/')) {
-                const parts = iri.split('/');
-                return parseInt(parts[parts.length - 1]);
-            }
-            return iri;
-        };
-
-        const updateData: any = {};
-        if (data.societe !== undefined) updateData.societe = data.societe;
-        if (data.civilite !== undefined) updateData.civilite = data.civilite;
-        if (data.fix !== undefined) updateData.fix = data.fix;
-        if (data.website !== undefined) updateData.website = data.website;
-        if (data.description !== undefined) updateData.description = data.description;
-        if (data.ice !== undefined) updateData.ice = data.ice;
-        if (data.phone !== undefined) {
-            await this.prisma.user.update({
-                where: { id },
-                data: { phone: data.phone }
-            });
-        }
-
-        if (data.pays !== undefined) updateData.pays_id = getID(data.pays);
-        if (data.ville !== undefined) updateData.ville_id = getID(data.ville);
-        if (data.currency !== undefined) updateData.currency_id = getID(data.currency);
-
-        if (data.categories !== undefined && Array.isArray(data.categories)) {
-            const categoryIds = data.categories.map(getID);
-            await this.prisma.fournisseur_categories.deleteMany({
-                where: { fournisseur_id: id }
-            });
-
-            if (categoryIds.length > 0) {
-                await this.prisma.fournisseur_categories.createMany({
-                    data: categoryIds.map(catId => ({
-                        fournisseur_id: id,
-                        categorie_id: catId
-                    }))
-                });
-            }
-        }
-
-        const updated = await this.prisma.fournisseur.update({
-            where: { id },
-            data: updateData,
-            include: {
-                user: true,
-                pays: true,
-                ville: true,
-                fournisseur_categories: {
-                    include: {
-                        categorie: true
-                    }
-                }
-            }
-        });
-
-        return {
-            ...updated,
-            '@id': `/api/fournisseurs/${updated.id}`,
-            firstName: updated.user?.first_name,
-            lastName: updated.user?.last_name,
-            email: updated.user?.email,
-            phone: updated.user?.phone,
-        };
-    }
+    // La méthode update complète est définie plus bas (ligne 606)
 
     async countByCategorie(query: any) {
         const { secteur, sousSecteur, categorie, pays, ville, q } = query;
