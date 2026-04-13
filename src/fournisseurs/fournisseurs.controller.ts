@@ -58,7 +58,7 @@ export class FournisseursController {
     async getFreeProducts() {
         try {
             const products = await prisma.produit.findMany({
-                where: { gratuit: true, del: false },
+                where: { free: true, del: false },
                 take: 20,
                 orderBy: { created: 'desc' },
                 select: { id: true, titre: true, description: true }

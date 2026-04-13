@@ -98,55 +98,6 @@ export class AcheteursService {
         });
     }
 
-    async update(id: number, data: any) {
-        const getID = (iri: any) => {
-            if (typeof iri === 'string' && iri.startsWith('/api/')) {
-                const parts = iri.split('/');
-                return parseInt(parts[parts.length - 1]);
-            }
-            if (iri && typeof iri === 'object' && iri.id) return iri.id;
-            if (iri && typeof iri === 'object' && iri.value) return getID(iri.value);
-            return iri;
-        };
-
-        const updateData: any = {};
-        if (data.societe !== undefined) updateData.societe = data.societe;
-        if (data.ice !== undefined) updateData.ice = data.ice;
-        if (data.fix !== undefined) updateData.fix = data.fix;
-        if (data.website !== undefined) updateData.website = data.website;
-        if (data.adresse1 !== undefined) updateData.adresse1 = data.adresse1;
-        if (data.adresse2 !== undefined) updateData.adresse2 = data.adresse2;
-        if (data.codepostal !== undefined) updateData.codepostal = parseInt(data.codepostal);
-        if (data.description !== undefined) updateData.description = data.description;
-
-        if (data.pays) updateData.pays_id = getID(data.pays);
-        if (data.ville) updateData.ville_id = getID(data.ville);
-        if (data.secteur) updateData.secteur_id = getID(data.secteur);
-
-        const acheteur = await this.prisma.acheteur.update({
-            where: { id },
-            data: updateData,
-            include: { user: true }
-        });
-
-        // Update user info if provided
-        if (data.firstName || data.lastName || data.email || data.phone || data.civilite) {
-            const userUpdate: any = {};
-            if (data.firstName) userUpdate.first_name = data.firstName;
-            if (data.lastName) userUpdate.last_name = data.lastName;
-            if (data.email) userUpdate.email = data.email;
-            if (data.phone) userUpdate.phone = data.phone;
-            if (data.civilite) userUpdate.civilite = data.civilite;
-
-            await this.prisma.user.update({
-                where: { id },
-                data: userUpdate
-            });
-        }
-
-        return this.findOne(id);
-    }
-
     async getStats() {
         const [total, actifs, inactifs] = await Promise.all([
             this.prisma.acheteur.count(),
@@ -189,6 +140,11 @@ export class AcheteursService {
         if (data.autreVille !== undefined) updateData.autre_ville = data.autreVille;
         if (data.autreCurrency !== undefined) updateData.autre_currency = data.autreCurrency;
         
+        // Merged fields from the first update function
+        if (data.adresse1 !== undefined) updateData.adresse1 = data.adresse1;
+        if (data.adresse2 !== undefined) updateData.adresse2 = data.adresse2;
+        if (data.codepostal !== undefined) updateData.codepostal = parseInt(data.codepostal);
+        
         if (data.pays !== undefined) {
             const paysId = getID(data.pays);
             if (paysId) updateData.pays = { connect: { id: paysId } };
@@ -212,13 +168,18 @@ export class AcheteursService {
             include: { user: true }
         });
 
-        // Sync with User table if redirect or roles provided
-        if (data.redirect || data.roles) {
+        // Sync with User table if redirect, roles, or info provided
+        if (data.redirect || data.roles || data.firstName || data.lastName || data.email || data.phone || data.civilite) {
             const userUpdate: any = {};
             if (data.redirect) userUpdate.redirect = data.redirect;
             if (data.roles) {
                 userUpdate.roles = Array.isArray(data.roles) ? JSON.stringify(data.roles) : data.roles;
             }
+            if (data.firstName) userUpdate.first_name = data.firstName;
+            if (data.lastName) userUpdate.last_name = data.lastName;
+            if (data.email) userUpdate.email = data.email;
+            if (data.phone) userUpdate.phone = data.phone;
+            if (data.civilite) userUpdate.civilite = data.civilite;
             
             await this.prisma.user.update({
                 where: { id },
@@ -226,7 +187,7 @@ export class AcheteursService {
             });
         }
 
-        return updated;
+        return this.findOne(id);
     }
 
     async create(data: any) {
