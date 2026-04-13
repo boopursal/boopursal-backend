@@ -22,6 +22,23 @@ export class SousSecteursService {
         return this.mapToHydra(ss);
     }
 
+    async findCategories(id: number) {
+        const categories = await this.prisma.categorie_sous_secteur.findMany({
+            where: { sous_secteur_id: id },
+            include: { categorie: true },
+        });
+
+        const data = categories.map(css => css.categorie).filter(c => !c.del);
+        return {
+            'hydra:member': data.map(c => ({
+                ...c,
+                '@id': `/api/categories/${c.id}`,
+                '@type': 'Categorie',
+            })),
+            'hydra:totalItems': data.length,
+        };
+    }
+
     async findBySlug(slug: string) {
         const ss = await this.prisma.sous_secteur.findUnique({
             where: { slug },

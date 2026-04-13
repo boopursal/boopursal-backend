@@ -24,6 +24,12 @@ export class SousSecteursController {
         return this.sousSecteursService.findBySlug(idOrSlug);
     }
 
+    @Get(':id/categories')
+    findCategories(@Param('id') idOrSlug: string) {
+        const id = parseInt(idOrSlug.split('-')[0]);
+        return this.sousSecteursService.findCategories(id);
+    }
+
     @Post()
     create(@Body() data: any) {
         return this.sousSecteursService.create(data);

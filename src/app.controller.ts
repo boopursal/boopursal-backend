@@ -14,6 +14,12 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  @Get('check_activite_used')
+  checkActiviteUsed() {
+      // Legacy endpoint requested by frontend to check if an activity is used by a colleague
+      return false;
+  }
+
   @Get('health')
   async health() {
     try {

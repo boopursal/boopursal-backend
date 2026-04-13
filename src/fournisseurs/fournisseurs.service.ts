@@ -178,8 +178,10 @@ export class FournisseursService {
                         categorie: true
                     }
                 },
-                abonnement: true,
-                produit: true
+                abonnement: {
+                    take: 1,
+                    orderBy: { expired: 'desc' }
+                }
             },
         });
 
