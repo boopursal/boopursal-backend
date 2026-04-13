@@ -617,7 +617,8 @@ export class FournisseursService {
             });
         }
 
-        return updated;
+        // Final sync and return fresh data
+        return this.findOne(id);
     }
 
     async create(data: any) {

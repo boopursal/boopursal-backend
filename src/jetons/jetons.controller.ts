@@ -14,20 +14,20 @@ export class JetonsController {
         return this.jetonsService.findAll(+page, +limit, search);
     }
 
-    @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id: number) {
-        return this.jetonsService.findOne(id);
-    }
-
+    // IMPORTANT: Named routes must come BEFORE :id to avoid NestJS route conflict
     @Get('fournisseur')
     findForFournisseur() {
-        // En attendant une implémentation réelle filtrée par user
         return { 'hydra:member': [], 'hydra:totalItems': 0 };
     }
 
-    // Support de la typo présente dans le frontend
+    // Support de la typo présente dans le frontend (founrisseur au lieu de fournisseur)
     @Get('founrisseur')
     findForFounrisseur() {
         return { 'hydra:member': [], 'hydra:totalItems': 0 };
+    }
+
+    @Get(':id')
+    findOne(@Param('id', ParseIntPipe) id: number) {
+        return this.jetonsService.findOne(id);
     }
 }
