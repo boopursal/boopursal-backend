@@ -14,9 +14,15 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  // Ouverture totale du CORS
+  // Origines autorisées explicitement (obligatoire quand credentials: true)
   app.enableCors({
-    origin: '*',
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'https://boopursal.netlify.app',
+      'https://boopursal.com',
+      'https://www.boopursal.com',
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization, X-Requested-With',
     credentials: true,
@@ -43,3 +49,15 @@ export default async (req: any, res: any) => {
   const handler = await bootstrap();
   return handler(req, res);
 };
+
+// Démarrer le serveur en local si l'on n'est pas sur Vercel
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  bootstrap().then((appInstance) => {
+    // Note: cachedApp holds the Express instance, so we actually need to grab the original Nest app to listen,
+    // or we can just listen on the express instance.
+    const port = process.env.PORT || 3002;
+    appInstance.listen(port, () => {
+      console.log(`[Local API] Server is running on http://localhost:${port}`);
+    });
+  });
+}
