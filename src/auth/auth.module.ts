@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
     imports: [
@@ -12,6 +13,7 @@ import { JwtStrategy } from './jwt.strategy';
             secret: process.env.JWT_SECRET || 'boo-secret-99-super-long-key-for-dev',
             signOptions: { expiresIn: '8h' },
         }),
+        MailModule,
     ],
     controllers: [AuthController],
     providers: [AuthService, JwtStrategy],

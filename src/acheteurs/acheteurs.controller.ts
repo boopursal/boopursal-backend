@@ -81,6 +81,20 @@ export class AcheteursController {
      * PATCH /api/acheteurs/:id/statut
      * Activer / désactiver un acheteur
      */
+    @Get(':id/blacklistes')
+    async findBlacklistes(@Param('id', ParseIntPipe) id: number) {
+        return this.acheteursService.findBlacklistes(id);
+    }
+
+    @Get(':id/demandes')
+    async findDemandes(
+        @Param('id', ParseIntPipe) id: number,
+        @Query('page') page = '1',
+        @Query('limit') limit = '10'
+    ) {
+        return this.acheteursService.findDemandes(id, +page, +limit);
+    }
+
     @Patch(':id/statut')
     @HttpCode(HttpStatus.OK)
     toggleStatut(

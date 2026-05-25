@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, ParseIntPipe, Patch, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseIntPipe, Patch, Body, UseGuards, Post, Put } from '@nestjs/common';
 import { AbonnementsService } from './abonnements.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -24,5 +24,17 @@ export class AbonnementsController {
     @Get(':id')
     findOne(@Param('id', ParseIntPipe) id: number) {
         return this.abonnementsService.findOne(id);
+    }
+
+    @Post()
+    async create(@Body() data: any) {
+        return this.abonnementsService.create(data);
+    }
+
+    @Put(':id')
+    async update(@Param('id') id: string, @Body() data: any) {
+        const abonnementId = parseInt(id.split('-')[0]);
+        if (isNaN(abonnementId)) return null;
+        return this.abonnementsService.update(abonnementId, data);
     }
 }

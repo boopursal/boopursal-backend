@@ -499,7 +499,7 @@ export class DashboardService {
     }
 
     // Badge counts (navigation badges)
-    async getBadgeCount(badge: string): Promise<number> {
+    async getBadgeCount(badge: string, userId?: number): Promise<number> {
         try {
             switch (badge) {
                 case 'demandes-admin':
@@ -528,12 +528,45 @@ export class DashboardService {
                     ]);
                     return da + dj;
                 }
-                case 'demandes_prix':
-                    return this.prisma.demande_achat.count({ where: { del: false, statut: 0 } });
+                case 'demandes_prix': {
+                    if (!userId) return 0;
+                    // Count RFQs that match supplier's categories
+                    return this.prisma.demande_achat.count({
+                        where: {
+                            del: false,
+                            statut: 0,
+                            demande_ha_categories: {
+                                some: {
+                                    categorie: {
+                                        fournisseur_categories: {
+                                            some: {
+                                                fournisseur_id: userId
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
                 case 'messages':
-                    return this.prisma.contact_fournisseur.count({ where: { is_read: false, del: false } });
+                    if (!userId) return 0;
+                    return this.prisma.contact_fournisseur.count({ 
+                        where: { 
+                            fournisseur_id: userId,
+                            is_read: false, 
+                            del: false 
+                        } 
+                    });
                 case 'product-devis':
-                    return this.prisma.demande_devis.count({ where: { del: false, is_read: false } });
+                    if (!userId) return 0;
+                    return this.prisma.demande_devis.count({ 
+                        where: { 
+                            fournisseur_id: userId,
+                            del: false, 
+                            is_read: false 
+                        } 
+                    });
                 case 'fournisseurs-tentatives':
                     return this.prisma.fournisseur_provisoire.count({ where: { type: 0 } });
                 case 'acheteurs-tentatives':

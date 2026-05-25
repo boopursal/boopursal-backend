@@ -32,6 +32,14 @@ import { JetonsModule } from './jetons/jetons.module';
 import { MailModule } from './mail/mail.module';
 import { UsersModule } from './users/users.module';
 
+import { MediaModule } from './media/media.module';
+import { DemandeJetonsModule } from './demande-jetons/demande-jetons.module';
+import { ZoneCommercialsModule } from './zone-commercials/zone-commercials.module';
+import { PersonnelsModule } from './personnels/personnels.module';
+import { DemandeAbonnementsModule } from './demande-abonnements/demande-abonnements.module';
+import { OffresModule } from './offres/offres.module';
+import { BlackListesModule } from './black-listes/black-listes.module';
+
 @Module({
   imports: [
     PrismaModule,
@@ -50,6 +58,7 @@ import { UsersModule } from './users/users.module';
     ReferentielModule,
     DashboardModule,
     AvatarsModule,
+    MediaModule,
     AdminsModule,
     ContactFournisseursModule,
     FaqModule,
@@ -63,6 +72,12 @@ import { UsersModule } from './users/users.module';
     JetonsModule,
     MailModule,
     UsersModule,
+    DemandeJetonsModule,
+    ZoneCommercialsModule,
+    PersonnelsModule,
+    DemandeAbonnementsModule,
+    OffresModule,
+    BlackListesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

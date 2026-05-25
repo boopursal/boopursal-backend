@@ -55,4 +55,25 @@ export class AdminsService {
             };
         }
     }
+
+    async create(data: any) {
+        try {
+            return await this.prisma.admin.create({ data });
+        } catch (error) {
+            console.error('[ADMINS_SERVICE] Error creating admin:', error);
+            throw error;
+        }
+    }
+
+    async update(id: number, data: any) {
+        try {
+            return await this.prisma.admin.update({
+                where: { id },
+                data
+            });
+        } catch (error) {
+            console.error('[ADMINS_SERVICE] Error updating admin:', error);
+            throw error;
+        }
+    }
 }

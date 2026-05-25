@@ -153,4 +153,16 @@ export class CommercialsService {
             })),
         };
     }
+
+    async update(id: number, data: any) {
+        try {
+            return await this.prisma.commercial.update({
+                where: { id },
+                data,
+            });
+        } catch (error) {
+            console.error('[COMMERCIALS_SERVICE] Error updating:', error);
+            throw error;
+        }
+    }
 }

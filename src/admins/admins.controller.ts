@@ -1,4 +1,4 @@
-import { Controller, Get, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Query, ParseIntPipe, Post, Put, Body, Param } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 
 @Controller('admins')
@@ -12,5 +12,17 @@ export class AdminsController {
         @Query('search') search?: string,
     ) {
         return this.adminsService.findAll(+page, +limit, search);
+    }
+
+    @Post()
+    async create(@Body() data: any) {
+        return this.adminsService.create(data);
+    }
+
+    @Put(':id')
+    async update(@Param('id') id: string, @Body() data: any) {
+        const adminId = parseInt(id.split('-')[0]);
+        if (isNaN(adminId)) return null;
+        return this.adminsService.update(adminId, data);
     }
 }

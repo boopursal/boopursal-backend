@@ -138,74 +138,88 @@ export class DashboardController {
     }
 
     // Badge navigation endpoints
+    @UseGuards(AuthGuard('jwt'))
     @Get('demandes-admin')
     async getBadgeDemandes() {
         return { count: await this.dashboardService.getBadgeCount('demandes-admin') };
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('demandes-devis')
     async getBadgeDemandesDevis() {
         return { count: await this.dashboardService.getBadgeCount('demandes-devis') };
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('message-fournisseur')
     async getBadgeMessageFournisseur() {
         return { count: await this.dashboardService.getBadgeCount('message-fournisseur') };
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('validation_produits')
     async getBadgeValidationProduits() {
         return { count: await this.dashboardService.getBadgeCount('validation_produits') };
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('acheteur-admin')
     async getBadgeAcheteurs() {
         return { count: await this.dashboardService.getBadgeCount('acheteur-admin') };
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('fournisseurs-admin')
     async getBadgeFournisseursAdmin() {
         return { count: await this.dashboardService.getBadgeCount('fournisseurs-admin') };
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('fournisseurs-collaps')
     async getBadgeFournisseursCollaps() {
         return { count: await this.dashboardService.getBadgeCount('fournisseurs-collaps') };
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('fournisseurs-provisoire')
     async getBadgeFournisseursProvisoire() {
         return { count: await this.dashboardService.getBadgeCount('fournisseurs-provisoire') };
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('commandes-abonnements')
     async getBadgeCommandesAbonnements() {
         return { count: await this.dashboardService.getBadgeCount('commandes-abonnements') };
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('commandes-jetons')
     async getBadgeCommandesJetons() {
         return { count: await this.dashboardService.getBadgeCount('commandes-jetons') };
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('abonnement-fournisseur')
     async getBadgeAbonnementFournisseur() {
         return { count: await this.dashboardService.getBadgeCount('abonnement-fournisseur') };
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('demandes_prix')
-    async getBadgePrix() {
-        return { count: await this.dashboardService.getBadgeCount('demandes_prix') };
+    async getBadgePrix(@Req() req) {
+        return { count: await this.dashboardService.getBadgeCount('demandes_prix', req.user.data.id) };
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('messages')
-    async getBadgeMessages() {
-        return { count: await this.dashboardService.getBadgeCount('messages') };
+    async getBadgeMessages(@Req() req) {
+        return { count: await this.dashboardService.getBadgeCount('messages', req.user.data.id) };
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get('product-devis')
-    async getBadgeProductDevis() {
-        return { count: await this.dashboardService.getBadgeCount('product-devis') };
+    async getBadgeProductDevis(@Req() req) {
+        return { count: await this.dashboardService.getBadgeCount('product-devis', req.user.data.id) };
     }
 
     @Get('fournisseurs-tentatives')

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Put, Body, ParseIntPipe } from '@nestjs/common';
 import { CommercialsService } from './commercials.service';
 
 @Controller('commercials')
@@ -17,5 +17,10 @@ export class CommercialsController {
     @Get(':id')
     findOne(@Param('id') id: string) {
         return this.commercialsService.findOne(+id);
+    }
+
+    @Put(':id')
+    update(@Param('id', ParseIntPipe) id: number, @Body() data: any) {
+        return this.commercialsService.update(id, data);
     }
 }

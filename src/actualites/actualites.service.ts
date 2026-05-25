@@ -37,7 +37,12 @@ export class ActualitesService {
             return {
                 'hydra:member': data.map(item => ({
                     ...item,
-                    image: item.actualite_image ? { url: item.actualite_image.url } : null
+                    '@id': `/api/actualites/${item.id}`,
+                    image: item.actualite_image ? {
+                        ...item.actualite_image,
+                        '@id': `/api/actualite_images/${item.actualite_image.id}`,
+                        url: item.actualite_image.url
+                    } : null
                 })),
                 'hydra:totalItems': total,
             };
@@ -56,7 +61,12 @@ export class ActualitesService {
         if (!item) return null;
         return {
             ...item,
-            image: item.actualite_image ? { url: item.actualite_image.url } : null
+            '@id': `/api/actualites/${item.id}`,
+            image: item.actualite_image ? {
+                ...item.actualite_image,
+                '@id': `/api/actualite_images/${item.actualite_image.id}`,
+                url: item.actualite_image.url
+            } : null
         };
     }
 
@@ -68,7 +78,12 @@ export class ActualitesService {
         if (!item) return null;
         return {
             ...item,
-            image: item.actualite_image ? { url: item.actualite_image.url } : null
+            '@id': `/api/actualites/${item.id}`,
+            image: item.actualite_image ? {
+                ...item.actualite_image,
+                '@id': `/api/actualite_images/${item.actualite_image.id}`,
+                url: item.actualite_image.url
+            } : null
         };
     }
 }

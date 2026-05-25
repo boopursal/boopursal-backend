@@ -2,12 +2,14 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         private prisma: PrismaService,
         private jwtService: JwtService,
+        private mailService: MailService,
     ) { }
 
     async login(email: string, password: string) {
@@ -151,5 +153,51 @@ export class AuthService {
 
         const type = user.acheteur ? 'acheteur' : user.fournisseur ? 'fournisseur' : 'admin';
         return this.formatUser(user, roles, type);
+    }
+
+    async requestForgot(email: string) {
+        if (!email) return { success: true };
+        const cleanEmail = email.trim().toLowerCase();
+        const user = await this.prisma.user.findFirst({ where: { email: cleanEmail } });
+        
+        if (!user) {
+            return { success: true }; // Security: don't reveal if user exists
+        }
+
+        const crypto = require('crypto');
+        const token = crypto.randomBytes(20).toString('hex');
+
+        await this.prisma.user.update({
+            where: { id: user.id },
+            data: { forgot_token: token, password_reset_date: new Date() }
+        });
+
+        // Envoi de l'email de réinitialisation
+        await this.mailService.sendForgotPasswordToken(cleanEmail, token);
+        console.log(`[AUTH] Forgot password email envoyé à ${cleanEmail}`);
+
+        return { success: true };
+    }
+
+    async resetPassword(token: string, newPasswordStr: string) {
+        if (!token || !newPasswordStr) return { error: 'Token ou mot de passe manquant' };
+
+        const user = await this.prisma.user.findFirst({ where: { forgot_token: token } });
+        if (!user) {
+            throw new UnauthorizedException('Token invalide ou expiré');
+        }
+
+        const hashedPassword = await bcrypt.hash(newPasswordStr, 10);
+
+        await this.prisma.user.update({
+            where: { id: user.id },
+            data: {
+                password: hashedPassword,
+                forgot_token: null,
+                password_reset_date: null
+            }
+        });
+
+        return { success: true };
     }
 }

@@ -41,8 +41,10 @@ export class AcheteursService {
 
         const flattenedData = data.map(item => ({
             ...item,
+            '@id': `/api/acheteurs/${item.id}`,
             avatar: item.user?.avatar ? {
                 ...item.user.avatar,
+                '@id': `/api/avatars/${item.user.avatar.id}`,
                 url: item.user.avatar.url
             } : null,
             firstName: item.user?.first_name,
@@ -51,6 +53,18 @@ export class AcheteursService {
             phone: item.user?.phone,
             isactif: item.user?.isactif,
             created: item.user?.created,
+            ville: item.ville ? {
+                ...item.ville,
+                '@id': `/api/villes/${item.ville.id}`
+            } : null,
+            pays: item.pays ? {
+                ...item.pays,
+                '@id': `/api/pays/${item.pays.id}`
+            } : null,
+            secteur: item.secteur ? {
+                ...item.secteur,
+                '@id': `/api/secteurs/${item.secteur.id}`
+            } : null,
         }));
 
         return {
@@ -78,8 +92,10 @@ export class AcheteursService {
 
         return {
             ...item,
+            '@id': `/api/acheteurs/${item.id}`,
             avatar: item.user?.avatar ? {
                 ...item.user.avatar,
+                '@id': `/api/avatars/${item.user.avatar.id}`,
                 url: item.user.avatar.url
             } : null,
             firstName: item.user?.first_name,
@@ -88,6 +104,18 @@ export class AcheteursService {
             phone: item.user?.phone,
             isactif: item.user?.isactif,
             created: item.user?.created,
+            ville: item.ville ? {
+                ...item.ville,
+                '@id': `/api/villes/${item.ville.id}`
+            } : null,
+            pays: item.pays ? {
+                ...item.pays,
+                '@id': `/api/pays/${item.pays.id}`
+            } : null,
+            secteur: item.secteur ? {
+                ...item.secteur,
+                '@id': `/api/secteurs/${item.secteur.id}`
+            } : null,
         };
     }
 
@@ -268,5 +296,59 @@ export class AcheteursService {
             dbErr.isDb = true;
             throw dbErr;
         }
+    }
+
+    async findBlacklistes(id: number) {
+        const blacklistes = await this.prisma.black_listes.findMany({
+            where: { acheteur_id: id },
+            include: { fournisseur: { include: { user: true } } },
+            orderBy: { created: 'desc' },
+        });
+
+        return {
+            'hydra:member': blacklistes.map(bl => ({
+                '@id': `/api/black_listes/${bl.id}`,
+                '@type': 'BlackListe',
+                id: bl.id,
+                raison: bl.raison,
+                created: bl.created,
+                fournisseur: bl.fournisseur ? {
+                    '@id': `/api/fournisseurs/${bl.fournisseur.id}`,
+                    id: bl.fournisseur.id,
+                    societe: bl.fournisseur.societe,
+                    email: bl.fournisseur.user?.email,
+                } : null,
+            })),
+            'hydra:totalItems': blacklistes.length,
+        };
+    }
+
+    async findDemandes(id: number, page = 1, limit = 10) {
+        const skip = (page - 1) * limit;
+
+        const [data, total] = await Promise.all([
+            this.prisma.demande_achat.findMany({
+                where: { acheteur_id: id },
+                skip,
+                take: limit,
+                orderBy: { created: 'desc' },
+            }),
+            this.prisma.demande_achat.count({
+                where: { acheteur_id: id },
+            }),
+        ]);
+
+        return {
+            'hydra:member': data.map(d => ({
+                '@id': `/api/demande_achats/${d.id}`,
+                '@type': 'DemandeAchat',
+                id: d.id,
+                reference: d.reference,
+                titre: d.titre,
+                statut: d.statut,
+                created: d.created,
+            })),
+            'hydra:totalItems': total,
+        };
     }
 }
