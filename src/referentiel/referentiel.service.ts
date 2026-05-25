@@ -134,6 +134,18 @@ export class ReferentielService {
         };
     }
 
+    async updatePays(id: number, name: string) {
+        try {
+            return await (this.prisma.pays as any).update({
+                where: { id },
+                data: { name }
+            });
+        } catch (error) {
+            console.error('[ReferentielService] Error updating pays:', error);
+            throw error;
+        }
+    }
+
     // ===== VILLES =====
     async findAllVilles(page = 1, limit = 200, name?: string, paysIri?: string) {
         try {
@@ -207,6 +219,22 @@ export class ReferentielService {
         };
     }
 
+    async updateVille(id: number, name?: string, paysId?: number) {
+        try {
+            const data: any = {};
+            if (name) data.name = name;
+            if (paysId !== undefined) data.pays_id = paysId;
+
+            return await (this.prisma.ville as any).update({
+                where: { id },
+                data
+            });
+        } catch (error) {
+            console.error('[ReferentielService] Error updating ville:', error);
+            throw error;
+        }
+    }
+
     // ===== ZONE COMPERCIALES =====
     async findAllCategories(page: number, limit: number, name?: string) {
         try {
@@ -240,38 +268,68 @@ export class ReferentielService {
     }
 
     async findAllZoneCommercials(page: number, limit: number, name?: string) {
-        const skip = (page - 1) * limit;
-        const where: any = {};
-        if (name) where.name = { contains: name };
+        try {
+            const skip = (page - 1) * limit;
+            const where: any = {
+                user: { del: false }
+            };
 
-        const [data, total] = await Promise.all([
-            (this.prisma.zone_commercial as any).findMany({
-                where,
-                skip,
-                take: limit,
-                include: {
-                    zone_commercial_pays: {
-                        include: { pays: true },
+            if (name) {
+                where.user = {
+                    ...where.user,
+                    OR: [
+                        { first_name: { contains: name } },
+                        { last_name: { contains: name } },
+                        { email: { contains: name } },
+                    ],
+                };
+            }
+
+            const [data, total] = await Promise.all([
+                (this.prisma.zone_commercial as any).findMany({
+                    where,
+                    skip,
+                    take: limit,
+                    include: {
+                        user: {
+                            include: { avatar: true }
+                        },
+                        zone_commercial_pays: {
+                            include: { pays: true },
+                        },
                     },
-                },
-                orderBy: { name: 'asc' },
-            }),
-            (this.prisma.zone_commercial as any).count({ where }),
-        ]);
+                    orderBy: {
+                        user: { last_name: 'asc' }
+                    },
+                }),
+                (this.prisma.zone_commercial as any).count({ where }),
+            ]);
 
-        return {
-            'hydra:member': (data as any[]).map(zone => ({
-                '@id': `/api/zone_commercials/${zone.id}`,
-                id: zone.id,
-                name: zone.name,
-                pays: zone.zone_commercial_pays.map(zcp => ({
-                    '@id': `/api/pays/${zcp.pays.id}`,
-                    id: zcp.pays.id,
-                    name: zcp.pays.name,
+            return {
+                'hydra:member': (data as any[]).map(zone => ({
+                    '@id': `/api/zone_commercials/${zone.id}`,
+                    '@type': 'Commercial',
+                    id: zone.id,
+                    firstName: zone.user.first_name,
+                    lastName: zone.user.last_name,
+                    email: zone.user.email,
+                    phone: zone.user.phone,
+                    created: zone.user.created,
+                    isaktif: zone.user.isaktif,
+                    avatar: zone.user.avatar,
+                    username: zone.user.email,
+                    pays: zone.zone_commercial_pays.map(zcp => ({
+                        '@id': `/api/pays/${zcp.pays.id}`,
+                        id: zcp.pays.id,
+                        name: zcp.pays.name,
+                    })),
                 })),
-            })),
-            'hydra:totalItems': total,
-        };
+                'hydra:totalItems': total,
+            };
+        } catch (error) {
+            console.error('[ReferentielService] Error in findAllZoneCommercials:', error);
+            return { 'hydra:member': [], 'hydra:totalItems': 0 };
+        }
     }
 
     // ===== OFFRES & DUREES =====
@@ -282,6 +340,13 @@ export class ReferentielService {
         return {
             'hydra:member': (data as any[]).map(o => ({
                 ...o,
+                prixMad: o.prix_mad,
+                prixEur: o.prix_eur,
+                nbActivite: o.nb_activite,
+                focusProduit: o.focus_produit,
+                nbPageCatalogue: o.nb_page_catalogue,
+                hasCommercial: o.has_commercial,
+                hasBanner: o.has_banner,
                 '@id': `/api/offres/${o.id}`,
                 '@type': 'Offre',
             })),

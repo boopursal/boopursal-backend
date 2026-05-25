@@ -42,6 +42,20 @@ export class ProduitsService {
                     where.ville = { slug: query['ville.slug'] };
                 }
 
+                if (query.fournisseur) {
+                    const fId = typeof query.fournisseur === 'string' && query.fournisseur.includes('/') 
+                        ? parseInt(query.fournisseur.split('/').pop()) 
+                        : parseInt(query.fournisseur);
+                    if (!isNaN(fId)) where.fournisseur_id = fId;
+                }
+
+                if (query.categorie && query.categorie !== 'null') {
+                    const cId = typeof query.categorie === 'string' && query.categorie.includes('/') 
+                        ? parseInt(query.categorie.split('/').pop()) 
+                        : parseInt(query.categorie);
+                    if (!isNaN(cId)) where.categorie_id = cId;
+                }
+
                 // Full-text search
                 if (query.q) {
                     where.OR = [
@@ -92,7 +106,12 @@ export class ProduitsService {
                         categorie: true,
                         secteur: true,
                         sous_secteur: true,
-                        image_produit: true
+                        image_produit: true,
+                        produit_image_produit: {
+                            include: {
+                                image_produit: true
+                            }
+                        }
                     },
                     orderBy: orderBy,
                 }),
@@ -195,23 +214,58 @@ export class ProduitsService {
         return {
             ...p,
             '@id': `/api/produits/${p.id}`,
-            sousSecteurs: p.sous_secteur,
+            secteur: p.secteur ? {
+                ...p.secteur,
+                '@id': `/api/secteurs/${p.secteur.id}`
+            } : null,
+            sous_secteur: p.sous_secteur ? {
+                ...p.sous_secteur,
+                '@id': `/api/sous_secteurs/${p.sous_secteur.id}`
+            } : null,
+            sousSecteurs: p.sous_secteur ? {
+                ...p.sous_secteur,
+                '@id': `/api/sous_secteurs/${p.sous_secteur.id}`
+            } : null,
+            categorie: p.categorie ? {
+                ...p.categorie,
+                '@id': `/api/categories/${p.categorie.id}`
+            } : null,
             // Gallery transformation
-            images: [
-                ...(p.image_produit ? [{ url: p.image_produit.url }] : []),
-                ...(p.produit_image_produit?.map(pip => ({
-                    url: pip.image_produit.url
-                })) || [])
-            ],
+            images: (() => {
+                const gallery = [
+                    ...(p.image_produit ? [{ ...p.image_produit, '@id': `/api/image_produits/${p.image_produit.id}`, url: p.image_produit.url }] : []),
+                    ...(p.produit_image_produit?.map(pip => ({
+                        ...pip.image_produit,
+                        '@id': `/api/image_produits/${pip.image_produit.id}`,
+                        url: pip.image_produit.url
+                    })) || [])
+                ];
+                // Remove duplicates by ID
+                const seen = new Set();
+                return gallery.filter(img => {
+                    if (seen.has(img.id)) return false;
+                    seen.add(img.id);
+                    return true;
+                });
+            })(),
             featuredImageId: p.image_produit ? {
                 ...p.image_produit,
+                '@id': `/api/image_produits/${p.image_produit.id}`,
                 url: p.image_produit.url
             } : null,
             fournisseur: p.fournisseur ? {
                 ...p.fournisseur,
+                '@id': `/api/fournisseurs/${p.fournisseur.id}`,
                 avatar: p.fournisseur.user?.avatar ? {
+                    ...p.fournisseur.user.avatar,
+                    '@id': `/api/avatars/${p.fournisseur.user.avatar.id}`,
                     url: p.fournisseur.user.avatar.url
                 } : null
+            } : null,
+            logo: p.image_produit ? {
+                ...p.image_produit,
+                '@id': `/api/image_produits/${p.image_produit.id}`,
+                url: p.image_produit.url
             } : null
         };
     }
@@ -343,6 +397,135 @@ export class ProduitsService {
         } catch (e) {
             console.error('[PRODUITS_SERVICE] getStats error:', e);
             return { total: 0, valides: 0, nouveaux: 0 };
+        }
+    }
+
+    async create(data: any) {
+        // Exclude properties that shouldn't be blindly copied to DB
+        const { currency, categorie, secteur, sous_secteur, fournisseur, image_produit, produit_image_produit, '@context': _context, '@id': _id, '@type': _type, ...rest } = data;
+        
+        let cleanedData = { ...rest };
+        
+        if (data.fournisseur && typeof data.fournisseur === 'string') {
+            const fId = parseInt(data.fournisseur.split('/').pop());
+            if (!isNaN(fId)) cleanedData.fournisseur_id = fId;
+        } else if (data.fournisseur && data.fournisseur.id) {
+            cleanedData.fournisseur_id = data.fournisseur.id;
+        }
+
+        if (data.secteur && typeof data.secteur === 'string') {
+            const id = parseInt(data.secteur.split('/').pop());
+            if (!isNaN(id)) cleanedData.secteur_id = id;
+        } else if (data.secteur && data.secteur.id) {
+            cleanedData.secteur_id = data.secteur.id;
+        }
+
+        if (data.sous_secteur && typeof data.sous_secteur === 'string') {
+            const id = parseInt(data.sous_secteur.split('/').pop());
+            if (!isNaN(id)) cleanedData.sous_secteur_id = id;
+        } else if (data.sous_secteur && data.sousSecteur?.id) {
+             cleanedData.sous_secteur_id = data.sousSecteur.id; 
+        }
+
+        if (data.categorie && typeof data.categorie === 'string') {
+            const id = parseInt(data.categorie.split('/').pop());
+            if (!isNaN(id)) cleanedData.categorie_id = id;
+        } else if (data.categorie && data.categorie.id) {
+            cleanedData.categorie_id = data.categorie.id;
+        }
+
+        try {
+            const result = await this.prisma.produit.create({
+                data: cleanedData
+            });
+            return { ...result, '@id': `/api/produits/${result.id}` };
+        } catch (e) {
+            console.error('Create produit error:', e);
+            throw e;
+        }
+    }
+
+    async update(id: number, data: any) {
+        // Extract related/mapped metadata that can't be updated directly via basic types
+        const { currency, categorie, secteur, sousSecteurs, fournisseur, image_produit, images, ficheReqInProgress, fiche, image, '@context': _context, '@id': _id, '@type': _type, error, loading, success, ...rest } = data;
+        
+        let cleanedData: any = { ...rest };
+        
+        // Remove transient frontend state
+        delete cleanedData.videoExist;
+        delete cleanedData.videoLoading;
+        delete cleanedData.secteurAdded;
+        delete cleanedData.sousSecteurAdded;
+        delete cleanedData.CategorieAdded;
+        
+        if (data.fournisseur && typeof data.fournisseur === 'string') {
+            const fId = parseInt(data.fournisseur.split('/').pop());
+            if (!isNaN(fId)) cleanedData.fournisseur_id = fId;
+        } else if (data.fournisseur && data.fournisseur['@id']) {
+            const fId = parseInt(data.fournisseur['@id'].split('/').pop());
+            if (!isNaN(fId)) cleanedData.fournisseur_id = fId;
+        } else if (data.fournisseur && data.fournisseur.id) {
+            cleanedData.fournisseur_id = data.fournisseur.id;
+        }
+
+        if (data.secteur && data.secteur['@id']) {
+            cleanedData.secteur_id = parseInt(data.secteur['@id'].split('/').pop());
+        } else if (data.secteur && data.secteur.id) {
+            cleanedData.secteur_id = data.secteur.id;
+        } else if (typeof data.secteur === 'string') {
+            cleanedData.secteur_id = parseInt(data.secteur.split('/').pop());
+        }
+
+        if (data.sousSecteurs && data.sousSecteurs['@id']) {
+             cleanedData.sous_secteur_id = parseInt(data.sousSecteurs['@id'].split('/').pop());
+        } else if (data.sousSecteurs && data.sousSecteurs.id) {
+             cleanedData.sous_secteur_id = data.sousSecteurs.id;
+        } else if (typeof data.sousSecteurs === 'string') {
+            cleanedData.sous_secteur_id = parseInt(data.sousSecteurs.split('/').pop());
+        }
+
+        if (data.categorie && data.categorie['@id']) {
+            cleanedData.categorie_id = parseInt(data.categorie['@id'].split('/').pop());
+        } else if (data.categorie && data.categorie.id) {
+            cleanedData.categorie_id = data.categorie.id;
+        } else if (typeof data.categorie === 'string') {
+            cleanedData.categorie_id = parseInt(data.categorie.split('/').pop());
+        }
+        
+        // Sometimes frontend sends a date object or string for update that needs parsing or we can drop it to not overwrite
+        if (cleanedData.created) delete cleanedData.created;
+        if (cleanedData.updated) delete cleanedData.updated;
+
+        try {
+            const result = await this.prisma.produit.update({
+                where: { id },
+                data: cleanedData
+            });
+            return { ...result, '@id': `/api/produits/${result.id}` };
+        } catch (e) {
+            console.error('Update produit error:', e);
+            throw e;
+        }
+    }
+
+    async remove(id: number) {
+        // Typically soft delete
+        await this.prisma.produit.update({
+            where: { id },
+            data: { del: true }
+        });
+        return { success: true };
+    }
+
+    async incrementPhoneVu(id: number) {
+        try {
+            return await this.prisma.produit.update({
+                where: { id },
+                data: { phone_vu: { increment: 1 } }
+            });
+        } catch (error) {
+            console.error('[PRODUITS_SERVICE] Error incrementing phone_vu:', error);
+            throw error;
         }
     }
 }

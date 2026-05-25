@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Put, Body } from '@nestjs/common';
 import { PortalService } from './portal.service';
 
 @Controller()
@@ -18,6 +18,31 @@ export class PortalController {
     @Get('select_produits')
     getSelectProduits() {
         return this.portalService.getSelectProduits();
+    }
+
+    @Get('select_produits/:id')
+    getSelectProduit(@Param('id') id: string) {
+        return this.portalService.getSelectProduit(parseInt(id));
+    }
+
+    @Put('select_produits/:id')
+    putSelectProduit(@Param('id') id: string, @Body() body: any) {
+        return this.portalService.updateSelectProduit(parseInt(id), body);
+    }
+
+    @Put('toggle_focus/:produitId')
+    toggleFocusProduit(@Param('produitId') produitId: string) {
+        return this.portalService.toggleFocusProduit(parseInt(produitId));
+    }
+
+    @Get('fournisseurselected')
+    getFournisseurSelected() {
+        return this.portalService.getFournisseurSelected();
+    }
+
+    @Get('fournisseurcategories')
+    getFournisseurCategories(@Query('id') id: string) {
+        return this.portalService.getFournisseurCategories(parseInt(id));
     }
 
     @Get('parcourir_activites/:idOrSlug')

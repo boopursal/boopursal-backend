@@ -23,7 +23,10 @@ export class SuggestionSecteursService {
         ]);
 
         return {
-            'hydra:member': data,
+            'hydra:member': data.map(item => ({
+                ...item,
+                '@id': `/api/suggestion_secteurs/${item.id}`,
+            })),
             'hydra:totalItems': total,
         };
     }
@@ -39,5 +42,16 @@ export class SuggestionSecteursService {
             '@id': `/api/suggestion_secteurs/${item.id}`,
             '@type': 'SuggestionSecteur',
         };
+    }
+
+    async remove(id: number) {
+        try {
+            return await this.prisma.suggestion_secteur.delete({
+                where: { id }
+            });
+        } catch (error) {
+            console.error('[SUGGESTION_SECTEURS] Error deleting:', error);
+            throw error;
+        }
     }
 }

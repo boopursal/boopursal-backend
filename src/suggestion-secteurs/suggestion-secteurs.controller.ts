@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Param } from '@nestjs/common';
+import { Controller, Get, Query, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { SuggestionSecteursService } from './suggestion-secteurs.service';
 
 @Controller('suggestion_secteurs')
@@ -17,5 +17,10 @@ export class SuggestionSecteursController {
     @Get(':id')
     findOne(@Param('id') id: string) {
         return this.suggestionSecteursService.findOne(+id);
+    }
+
+    @Delete(':id')
+    remove(@Param('id', ParseIntPipe) id: number) {
+        return this.suggestionSecteursService.remove(id);
     }
 }

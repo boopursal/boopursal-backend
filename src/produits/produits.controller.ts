@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Post, Put, Delete, Body, ParseIntPipe } from '@nestjs/common';
 import { ProduitsService } from './produits.service';
 
 @Controller()
@@ -30,5 +30,25 @@ export class ProduitsController {
             return this.produitsService.findOne(id);
         }
         return this.produitsService.findBySlug(idOrSlug);
+    }
+
+    @Post('produits')
+    create(@Body() data: any) {
+        return this.produitsService.create(data);
+    }
+
+    @Put('produits/:id')
+    update(@Param('id') id: string, @Body() data: any) {
+        return this.produitsService.update(+id, data);
+    }
+
+    @Put('produits/:id/phone_vu')
+    incrementPhoneVu(@Param('id', ParseIntPipe) id: number) {
+        return this.produitsService.incrementPhoneVu(id);
+    }
+
+    @Delete('produits/:id')
+    remove(@Param('id') id: string) {
+        return this.produitsService.remove(+id);
     }
 }

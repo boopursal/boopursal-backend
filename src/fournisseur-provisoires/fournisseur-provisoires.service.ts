@@ -29,4 +29,27 @@ export class FournisseurProvisoiresService {
             'hydra:totalItems': total,
         };
     }
+
+    async update(id: number, data: any) {
+        try {
+            return await this.prisma.fournisseur_provisoire.update({
+                where: { id },
+                data,
+            });
+        } catch (error: any) {
+            console.error('[FOURNISSEUR_PROVISOIRES_SERVICE] Error updating:', error);
+            throw error;
+        }
+    }
+
+    async remove(id: number) {
+        try {
+            return await this.prisma.fournisseur_provisoire.delete({
+                where: { id },
+            });
+        } catch (error: any) {
+            console.error('[FOURNISSEUR_PROVISOIRES_SERVICE] Error deleting:', error);
+            throw error;
+        }
+    }
 }

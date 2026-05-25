@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, Inject, forwardRef } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthService } from '../auth/auth.service';
 
@@ -55,5 +56,20 @@ export class UsersService {
 
     const loginData = await this.authService.loginWithUser(updatedUser, roles);
     return loginData;
+  }
+
+  async resetPasswordDirect(id: number, newPasswordStr: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('Utilisateur introuvable');
+    
+    // Default salt rounds is usually 10
+    const hashedPassword = await bcrypt.hash(newPasswordStr, 10);
+    
+    await this.prisma.user.update({
+      where: { id },
+      data: { password: hashedPassword }
+    });
+
+    return { success: true, message: 'Mot de passe réinitialisé' };
   }
 }

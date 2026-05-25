@@ -99,6 +99,122 @@ export class PortalService {
         }
     }
 
+    async getSelectProduit(id: number) {
+        const s = await this.prisma.select_produit.findUnique({
+            where: { id },
+            include: {
+                produit: {
+                    include: {
+                        fournisseur: { select: { id: true, societe: true } },
+                        currency: true,
+                        image_produit: true,
+                        secteur: true,
+                        sous_secteur: true,
+                        categorie: true,
+                    }
+                }
+            }
+        });
+
+        if (!s) return null;
+        
+        return {
+            ...s,
+            '@id': `/api/select_produits/${s.id}`,
+            produit: s.produit ? {
+                ...s.produit,
+                '@id': `/api/produits/${s.produit.id}`,
+                sousSecteurs: s.produit.sous_secteur || { slug: 'inconnu', name: 'Inconnu' },
+                categorie: s.produit.categorie || { slug: 'inconnu', name: 'Inconnu' },
+                featuredImageId: s.produit.image_produit ? {
+                    ...s.produit.image_produit,
+                    url: s.produit.image_produit.url
+                } : null,
+            } : null
+        };
+    }
+
+    async updateSelectProduit(id: number, body: any) {
+        // body.produit est probablement une chaine IRI : "/api/produits/123"
+        let produitId = null;
+        if (body.produit && typeof body.produit === 'string') {
+            const parts = body.produit.split('/');
+            produitId = parseInt(parts[parts.length - 1]);
+        } else if (body.produit && typeof body.produit === 'number') {
+            produitId = body.produit;
+        }
+
+        await this.prisma.select_produit.update({
+            where: { id },
+            data: { produit_id: produitId, updated: new Date() }
+        });
+
+        return this.getSelectProduit(id);
+    }
+
+    async toggleFocusProduit(produitId: number) {
+        const existing = await this.prisma.select_produit.findFirst({
+            where: { produit_id: produitId }
+        });
+
+        if (existing) {
+            await this.prisma.select_produit.update({
+                where: { id: existing.id },
+                data: { produit_id: null, updated: new Date() }
+            });
+            return { action: 'removed', slotId: existing.id, error: false };
+        } else {
+            let slot = await this.prisma.select_produit.findFirst({
+                where: { produit_id: null },
+                orderBy: { updated: 'asc' }
+            });
+
+            if (!slot) {
+                slot = await this.prisma.select_produit.findFirst({
+                    orderBy: { updated: 'asc' }
+                });
+            }
+
+            if (slot) {
+                await this.prisma.select_produit.update({
+                    where: { id: slot.id },
+                    data: { produit_id: produitId, updated: new Date() }
+                });
+                return { action: 'added', slotId: slot.id, error: false };
+            }
+            return { action: 'error', error: true };
+        }
+    }
+
+    async getFournisseurSelected() {
+        const fournisseurs = await this.prisma.fournisseur.findMany({
+            where: {
+                produit: { some: { del: false } }
+            },
+            select: { id: true, societe: true },
+            orderBy: { societe: 'asc' }
+        });
+        return {
+            'hydra:member': fournisseurs.map(f => ({ ...f, '@id': `/api/fournisseurs/${f.id}` })),
+            'hydra:totalItems': fournisseurs.length
+        };
+    }
+
+    async getFournisseurCategories(idFournisseur: number) {
+        if (isNaN(idFournisseur)) return [];
+        const categories = await this.prisma.categorie.findMany({
+            where: {
+                del: false,
+                produit: {
+                    some: { fournisseur: { id: idFournisseur }, del: false }
+                }
+            },
+            select: { id: true, name: true, slug: true },
+            orderBy: { name: 'asc' }
+        });
+        return categories.map(c => ({ ...c, '@id': `/api/categories/${c.id}` }));
+    }
+
     async getParcourirActivites(idOrSlug: string) {
         const id = parseInt(idOrSlug);
         const sousSecteurs = await this.prisma.sous_secteur.findMany({

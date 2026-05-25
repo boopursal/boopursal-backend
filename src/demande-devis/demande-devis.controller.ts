@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Query, Param, ParseIntPipe, Post, Put, Body } from '@nestjs/common';
 import { DemandeDevisService } from './demande-devis.service';
 
 @Controller('demande_devis')
@@ -23,5 +23,15 @@ export class DemandeDevisController {
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
       return this.demandeDevisService.findOne(id);
+  }
+
+  @Post()
+  async create(@Body() data: any) {
+      return this.demandeDevisService.create(data);
+  }
+
+  @Put(':id')
+  async update(@Param('id', ParseIntPipe) id: number, @Body() data: any) {
+      return this.demandeDevisService.update(id, data);
   }
 }

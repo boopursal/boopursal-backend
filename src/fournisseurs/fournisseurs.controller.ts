@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, ParseIntPipe, Put, Body, Post, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseIntPipe, Put, Body, Post, BadRequestException, InternalServerErrorException, Delete } from '@nestjs/common';
 import { FournisseursService } from './fournisseurs.service';
 import { PrismaClient } from '@prisma/client';
 
@@ -121,6 +121,24 @@ export class FournisseursController {
         const id = parseInt(idOrSlug.split('-')[0]);
         if (isNaN(id)) return null;
         return this.fournisseursService.update(id, data);
+    }
+
+    @Put('fournisseurs/:id/phone_vu')
+    async incrementPhoneVu(@Param('id') idOrSlug: string) {
+        const id = parseInt(idOrSlug.split('-')[0]);
+        if (isNaN(id)) return null;
+        return await prisma.fournisseur.update({ where: { id }, data: { phone_vu: { increment: 1 } } });
+    }
+
+    @Delete('fournisseurs/:id')
+    async remove(@Param('id') idOrSlug: string) {
+        const id = parseInt(idOrSlug.split('-')[0]);
+        if (isNaN(id)) return null;
+        try {
+            return await prisma.fournisseur.delete({ where: { id } });
+        } catch (error: any) {
+            throw new InternalServerErrorException({ message: 'Erreur lors de la suppression', detail: error?.message });
+        }
     }
 
     @Get('fournisseurs/:id/abonnements')

@@ -11,7 +11,10 @@ export class MotifsService {
         });
 
         return {
-            'hydra:member': data,
+            'hydra:member': data.map(m => ({
+                ...m,
+                '@id': `/api/motifs/${m.id}`,
+            })),
             'hydra:totalItems': data.length,
         };
     }

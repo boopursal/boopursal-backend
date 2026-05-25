@@ -137,8 +137,10 @@ export class FournisseursService {
 
         const flattenedData = data.map(item => ({
             ...item,
+            '@id': `/api/fournisseurs/${item.id}`,
             avatar: item.user?.avatar ? {
                 ...item.user.avatar,
+                '@id': `/api/avatars/${item.user.avatar.id}`,
                 url: item.user.avatar.url
             } : null,
             firstName: item.user?.first_name,
@@ -147,7 +149,18 @@ export class FournisseursService {
             phone: item.user?.phone,
             isactif: item.user?.isactif,
             created: item.user?.created,
-            categories: item.fournisseur_categories.map(fc => fc.categorie)
+            pays: item.pays ? {
+                ...item.pays,
+                '@id': `/api/pays/${item.pays.id}`
+            } : null,
+            ville: item.ville ? {
+                ...item.ville,
+                '@id': `/api/villes/${item.ville.id}`
+            } : null,
+            categories: item.fournisseur_categories.map(fc => ({
+                ...fc.categorie,
+                '@id': `/api/categories/${fc.categorie.id}`
+            }))
         }));
 
         const pageCount = Math.ceil(total / limit);
@@ -189,14 +202,27 @@ export class FournisseursService {
 
         return {
             ...item,
+            '@id': `/api/fournisseurs/${item.id}`,
             firstName: item.user?.first_name,
             lastName: item.user?.last_name,
             email: item.user?.email,
             phone: item.user?.phone,
             isactif: item.user?.isactif,
             created: item.user?.created,
-            categories: item.fournisseur_categories.map(fc => fc.categorie)
+            pays: item.pays ? {
+                ...item.pays,
+                '@id': `/api/pays/${item.pays.id}`
+            } : null,
+            ville: item.ville ? {
+                ...item.ville,
+                '@id': `/api/villes/${item.ville.id}`
+            } : null,
+            categories: item.fournisseur_categories.map(fc => ({
+                ...fc.categorie,
+                '@id': `/api/categories/${fc.categorie.id}`
+            }))
         };
+
     }
 
     async getStats() {
@@ -297,13 +323,26 @@ export class FournisseursService {
 
         const mappedData = data.map(item => ({
             ...item,
+            '@id': `/api/produits/${item.id}`,
             isValid: item.is_valid,
             isSelect: item.is_select,
             featuredImageId: item.image_produit ? {
                 ...item.image_produit,
+                '@id': `/api/image_produits/${item.image_produit.id}`,
                 url: item.image_produit.url
             } : null,
-            sousSecteurs: item.sous_secteur
+            secteur: item.secteur ? {
+                ...item.secteur,
+                '@id': `/api/secteurs/${item.secteur.id}`
+            } : null,
+            sous_secteur: item.sous_secteur ? {
+                ...item.sous_secteur,
+                '@id': `/api/sous_secteurs/${item.sous_secteur.id}`
+            } : null,
+            sousSecteurs: item.sous_secteur ? {
+                ...item.sous_secteur,
+                '@id': `/api/sous_secteurs/${item.sous_secteur.id}`
+            } : null
         }));
 
         return {

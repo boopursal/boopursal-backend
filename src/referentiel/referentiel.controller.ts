@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, ParseIntPipe, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseIntPipe, Post, Put, Body } from '@nestjs/common';
 import { ReferentielService } from './referentiel.service';
 
 @Controller()
@@ -63,6 +63,11 @@ export class ReferentielController {
         return this.referentielService.createPays(data.name);
     }
 
+    @Put('pays/:id')
+    updatePays(@Param('id', ParseIntPipe) id: number, @Body() data: any) {
+        return this.referentielService.updatePays(id, data.name);
+    }
+
     // ===== VILLES =====
     @Get('villes')
     findAllVilles(
@@ -93,6 +98,19 @@ export class ReferentielController {
 
         const pays_id = data.pays ? getID(data.pays) : null;
         return this.referentielService.createVille(data.name, pays_id);
+    }
+
+    @Put('villes/:id')
+    updateVille(@Param('id', ParseIntPipe) id: number, @Body() data: any) {
+        const getID = (iri: any) => {
+            if (typeof iri === 'string' && iri.startsWith('/api/')) {
+                const parts = iri.split('/');
+                return parseInt(parts[parts.length - 1]);
+            }
+            return iri;
+        };
+        const pays_id = data.pays ? getID(data.pays) : undefined;
+        return this.referentielService.updateVille(id, data.name, pays_id);
     }
 
     // ===== CATEGORIES =====

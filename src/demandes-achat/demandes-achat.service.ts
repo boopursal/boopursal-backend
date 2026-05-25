@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-
+import { ValidationRfqService } from './validation-rfq.service';
+import { MailService } from '../mail/mail.service';
 @Injectable()
 export class DemandesAchatService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly validationService: ValidationRfqService,
+        private readonly mailService: MailService
+    ) { }
 
     async findAll(query: any = {}) {
         try {
@@ -114,12 +119,13 @@ export class DemandesAchatService {
 
             const flattenedData = data.map(item => ({
                 ...item,
+                '@id': `/api/demande_achats/${item.id}`,
                 pays: item.pays || null,
                 ville: item.ville || null,
                 dateExpiration: item.date_expiration,
                 acheteur: item.acheteur ? {
-                    id: item.acheteur.id,
-                    societe: item.acheteur.societe,
+                    ...item.acheteur,
+                    '@id': `/api/acheteurs/${item.acheteur.id}`,
                 } : null,
                 currency: item.currency ? item.currency.currency : 'MAD'
             }));
@@ -151,7 +157,10 @@ export class DemandesAchatService {
             include: {
                 acheteur: {
                     include: {
-                        user: true
+                        user: true,
+                        ville: true,
+                        pays: true,
+                        secteur: true
                     }
                 },
                 currency: true,
@@ -174,13 +183,21 @@ export class DemandesAchatService {
         // Re-mappage pour correspondre aux attentes du frontend Fuse/Hydra
         return {
             ...p,
-            categories: p.demande_ha_categories.map(c => c.categorie),
+            '@id': `/api/demande_achats/${p.id}`,
+            categories: p.demande_ha_categories.map(c => ({
+                ...c.categorie,
+                '@id': `/api/categories/${c.categorie.id}`
+            })),
             diffusionsdemandes: p.diffusion_demande || [],
             attachements: p.demande_achat_attachement.map(a => ({
-                id: a.attachement.id,
-                url: a.attachement.url,
+                ...a.attachement,
+                '@id': `/api/attachements/${a.attachement.id}`,
             })),
-            dateExpiration: p.date_expiration
+            dateExpiration: p.date_expiration,
+            validationReport: this.validationService.validate({ 
+                titre: p.titre, 
+                description: p.description 
+            })
         };
     }
 
@@ -228,5 +245,183 @@ export class DemandesAchatService {
             'hydra:member': data,
             'hydra:totalItems': data.length
         };
+    }
+
+    async update(id: number, data: any) {
+        // Fetch original to compare statuses
+        const original = await this.prisma.demande_achat.findUnique({
+            where: { id }
+        });
+
+        if (!original) throw new Error('Demande introuvable');
+
+        const {
+            categories,
+            attachements,
+            budget,
+            motifRejet,
+            autreCategories,
+            statut,
+            is_public,
+            is_internationnal,
+            rejet_id,
+            description,
+            titre,
+            fournisseurGagne
+        } = data;
+
+        let fournisseurGagneId = undefined;
+        if (fournisseurGagne) {
+            fournisseurGagneId = parseInt(fournisseurGagne.replace('/api/fournisseurs/', ''));
+        }
+
+        // 1. Mise à jour de la demande basique
+        const updated = await this.prisma.demande_achat.update({
+            where: { id },
+            data: {
+                statut: statut !== undefined ? parseInt(statut) : undefined,
+                is_public: is_public !== undefined ? Boolean(is_public) : undefined,
+                motif_rejet_id: motifRejet ? parseInt(motifRejet) : (rejet_id ? parseInt(rejet_id) : undefined),
+                budget: budget !== undefined ? parseFloat(budget) : undefined,
+                autre_categories: autreCategories,
+                description: description,
+                titre: titre,
+                fournisseur_gagne_id: fournisseurGagneId || undefined
+            },
+            include: {
+                acheteur: { include: { user: true } }
+            }
+        });
+
+        // 2. Mise à jour des catégories associées si fournies
+        if (categories && Array.isArray(categories)) {
+            // Supprimer les anciennes catégories
+            await this.prisma.demande_ha_categories.deleteMany({
+                where: { demande_achat_id: id }
+            });
+
+            // Insérer les nouvelles
+            if (categories.length > 0) {
+                const newCategoriesData = categories.map((catString: string) => {
+                    const catId = parseInt(catString.replace('/api/categories/', ''));
+                    return {
+                        demande_achat_id: id,
+                        categorie_id: catId
+                    };
+                }).filter(c => !isNaN(c.categorie_id));
+
+                if (newCategoriesData.length > 0) {
+                    await this.prisma.demande_ha_categories.createMany({
+                        data: newCategoriesData
+                    });
+                }
+            }
+        }
+
+        // 3. Logique d'envoi d'emails métier
+        const parsedStatut = statut !== undefined ? parseInt(statut) : undefined;
+        const ref = updated.reference || updated.id.toString();
+
+        // A. Validée (Statut passe à 2)
+        if (parsedStatut === 2 && original.statut !== 2) {
+            if (updated.acheteur?.user?.email) {
+                await this.mailService.alerterAcheteur(updated.acheteur.user.email, ref);
+            }
+            // Diffuser aux fournisseurs
+            this.diffuserAuxFournisseurs(updated.id);
+        }
+
+        // B. Refusée (Statut passe à 3)
+        if (parsedStatut === 3 && original.statut !== 3) {
+            if (updated.acheteur?.user?.email) {
+                await this.mailService.DemandeRefuserAcheteur(updated.acheteur.user.email, ref);
+            }
+        }
+
+        // C. Sélection d'un gagnant
+        if (fournisseurGagneId && original.fournisseur_gagne_id !== fournisseurGagneId) {
+            const gagnant = await this.prisma.fournisseur.findUnique({
+                where: { id: fournisseurGagneId },
+                include: { user: true }
+            });
+
+            if (gagnant?.user?.email) {
+                await this.mailService.alerterFrsGagner(gagnant.user.email, ref);
+            }
+
+            // Alerter les perdants
+            const participations = await this.prisma.diffusion_demande.findMany({
+                where: { demande_id: id },
+                include: { fournisseur: { include: { user: true } } }
+            });
+
+            for (const p of participations) {
+                if (p.fournisseur && p.fournisseur.id !== fournisseurGagneId && p.fournisseur.user?.email) {
+                    await this.mailService.alerterFrsPerdue(p.fournisseur.user.email, ref);
+                }
+            }
+        }
+
+        return updated;
+    }
+
+    async diffuserAuxFournisseurs(demandeId: number) {
+        try {
+            const demande = await this.prisma.demande_achat.findUnique({
+                where: { id: demandeId },
+                include: { demande_ha_categories: true }
+            });
+            if (!demande) return;
+
+            const catIds = demande.demande_ha_categories.map(c => c.categorie_id);
+            if (catIds.length === 0) return;
+
+            // 1. Récupérer la liste noire de cet acheteur
+            const blackListes = await this.prisma.black_listes.findMany({
+                where: { acheteur_id: demande.acheteur_id, etat: true },
+                select: { fournisseur_id: true }
+            });
+            // Filtrer les null au cas où et construire le tableau d'IDs
+            const blacklistedIds = blackListes
+                .map(b => b.fournisseur_id)
+                .filter(id => id !== null) as number[];
+
+            // 2. Trouver les fournisseurs associés à ces catégories (et non blacklistés)
+            const fournisseurs = await this.prisma.fournisseur.findMany({
+                where: {
+                    is_complet: true,
+                    id: { notIn: blacklistedIds }, // EXCLUSION DE LA BLACKLIST
+                    fournisseur_categories: {
+                        some: {
+                            categorie_id: { in: catIds }
+                        }
+                    }
+                },
+                include: { user: true }
+            });
+
+            for (let frs of fournisseurs) {
+                const fournisseur: any = frs;
+                if (fournisseur.user?.email) {
+                    await this.mailService.alerterFournisseurs(
+                        fournisseur.user.email, 
+                        demande.reference || demande.id.toString(), 
+                        demande.titre, 
+                        demande.description
+                    );
+
+                    // Tracer la diffusion
+                    await this.prisma.diffusion_demande.create({
+                        data: {
+                            fournisseur_id: fournisseur.id,
+                            demande_id: demandeId,
+                            date_diffusion: new Date()
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('[DemandesAchatService] Erreur lors de la diffusion aux fournisseurs:', error);
+        }
     }
 }
