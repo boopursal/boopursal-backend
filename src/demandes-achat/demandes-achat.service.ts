@@ -247,6 +247,85 @@ export class DemandesAchatService {
         };
     }
 
+    async create(data: any, user: any) {
+        console.log(`[DemandesAchatService] create`, Object.keys(data || {}));
+        
+        const acheteurId = user?.id;
+        
+        if (!acheteurId) {
+            throw new Error('Acheteur ID is required');
+        }
+
+        // 1. Create the demande
+        const created = await this.prisma.demande_achat.create({
+            data: {
+                titre: data.titre,
+                description: data.description,
+                reference: data.reference || `RFQ-${Date.now()}`,
+                statut: 0, // En attente
+                is_public: Boolean(data.isPublic),
+                is_anonyme: Boolean(data.isAnonyme),
+                is_alerted: false,
+                is_sent: false,
+                del: false,
+                budget: parseFloat(data.budget) || 0,
+                localisation: data.localisation ? String(data.localisation) : null,
+                date_expiration: data.dateExpiration ? new Date(data.dateExpiration) : null,
+                autre_categories: data.autreCategories,
+                created: new Date(),
+                date_modification: new Date(),
+                slug: `rfq-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+                acheteur: {
+                    connect: { id: acheteurId }
+                }
+            }
+        });
+
+        // Mettre à jour la référence avec l'ID pour avoir un format sympa si non fournie
+        if (!data.reference || data.reference === '') {
+            await this.prisma.demande_achat.update({
+                where: { id: created.id },
+                data: { reference: `RFQ-${created.id}` }
+            });
+        }
+
+        // 2. Handle categories
+        if (data.categories && Array.isArray(data.categories) && data.categories.length > 0) {
+            const newCategoriesData = data.categories.map((catString: string) => {
+                const catId = parseInt(catString.replace('/api/categories/', ''));
+                return {
+                    demande_achat_id: created.id,
+                    categorie_id: catId
+                };
+            }).filter((c: any) => !isNaN(c.categorie_id));
+
+            if (newCategoriesData.length > 0) {
+                await this.prisma.demande_ha_categories.createMany({
+                    data: newCategoriesData
+                });
+            }
+        }
+
+        // 3. Handle attachements
+        if (data.attachements && Array.isArray(data.attachements) && data.attachements.length > 0) {
+            const newAttachementsData = data.attachements.map((attString: string) => {
+                const attId = parseInt(attString.replace('/api/attachements/', ''));
+                return {
+                    demande_achat_id: created.id,
+                    attachement_id: attId
+                };
+            }).filter((a: any) => !isNaN(a.attachement_id));
+
+            if (newAttachementsData.length > 0) {
+                await this.prisma.demande_achat_attachement.createMany({
+                    data: newAttachementsData
+                });
+            }
+        }
+
+        return this.findOne(created.id.toString());
+    }
+
     async update(id: number, data: any) {
         // Fetch original to compare statuses
         const original = await this.prisma.demande_achat.findUnique({

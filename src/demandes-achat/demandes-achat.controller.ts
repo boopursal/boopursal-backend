@@ -1,10 +1,17 @@
-import { Controller, Get, Put, Body, Param, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Put, Post, Body, Param, Query, ParseIntPipe, UseGuards, Request } from '@nestjs/common';
 import { DemandesAchatService } from './demandes-achat.service';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('demande_achats')
 export class DemandesAchatController {
     constructor(private readonly demandesAchatService: DemandesAchatService) { }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post()
+    create(@Body() data: any, @Request() req: any) {
+        console.log(`[DemandesAchatController] POST /api/demande_achats`, Object.keys(data || {}));
+        return this.demandesAchatService.create(data, req.user);
+    }
 
     @Put(':id')
     update(@Param('id', ParseIntPipe) id: number, @Body() data: any) {
