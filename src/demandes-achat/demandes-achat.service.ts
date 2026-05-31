@@ -250,9 +250,11 @@ export class DemandesAchatService {
     async create(data: any, user: any) {
         console.log(`[DemandesAchatService] create`, Object.keys(data || {}));
         
-        const acheteurId = user?.id;
+        // user may be the JWT payload object returned by formatUser
+        const acheteurId = user?.data?.acheteur?.id || user?.data?.id || user?.id;
         
         if (!acheteurId) {
+            console.error('[DemandesAchatService] create - Acheteur ID missing in user:', user);
             throw new Error('Acheteur ID is required');
         }
 
