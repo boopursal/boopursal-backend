@@ -223,13 +223,13 @@ export class DemandesAchatService {
     }
 
     async getStats() {
-        const [total, valides, enCours] = await Promise.all([
+        const [total, valides, rejetees] = await Promise.all([
             this.prisma.demande_achat.count({ where: { del: false } }),
-            this.prisma.demande_achat.count({ where: { del: false, statut: 2 } }),
             this.prisma.demande_achat.count({ where: { del: false, statut: 1 } }),
+            this.prisma.demande_achat.count({ where: { del: false, statut: 2 } }),
         ]);
 
-        return { total, valides, enCours };
+        return { total, valides, rejetees };
     }
 
     async findVisites(idOrSlug: string) {
@@ -275,11 +275,32 @@ export class DemandesAchatService {
             fournisseurGagneId = parseInt(fournisseurGagne.replace('/api/fournisseurs/', ''));
         }
 
+        // ── AUTO-VALIDATION IA ──────────────────────────────────────────────────
+        // Si le modérateur ne force pas un statut manuellement (statut non fourni ou
+        // la demande est encore en attente), on recalcule le score IA.
+        // Si score = 100 → validation automatique + diffusion immédiate.
+        let autoValidatedByAI = false;
+        let finalStatut = statut !== undefined ? parseInt(statut) : undefined;
+
+        const texteAAnalyser = {
+            titre: titre || original.titre || '',
+            description: description || original.description || ''
+        };
+        const aiReport = this.validationService.validate(texteAAnalyser);
+
+        if (aiReport.score === 100 && original.statut !== 1 && finalStatut !== 2) {
+            // Le score est parfait et la RFQ n'est pas déjà validée ou rejetée manuellement
+            finalStatut = 1;
+            autoValidatedByAI = true;
+            console.log(`[AI-Validation] ✅ Demande #${id} auto-validée (score IA: 100/100)`);
+        }
+        // ────────────────────────────────────────────────────────────────────────
+
         // 1. Mise à jour de la demande basique
         const updated = await this.prisma.demande_achat.update({
             where: { id },
             data: {
-                statut: statut !== undefined ? parseInt(statut) : undefined,
+                statut: finalStatut,
                 is_public: is_public !== undefined ? Boolean(is_public) : undefined,
                 motif_rejet_id: motifRejet ? parseInt(motifRejet) : (rejet_id ? parseInt(rejet_id) : undefined),
                 budget: budget !== undefined ? parseFloat(budget) : undefined,
@@ -319,11 +340,10 @@ export class DemandesAchatService {
         }
 
         // 3. Logique d'envoi d'emails métier
-        const parsedStatut = statut !== undefined ? parseInt(statut) : undefined;
         const ref = updated.reference || updated.id.toString();
 
-        // A. Validée (Statut passe à 2)
-        if (parsedStatut === 2 && original.statut !== 2) {
+        // A. Validée (Statut passe à 1) — manuellement ou par IA
+        if (finalStatut === 1 && original.statut !== 1) {
             if (updated.acheteur?.user?.email) {
                 await this.mailService.alerterAcheteur(updated.acheteur.user.email, ref);
             }
@@ -331,8 +351,8 @@ export class DemandesAchatService {
             this.diffuserAuxFournisseurs(updated.id);
         }
 
-        // B. Refusée (Statut passe à 3)
-        if (parsedStatut === 3 && original.statut !== 3) {
+        // B. Refusée (Statut passe à 2)
+        if (finalStatut === 2 && original.statut !== 2) {
             if (updated.acheteur?.user?.email) {
                 await this.mailService.DemandeRefuserAcheteur(updated.acheteur.user.email, ref);
             }
@@ -362,7 +382,10 @@ export class DemandesAchatService {
             }
         }
 
-        return updated;
+        return {
+            ...updated,
+            validationReport: { ...aiReport, autoValidatedByAI },
+        };
     }
 
     async diffuserAuxFournisseurs(demandeId: number) {
