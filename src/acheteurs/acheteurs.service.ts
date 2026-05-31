@@ -169,9 +169,7 @@ export class AcheteursService {
         if (data.autreCurrency !== undefined) updateData.autre_currency = data.autreCurrency;
         
         // Merged fields from the first update function
-        if (data.adresse1 !== undefined) updateData.adresse1 = data.adresse1;
-        if (data.adresse2 !== undefined) updateData.adresse2 = data.adresse2;
-        if (data.codepostal !== undefined) updateData.codepostal = parseInt(data.codepostal);
+        // adresse1, adresse2, codepostal belong to the user model, so we don't add them to updateData
         
         if (data.pays !== undefined) {
             const paysId = getID(data.pays);
@@ -196,18 +194,20 @@ export class AcheteursService {
             include: { user: true }
         });
 
-        // Sync with User table if redirect, roles, or info provided
-        if (data.redirect || data.roles || data.firstName || data.lastName || data.email || data.phone || data.civilite) {
+        // Sync with User table if user-related fields are provided
+        if (data.redirect !== undefined || data.roles !== undefined || data.firstName !== undefined || data.lastName !== undefined || data.email !== undefined || data.phone !== undefined || data.adresse1 !== undefined || data.adresse2 !== undefined || data.codepostal !== undefined) {
             const userUpdate: any = {};
-            if (data.redirect) userUpdate.redirect = data.redirect;
-            if (data.roles) {
+            if (data.redirect !== undefined) userUpdate.redirect = data.redirect;
+            if (data.roles !== undefined) {
                 userUpdate.roles = Array.isArray(data.roles) ? JSON.stringify(data.roles) : data.roles;
             }
-            if (data.firstName) userUpdate.first_name = data.firstName;
-            if (data.lastName) userUpdate.last_name = data.lastName;
-            if (data.email) userUpdate.email = data.email;
-            if (data.phone) userUpdate.phone = data.phone;
-            if (data.civilite) userUpdate.civilite = data.civilite;
+            if (data.firstName !== undefined) userUpdate.first_name = data.firstName;
+            if (data.lastName !== undefined) userUpdate.last_name = data.lastName;
+            if (data.email !== undefined) userUpdate.email = data.email;
+            if (data.phone !== undefined) userUpdate.phone = data.phone;
+            if (data.adresse1 !== undefined) userUpdate.adresse1 = data.adresse1;
+            if (data.adresse2 !== undefined) userUpdate.adresse2 = data.adresse2;
+            if (data.codepostal !== undefined) userUpdate.codepostal = parseInt(data.codepostal);
             
             await this.prisma.user.update({
                 where: { id },
