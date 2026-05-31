@@ -111,6 +111,12 @@ export class DemandesAchatService {
                         currency: {
                             select: { currency: true }
                         },
+                        diffusion_demande: {
+                            select: { id: true }
+                        },
+                        demande_ha_categories: {
+                            include: { categorie: true }
+                        }
                     },
                     orderBy,
                 }),
@@ -123,6 +129,11 @@ export class DemandesAchatService {
                 pays: item.pays || null,
                 ville: item.ville || null,
                 dateExpiration: item.date_expiration,
+                diffusionsdemandes: item.diffusion_demande || [],
+                categories: item.demande_ha_categories ? item.demande_ha_categories.map((c: any) => ({
+                    ...c.categorie,
+                    '@id': `/api/categories/${c.categorie.id}`
+                })) : [],
                 acheteur: item.acheteur ? {
                     ...item.acheteur,
                     '@id': `/api/acheteurs/${item.acheteur.id}`,
