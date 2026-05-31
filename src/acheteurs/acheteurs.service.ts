@@ -104,6 +104,9 @@ export class AcheteursService {
             phone: item.user?.phone,
             isactif: item.user?.isactif,
             created: item.user?.created,
+            adresse1: item.user?.adresse1 || '',
+            adresse2: item.user?.adresse2 || '',
+            codepostal: item.user?.codepostal || '',
             ville: item.ville ? {
                 ...item.ville,
                 '@id': `/api/villes/${item.ville.id}`
