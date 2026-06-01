@@ -336,6 +336,31 @@ export class DemandesAchatService {
             }
         }
 
+        // Charger la demande complète avec l'acheteur et l'utilisateur pour les emails
+        const fullDemande = await this.prisma.demande_achat.findUnique({
+            where: { id: created.id },
+            include: {
+                acheteur: {
+                    include: {
+                        user: true
+                    }
+                }
+            }
+        });
+
+        if (fullDemande) {
+            // Alerter l'administrateur
+            await this.mailService.alertAdminNvRfs(fullDemande).catch(console.error);
+
+            // Envoyer un accusé de réception à l'acheteur
+            if (fullDemande.acheteur?.user?.email) {
+                await this.mailService.sendRfqReceptionAcheteurEmail(
+                    fullDemande.acheteur.user.email,
+                    fullDemande
+                ).catch(console.error);
+            }
+        }
+
         return this.findOne(created.id.toString());
     }
 
@@ -359,7 +384,8 @@ export class DemandesAchatService {
             rejet_id,
             description,
             titre,
-            fournisseurGagne
+            fournisseurGagne,
+            dateExpiration
         } = data;
 
         let fournisseurGagneId = undefined;
@@ -399,7 +425,8 @@ export class DemandesAchatService {
                 autre_categories: autreCategories,
                 description: description,
                 titre: titre,
-                fournisseur_gagne_id: fournisseurGagneId || undefined
+                fournisseur_gagne_id: fournisseurGagneId || undefined,
+                date_expiration: dateExpiration ? new Date(dateExpiration) : undefined
             },
             include: {
                 acheteur: { include: { user: true } }
@@ -470,6 +497,37 @@ export class DemandesAchatService {
             for (const p of participations) {
                 if (p.fournisseur && p.fournisseur.id !== fournisseurGagneId && p.fournisseur.user?.email) {
                     await this.mailService.alerterFrsPerdue(p.fournisseur.user.email, ref);
+                }
+            }
+        }
+
+        // D. Mise à jour date d'expiration
+        if (dateExpiration) {
+            const newDate = new Date(dateExpiration);
+            const oldDate = original.date_expiration ? new Date(original.date_expiration) : null;
+            
+            if (oldDate && newDate.getTime() !== oldDate.getTime()) {
+                const isProlonged = newDate.getTime() > oldDate.getTime();
+                const oldDateStr = oldDate.toLocaleDateString('fr-FR');
+                const newDateStr = newDate.toLocaleDateString('fr-FR');
+                
+                const participations = await this.prisma.diffusion_demande.findMany({
+                    where: { demande_id: id },
+                    include: { fournisseur: { include: { user: true } } }
+                });
+
+                for (const p of participations) {
+                    if (p.fournisseur && p.fournisseur.user?.email) {
+                        const fournisseurName = p.fournisseur.user.first_name || p.fournisseur.societe || 'Fournisseur';
+                        await this.mailService.sendUpdateExpirationRfqEmail(
+                            p.fournisseur.user.email,
+                            fournisseurName,
+                            updated,
+                            oldDateStr,
+                            newDateStr,
+                            isProlonged
+                        ).catch(console.error);
+                    }
                 }
             }
         }

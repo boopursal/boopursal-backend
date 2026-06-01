@@ -1,13 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class DemandeJetonsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mailService: MailService,
+  ) {}
 
   async create(data: any) {
     try {
-      return await this.prisma.demande_jeton.create({ data });
+      const created = await this.prisma.demande_jeton.create({ data });
+
+      // Charger la demande complète avec fournisseur pour les détails du mail
+      const fullDemande = await this.prisma.demande_jeton.findUnique({
+        where: { id: created.id },
+        include: {
+          fournisseur: { include: { user: true } }
+        }
+      });
+
+      // Notifier l'administrateur de la demande de jetons
+      if (fullDemande) {
+        await this.mailService.sendNotificationJetonAdmin(fullDemande).catch(console.error);
+      }
+
+      return created;
     } catch (error) {
       console.error('[DEMANDE_JETONS] Error creating:', error);
       throw error;

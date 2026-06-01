@@ -279,6 +279,9 @@ export class AcheteursService {
             // Dispatch emails (await for serverless reliability)
             await this.mailService.sendConfirmationEmail(newUser.email, confirmationToken).catch(console.error);
             await this.mailService.newRegister(newUser.email, 'Acheteur').catch(console.error);
+            if (data.societe) {
+                await this.mailService.sendNewSocieteAlert(data.societe, newUser.email, 'Acheteur').catch(console.error);
+            }
 
             const returnAcheteur: any = newUser.acheteur;
 
@@ -350,6 +353,7 @@ export class AcheteursService {
                 titre: d.titre,
                 statut: d.statut,
                 created: d.created,
+                dateExpiration: d.date_expiration,
             })),
             'hydra:totalItems': total,
         };

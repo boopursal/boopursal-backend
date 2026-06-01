@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class ContactFournisseursService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly mailService: MailService
+    ) { }
 
     async findAll(page = 1, limit = 20, search?: string, order?: any) {
         const skip = (page - 1) * limit;
@@ -82,7 +86,27 @@ export class ContactFournisseursService {
     async create(data: any) {
         try {
             const cleanData = this.sanitizeData(data);
-            return await this.prisma.contact_fournisseur.create({ data: cleanData });
+            const created = await this.prisma.contact_fournisseur.create({ data: cleanData });
+
+            // Envoyer un mail d'alerte au fournisseur ciblé
+            if (created.fournisseur_id) {
+                const supplier = await this.prisma.fournisseur.findUnique({
+                    where: { id: created.fournisseur_id },
+                    include: { user: true }
+                });
+
+                if (supplier?.user?.email) {
+                    await this.mailService.alertFournisseurContact(
+                        supplier.user.email,
+                        created.contact,
+                        created.email,
+                        created.phone || '',
+                        created.message
+                    ).catch(console.error);
+                }
+            }
+
+            return created;
         } catch (error) {
             console.error('[CONTACT_FOURNISSEURS_SERVICE] Error creating:', error);
             throw error;

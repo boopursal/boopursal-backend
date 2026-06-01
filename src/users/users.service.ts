@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, Inject, forwardRef } from '@nestjs/commo
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthService } from '../auth/auth.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class UsersService {
@@ -9,6 +10,7 @@ export class UsersService {
     private prisma: PrismaService,
     @Inject(forwardRef(() => AuthService))
     private authService: AuthService,
+    private mailService: MailService,
   ) {}
 
   async confirmAccount(token: string) {
@@ -38,6 +40,14 @@ export class UsersService {
         avatar: true,
       },
     });
+
+    // Envoyer l'email de bienvenue premium
+    await this.mailService.sendWelcomeEmail(
+      updatedUser.email,
+      updatedUser.discr,
+      updatedUser.first_name,
+      updatedUser.last_name
+    ).catch(console.error);
 
     // Générer le token de connexion automatique (comme dans login)
     let roles = [];

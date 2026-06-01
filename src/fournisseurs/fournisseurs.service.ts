@@ -725,6 +725,9 @@ export class FournisseursService {
             // Dispatch emails (await for serverless reliability)
             await this.mailService.sendConfirmationEmail(newUser.email, confirmationToken).catch(console.error);
             await this.mailService.newRegister(newUser.email, 'Fournisseur').catch(console.error);
+            if (data.societe) {
+                await this.mailService.sendNewSocieteAlert(data.societe, newUser.email, 'Fournisseur').catch(console.error);
+            }
 
             const returnFournisseur: any = newUser.fournisseur;
             return {

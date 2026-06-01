@@ -1,13 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class DemandeAbonnementsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mailService: MailService,
+  ) {}
 
   async create(data: any) {
     try {
-      return await this.prisma.demande_abonnement.create({ data });
+      const created = await this.prisma.demande_abonnement.create({ data });
+
+      // Charger la demande complète avec fournisseur, offre et durée pour les détails du mail
+      const fullDemande = await this.prisma.demande_abonnement.findUnique({
+        where: { id: created.id },
+        include: {
+          fournisseur: { include: { user: true } },
+          offre: true,
+          duree: true
+        }
+      });
+
+      if (fullDemande?.fournisseur?.user?.email) {
+        await this.mailService.sendReceptionDmdAbonnementEmail(
+          fullDemande.fournisseur.user.email,
+          fullDemande
+        ).catch(console.error);
+      }
+
+      // Notifier l'administrateur de la nouvelle commande d'abonnement
+      await this.mailService.sendNotificationAbonnementAdmin(fullDemande).catch(console.error);
+
+      return created;
     } catch (error) {
       console.error('[DEMANDE_ABONNEMENTS] Error creating:', error);
       throw error;

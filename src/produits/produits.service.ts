@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class ProduitsService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly mailService: MailService
+    ) { }
 
     async findAll(page = 1, limit = 20, query?: any) {
         try {
@@ -497,10 +501,32 @@ export class ProduitsService {
         if (cleanedData.updated) delete cleanedData.updated;
 
         try {
+            // Récupérer l'état d'origine du produit pour les emails
+            const original = await this.prisma.produit.findUnique({
+                where: { id },
+                include: {
+                    fournisseur: {
+                        include: { user: true }
+                    }
+                }
+            });
+
             const result = await this.prisma.produit.update({
                 where: { id },
                 data: cleanedData
             });
+
+            // Envoyer l'email de validation si le statut passe à validé
+            const isNowValid = (cleanedData.is_valid === true || cleanedData.is_valid === 'true' || cleanedData.is_valid === 1);
+            if (isNowValid && original && !original.is_valid) {
+                if (original.fournisseur?.user?.email) {
+                    await this.mailService.sendProduitValidationEmail(
+                        original.fournisseur.user.email,
+                        result
+                    ).catch(console.error);
+                }
+            }
+
             return { ...result, '@id': `/api/produits/${result.id}` };
         } catch (e) {
             console.error('Update produit error:', e);
