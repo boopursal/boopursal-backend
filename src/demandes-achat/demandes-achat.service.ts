@@ -203,6 +203,7 @@ export class DemandesAchatService {
             attachements: p.demande_achat_attachement.map(a => ({
                 ...a.attachement,
                 '@id': `/api/attachements/${a.attachement.id}`,
+                url: `attachement/demandeAchat/${a.attachement.url}`,
             })),
             dateExpiration: p.date_expiration,
             validationReport: this.validationService.validate({ 
