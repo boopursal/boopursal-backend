@@ -361,7 +361,7 @@ export class AcheteursService {
                 created: d.created,
                 dateExpiration: d.date_expiration,
                 budget: d.budget,
-                currency: d.currency ? { name: d.currency.name } : null,
+                currency: d.currency ? { name: d.currency.currency } : null,
                 localisation: d.localisation,
                 is_public: d.is_public,
                 categories: d.demande_ha_categories ? d.demande_ha_categories.map(ha => ({ name: ha.categorie?.name })) : [],
