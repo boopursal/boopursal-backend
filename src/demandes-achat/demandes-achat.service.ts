@@ -379,13 +379,16 @@ export class DemandesAchatService {
             motifRejet,
             autreCategories,
             statut,
-            is_public,
+            isPublic,
             is_internationnal,
             rejet_id,
             description,
             titre,
             fournisseurGagne,
-            dateExpiration
+            dateExpiration,
+            isAnonyme,
+            sendEmail,
+            localisation
         } = data;
 
         let fournisseurGagneId = undefined;
@@ -419,7 +422,10 @@ export class DemandesAchatService {
             where: { id },
             data: {
                 statut: finalStatut,
-                is_public: is_public !== undefined ? Boolean(is_public) : undefined,
+                is_public: isPublic !== undefined ? Boolean(isPublic) : undefined,
+                is_anonyme: isAnonyme !== undefined ? Boolean(isAnonyme) : undefined,
+                is_alerted: sendEmail !== undefined ? Boolean(sendEmail) : undefined,
+                localisation: localisation ? String(localisation) : undefined,
                 motif_rejet_id: motifRejet ? parseInt(motifRejet) : (rejet_id ? parseInt(rejet_id) : undefined),
                 budget: budget !== undefined ? parseFloat(budget) : undefined,
                 autre_categories: autreCategories,
@@ -576,12 +582,15 @@ export class DemandesAchatService {
             for (let frs of fournisseurs) {
                 const fournisseur: any = frs;
                 if (fournisseur.user?.email) {
-                    await this.mailService.alerterFournisseurs(
-                        fournisseur.user.email, 
-                        demande.reference || demande.id.toString(), 
-                        demande.titre, 
-                        demande.description
-                    );
+                    // Send email only if the alert checkbox is checked
+                    if (demande.is_alerted) {
+                        await this.mailService.alerterFournisseurs(
+                            fournisseur.user.email, 
+                            demande.reference || demande.id.toString(), 
+                            demande.titre, 
+                            demande.description
+                        );
+                    }
 
                     // Tracer la diffusion
                     await this.prisma.diffusion_demande.create({
