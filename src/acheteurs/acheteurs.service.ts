@@ -338,6 +338,12 @@ export class AcheteursService {
                 skip,
                 take: limit,
                 orderBy: { created: 'desc' },
+                include: {
+                    currency: true,
+                    demande_ha_categories: {
+                        include: { categorie: true }
+                    }
+                }
             }),
             this.prisma.demande_achat.count({
                 where: { acheteur_id: id },
@@ -354,6 +360,11 @@ export class AcheteursService {
                 statut: d.statut,
                 created: d.created,
                 dateExpiration: d.date_expiration,
+                budget: d.budget,
+                currency: d.currency ? { name: d.currency.name } : null,
+                localisation: d.localisation,
+                is_public: d.is_public,
+                categories: d.demande_ha_categories ? d.demande_ha_categories.map(ha => ({ name: ha.categorie?.name })) : [],
             })),
             'hydra:totalItems': total,
         };
