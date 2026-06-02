@@ -1,4 +1,4 @@
-import { Controller, Post, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, Delete, Param } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage, memoryStorage } from 'multer';
 import { extname } from 'path';
@@ -37,6 +37,10 @@ export class AttachementsController {
                 .join('');
             const filename = `attachements/demandeAchat/${randomName}${extname(file.originalname)}`;
 
+            if (!process.env.BLOB_READ_WRITE_TOKEN) {
+                throw new Error("BLOB_READ_WRITE_TOKEN is missing. Please configure Vercel Blob Storage.");
+            }
+
             const blob = await put(filename, file.buffer, {
                 access: 'public',
                 contentType: file.mimetype,
@@ -61,5 +65,10 @@ export class AttachementsController {
             name: file.originalname,
             url: fileUrl
         };
+    }
+
+    @Delete(':id')
+    async deleteAttachement(@Param('id') id: string) {
+        return this.mediaService.deleteAttachement(parseInt(id));
     }
 }

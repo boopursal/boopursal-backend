@@ -38,4 +38,23 @@ export class MediaService {
             where: { id }
         });
     }
+
+    async deleteAttachement(id: number) {
+        // First, get the attachment to retrieve its URL (needed to delete from Vercel Blob)
+        const att = await this.prisma.attachement.findUnique({ where: { id } });
+        if (!att) return null;
+
+        // If it's a Vercel Blob URL, delete from blob storage too
+        if (att.url?.startsWith('http') && process.env.BLOB_READ_WRITE_TOKEN) {
+            try {
+                const { del } = await import('@vercel/blob');
+                await del(att.url);
+            } catch (e) {
+                console.warn('[deleteAttachement] Could not delete blob:', e?.message);
+            }
+        }
+
+        // Remove from DB (cascade will remove demande_achat_attachement links)
+        return this.prisma.attachement.delete({ where: { id } });
+    }
 }
