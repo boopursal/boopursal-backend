@@ -243,8 +243,7 @@ export class AcheteursService {
                 where.type = type;
             }
             const items = await this.prisma.acheteur.findMany({
-                where,
-                orderBy: { created: 'desc' }
+                where
             });
             return { 'hydra:member': items, 'hydra:totalItems': items.length };
         } catch (error) {
