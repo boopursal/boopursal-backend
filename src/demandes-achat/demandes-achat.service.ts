@@ -203,7 +203,11 @@ export class DemandesAchatService {
             attachements: p.demande_achat_attachement.map(a => ({
                 ...a.attachement,
                 '@id': `/api/attachements/${a.attachement.id}`,
-                url: `attachement/demandeAchat/${a.attachement.url}`,
+                // En production, l'URL est déjà une URL complète (Vercel Blob).
+                // En local, on préfixe avec le chemin du dossier statique.
+                url: a.attachement.url?.startsWith('http')
+                    ? a.attachement.url
+                    : `attachement/demandeAchat/${a.attachement.url}`,
             })),
             dateExpiration: p.date_expiration,
             validationReport: this.validationService.validate({ 
