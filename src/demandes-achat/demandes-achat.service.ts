@@ -465,7 +465,34 @@ export class DemandesAchatService {
             }
         }
 
-        // 3. Logique d'envoi d'emails métier
+        // 3. Mise à jour des pièces jointes si fournies
+        if (attachements && Array.isArray(attachements)) {
+            // Supprimer les anciennes liaisons
+            await this.prisma.demande_achat_attachement.deleteMany({
+                where: { demande_achat_id: id }
+            });
+
+            // Insérer les nouvelles
+            if (attachements.length > 0) {
+                const newAttachementsData = attachements.map((attString: string) => {
+                    // L'IRI peut être "/api/attachements/32" ou l'objet peut avoir un @id
+                    const iri = typeof attString === 'string' ? attString : (attString as any)['@id'];
+                    const attId = parseInt((iri || '').replace('/api/attachements/', ''));
+                    return {
+                        demande_achat_id: id,
+                        attachement_id: attId
+                    };
+                }).filter((a: any) => !isNaN(a.attachement_id));
+
+                if (newAttachementsData.length > 0) {
+                    await this.prisma.demande_achat_attachement.createMany({
+                        data: newAttachementsData
+                    });
+                }
+            }
+        }
+
+        // 4. Logique d'envoi d'emails métier
         const ref = updated.reference || updated.id.toString();
 
         // A. Validée (Statut passe à 1) — manuellement ou par IA
