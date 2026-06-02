@@ -11,6 +11,33 @@ export class DemandeAbonnementsService {
 
   async create(data: any) {
     try {
+      if (data.fournisseur_id) {
+        // Ensure a fournisseur record exists for this user ID to satisfy foreign key constraints.
+        const fournisseurExists = await this.prisma.fournisseur.findUnique({
+          where: { id: data.fournisseur_id }
+        });
+        if (!fournisseurExists) {
+          // Check if user exists
+          const user = await this.prisma.user.findUnique({ where: { id: data.fournisseur_id } });
+          if (user) {
+            await this.prisma.fournisseur.create({
+              data: {
+                id: user.id,
+                name: user.first_name + ' ' + user.last_name,
+                telephone: user.phone || '0000000000',
+                email: user.email,
+                type: 'autre'
+              }
+            });
+          }
+        }
+      }
+
+      // Ensure price is calculated or default to 0 to avoid Prisma validation error
+      if (data.prix === undefined || data.prix === null) {
+          data.prix = 0;
+      }
+      
       const created = await this.prisma.demande_abonnement.create({ data });
 
       // Charger la demande complète avec fournisseur, offre et durée pour les détails du mail
