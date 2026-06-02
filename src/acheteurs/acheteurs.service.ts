@@ -236,6 +236,22 @@ export class AcheteursService {
         };
     }
 
+    async getChilds(id: number, type?: number) {
+        try {
+            const where: any = { parent2: id };
+            if (type !== undefined && !isNaN(type)) {
+                where.type = type;
+            }
+            const items = await this.prisma.acheteur.findMany({
+                where,
+                orderBy: { created: 'desc' }
+            });
+            return { 'hydra:member': items, 'hydra:totalItems': items.length };
+        } catch (error) {
+            return { 'hydra:member': [], 'hydra:totalItems': 0 };
+        }
+    }
+
     async create(data: any) {
         console.log('[AcheteursService.create] Incoming data keys:', Object.keys(data || {}));
         console.log('[AcheteursService.create] Body email:', data?.email, '| has password:', !!data?.password);

@@ -91,6 +91,14 @@ export class AcheteursController {
         return this.acheteursService.findSuggestions(id);
     }
 
+    @Get(':id/childs')
+    async getChilds(
+        @Param('id', ParseIntPipe) id: number,
+        @Query('type') type?: string
+    ) {
+        return this.acheteursService.getChilds(id, type ? +type : undefined);
+    }
+
     @Get(':id/demandes')
     async findDemandes(
         @Param('id', ParseIntPipe) id: number,
