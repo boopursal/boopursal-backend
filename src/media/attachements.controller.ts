@@ -5,7 +5,7 @@ import { extname } from 'path';
 import { MediaService } from './media.service';
 import { put } from '@vercel/blob';
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = !!process.env.VERCEL || process.env.NODE_ENV === 'production';
 
 @Controller('attachements')
 export class AttachementsController {
