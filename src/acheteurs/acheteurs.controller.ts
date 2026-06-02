@@ -86,6 +86,11 @@ export class AcheteursController {
         return this.acheteursService.findBlacklistes(id);
     }
 
+    @Get(':id/suggestions')
+    async findSuggestions(@Param('id', ParseIntPipe) id: number) {
+        return this.acheteursService.findSuggestions(id);
+    }
+
     @Get(':id/demandes')
     async findDemandes(
         @Param('id', ParseIntPipe) id: number,

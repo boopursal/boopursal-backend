@@ -221,6 +221,21 @@ export class AcheteursService {
         return this.findOne(id);
     }
 
+    async findSuggestions(id: number) {
+        const suggestions = await this.prisma.suggestion.findMany({
+            where: { user_id: id },
+            orderBy: { created: 'desc' }
+        });
+        
+        return {
+            'hydra:member': suggestions.map(s => ({
+                ...s,
+                '@id': `/api/suggestions/${s.id}`
+            })),
+            'hydra:totalItems': suggestions.length
+        };
+    }
+
     async create(data: any) {
         console.log('[AcheteursService.create] Incoming data keys:', Object.keys(data || {}));
         console.log('[AcheteursService.create] Body email:', data?.email, '| has password:', !!data?.password);

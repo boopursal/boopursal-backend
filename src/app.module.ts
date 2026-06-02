@@ -39,6 +39,7 @@ import { PersonnelsModule } from './personnels/personnels.module';
 import { DemandeAbonnementsModule } from './demande-abonnements/demande-abonnements.module';
 import { OffresModule } from './offres/offres.module';
 import { BlackListesModule } from './black-listes/black-listes.module';
+import { SuggestionsModule } from './suggestions/suggestions.module';
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { BlackListesModule } from './black-listes/black-listes.module';
     DemandeAbonnementsModule,
     OffresModule,
     BlackListesModule,
+    SuggestionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
