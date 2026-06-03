@@ -24,20 +24,20 @@ export class DemandeAbonnementsController {
       created: new Date(),
       prix: 0, // Should be calculated or passed
       currency: "MAD", // Should be passed or default
-      type: true,
+      type: data.type !== undefined ? data.type : false,
       suggestions: data.suggestions ? data.suggestions.join(', ') : '',
       reference: `CMD-${Date.now()}` // Generate a unique reference
     };
 
     // Assuming the user is a fournisseur (since demande_abonnement only has fournisseur_id)
     if (user && user.roles && user.roles.includes('ROLE_FOURNISSEUR')) {
-        mappedData['fournisseur_id'] = user.id;
+        mappedData['fournisseur_id'] = user.data ? user.data.id : user.id;
     } else {
         // Even if they are an acheteur, for now we map their ID to fournisseur_id to prevent failure,
         // or if the DB strictly enforces the foreign key, this might still fail.
         // Let's check if they have a fournisseur record or just set it.
         // Actually, if the foreign key is strict, we might need to handle it in the service.
-        mappedData['fournisseur_id'] = user.id;
+        mappedData['fournisseur_id'] = user.data ? user.data.id : user.id;
     }
 
     return this.demandeAbonnementsService.create(mappedData);
@@ -46,7 +46,7 @@ export class DemandeAbonnementsController {
   @UseGuards(AuthGuard('jwt'))
   @Get('my')
   findMyAbonnements(@Req() req: any, @Query('page') page = '1', @Query('limit') limit = '20') {
-    return this.demandeAbonnementsService.findByUser(req.user.id, +page, +limit);
+    return this.demandeAbonnementsService.findByUser(req.user.data ? req.user.data.id : req.user.id, +page, +limit);
   }
 
   @Get()
