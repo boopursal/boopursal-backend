@@ -43,6 +43,12 @@ export class DemandeAbonnementsController {
     return this.demandeAbonnementsService.create(mappedData);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Get('my')
+  findMyAbonnements(@Req() req: any, @Query('page') page = '1', @Query('limit') limit = '20') {
+    return this.demandeAbonnementsService.findByUser(req.user.id, +page, +limit);
+  }
+
   @Get()
   findAll(
     @Query('page') page = '1',

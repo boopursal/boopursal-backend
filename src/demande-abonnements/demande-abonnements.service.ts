@@ -36,6 +36,17 @@ export class DemandeAbonnementsService {
         }
       }
 
+      if (data.offre_id && data.duree_id) {
+        const [offre, duree] = await Promise.all([
+          this.prisma.offre.findUnique({ where: { id: data.offre_id } }),
+          this.prisma.duree.findUnique({ where: { id: data.duree_id } })
+        ]);
+        if (offre && duree) {
+          const prixMensuel = data.currency === 'EUR' ? offre.prix_eur : offre.prix_mad;
+          data.prix = (prixMensuel * duree.name) * (1 - (duree.remise / 100));
+        }
+      }
+
       // Ensure price is calculated or default to 0 to avoid Prisma validation error
       if (data.prix === undefined || data.prix === null) {
           data.prix = 0;
@@ -68,6 +79,21 @@ export class DemandeAbonnementsService {
       console.error('[DEMANDE_ABONNEMENTS] Error creating:', error);
       throw error;
     }
+  }
+
+  async findByUser(userId: number, page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
+    const [data, total] = await Promise.all([
+      this.prisma.demande_abonnement.findMany({
+        where: { fournisseur_id: userId },
+        skip,
+        take: limit,
+        orderBy: { created: 'desc' },
+        include: { offre: true, duree: true, paiement: true }
+      }),
+      this.prisma.demande_abonnement.count({ where: { fournisseur_id: userId } })
+    ]);
+    return { 'hydra:member': data.map(i => ({ ...i, '@id': `/api/demande_abonnements/${i.id}` })), 'hydra:totalItems': total };
   }
 
   async findAll(page = 1, limit = 20) {
