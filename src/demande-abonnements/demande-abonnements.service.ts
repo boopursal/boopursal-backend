@@ -93,7 +93,7 @@ export class DemandeAbonnementsService {
       }),
       this.prisma.demande_abonnement.count({ where: { fournisseur_id: userId } })
     ]);
-    return { 'hydra:member': data.map(i => ({ ...i, '@id': `/api/demande_abonnements/${i.id}` })), 'hydra:totalItems': total };
+    return { 'hydra:member': data.map(i => this.formatDemandeAbonnement(i)), 'hydra:totalItems': total };
   }
 
   async findAll(page = 1, limit = 20) {
@@ -105,18 +105,34 @@ export class DemandeAbonnementsService {
     return { 'hydra:member': data.map(i => ({ ...i, '@id': `/api/demande_abonnements/${i.id}` })), 'hydra:totalItems': total };
   }
 
+  private formatDemandeAbonnement(item: any) {
+    if (!item) return null;
+    if (item.offre) {
+      item.offre = {
+        ...item.offre,
+        prixMad: item.offre.prix_mad,
+        prixEur: item.offre.prix_eur,
+        nbActivite: item.offre.nb_activite,
+        focusProduit: item.offre.focus_produit,
+        nbPageCatalogue: item.offre.nb_page_catalogue,
+        hasCommercial: item.offre.has_commercial,
+        hasBanner: item.offre.has_banner,
+      };
+    }
+    return { ...item, '@id': `/api/demande_abonnements/${item.id}` };
+  }
+
   async findOne(id: number) {
     const item = await this.prisma.demande_abonnement.findUnique({
       where: { id },
       include: {
-        fournisseur: { include: { user: true } },
+        fournisseur: { include: { user: true, pays: true, ville: true, currency: true } },
         offre: true,
         duree: true,
         paiement: true
       }
     });
-    if (!item) return null;
-    return { ...item, '@id': `/api/demande_abonnements/${item.id}` };
+    return this.formatDemandeAbonnement(item);
   }
 
   async update(id: number, data: any) {
