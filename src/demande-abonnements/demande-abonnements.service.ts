@@ -106,7 +106,15 @@ export class DemandeAbonnementsService {
   }
 
   async findOne(id: number) {
-    const item = await this.prisma.demande_abonnement.findUnique({ where: { id }, include: { fournisseur: true } });
+    const item = await this.prisma.demande_abonnement.findUnique({
+      where: { id },
+      include: {
+        fournisseur: { include: { user: true } },
+        offre: true,
+        duree: true,
+        paiement: true
+      }
+    });
     if (!item) return null;
     return { ...item, '@id': `/api/demande_abonnements/${item.id}` };
   }
