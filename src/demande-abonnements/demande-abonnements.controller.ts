@@ -23,7 +23,7 @@ export class DemandeAbonnementsController {
       statut: false, // Default status for new demande
       created: new Date(),
       prix: 0, // Should be calculated or passed
-      currency: "MAD", // Should be passed or default
+      currency: data.currency || "MAD", // Use passed currency or default
       type: data.type !== undefined ? data.type : false,
       suggestions: data.suggestions ? data.suggestions.join(', ') : '',
       reference: `CMD-${Date.now()}` // Generate a unique reference

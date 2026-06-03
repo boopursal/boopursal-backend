@@ -20,8 +20,8 @@ export class AuthService {
         const user = await this.prisma.user.findFirst({
             where: { email: cleanEmail },
             include: {
-                acheteur: true,
-                fournisseur: true,
+                acheteur: { include: { currency: true } },
+                fournisseur: { include: { currency: true } },
                 avatar: true,
             },
         });
@@ -102,6 +102,7 @@ export class AuthService {
                 // Champs pour compatibilité directe (société, ville, etc.)
                 societe: user.fournisseur?.societe || user.acheteur?.societe,
                 villeId: user.fournisseur?.ville_id || user.acheteur?.ville_id,
+                currency: user.fournisseur?.currency?.code || user.acheteur?.currency?.code || null,
             }
         };
     }
@@ -122,8 +123,8 @@ export class AuthService {
         const user = await this.prisma.user.findFirst({
             where: userId ? { id: userId } : { email: usernameEmail },
             include: {
-                acheteur: true,
-                fournisseur: true,
+                acheteur: { include: { currency: true } },
+                fournisseur: { include: { currency: true } },
                 avatar: true,
             },
         });
