@@ -23,10 +23,13 @@ export class DemandeAbonnementsService {
             await this.prisma.fournisseur.create({
               data: {
                 id: user.id,
-                name: user.first_name + ' ' + user.last_name,
-                telephone: user.phone || '0000000000',
-                email: user.email,
-                type: 'autre'
+                societe: user.first_name + ' ' + user.last_name,
+                civilite: 'M',
+                slug: 'fournisseur-' + user.id + '-' + Date.now(),
+                phone_vu: 0,
+                visite: 0,
+                step: 0,
+                is_complet: false
               }
             });
           }

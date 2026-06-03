@@ -1,12 +1,12 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
 import { DemandeAbonnementsService } from './demande-abonnements.service';
 
 @Controller('demande_abonnements')
 export class DemandeAbonnementsController {
   constructor(private readonly demandeAbonnementsService: DemandeAbonnementsService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   create(@Body() data: any, @Req() req: any) {
     const user = req.user;
