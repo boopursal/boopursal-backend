@@ -135,9 +135,29 @@ export class DemandeAbonnementsService {
     return this.formatDemandeAbonnement(item);
   }
 
-  async update(id: number, data: any) {
+  async update(id: number, data: any, sousSecteurs?: number[]) {
     try {
-      return await this.prisma.demande_abonnement.update({ where: { id }, data });
+      if (sousSecteurs && Array.isArray(sousSecteurs)) {
+        return await this.prisma.$transaction(async (prisma) => {
+          const updated = await prisma.demande_abonnement.update({ where: { id }, data });
+          
+          await prisma.demande_abonnement_sous_secteur.deleteMany({
+            where: { demande_abonnement_id: id }
+          });
+          
+          if (sousSecteurs.length > 0) {
+            await prisma.demande_abonnement_sous_secteur.createMany({
+              data: sousSecteurs.map(ssid => ({
+                demande_abonnement_id: id,
+                sous_secteur_id: ssid
+              }))
+            });
+          }
+          return updated;
+        });
+      } else {
+        return await this.prisma.demande_abonnement.update({ where: { id }, data });
+      }
     } catch (error) {
       console.error('[DEMANDE_ABONNEMENTS] Error updating:', error);
       throw error;

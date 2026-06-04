@@ -66,7 +66,22 @@ export class DemandeAbonnementsController {
   update(@Param('id') id: string, @Body() data: any) {
     const daId = parseInt(id.split('-')[0]);
     if (isNaN(daId)) return null;
-    return this.demandeAbonnementsService.update(daId, data);
+
+    const mappedData: any = {};
+    if (data.statut !== undefined) mappedData.statut = data.statut;
+    if (data.offre) mappedData.offre_id = parseInt(data.offre.split('/').pop());
+    if (data.mode) mappedData.mode_id = parseInt(data.mode.split('/').pop());
+    if (data.duree) mappedData.duree_id = parseInt(data.duree.split('/').pop());
+    if (data.prix !== undefined) mappedData.prix = data.prix;
+    if (data.type !== undefined) mappedData.type = data.type;
+    if (data.currency) mappedData.currency = data.currency;
+    if (data.suggestions !== undefined && data.suggestions !== null) {
+      mappedData.suggestions = Array.isArray(data.suggestions) ? data.suggestions.join(', ') : data.suggestions;
+    }
+
+    const sousSecteurs = data.sousSecteurs ? data.sousSecteurs.map(s => parseInt(s.split('/').pop())) : undefined;
+
+    return this.demandeAbonnementsService.update(daId, mappedData, sousSecteurs);
   }
 
   @Delete(':id')
