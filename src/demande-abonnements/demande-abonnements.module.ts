@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { DemandeAbonnementsService } from './demande-abonnements.service';
 import { DemandeAbonnementsController } from './demande-abonnements.controller';
 import { MailModule } from '../mail/mail.module';
+import { AbonnementsModule } from '../abonnements/abonnements.module';
 
 @Module({
-  imports: [MailModule],
+  imports: [MailModule, AbonnementsModule],
   controllers: [DemandeAbonnementsController],
   providers: [DemandeAbonnementsService],
 })

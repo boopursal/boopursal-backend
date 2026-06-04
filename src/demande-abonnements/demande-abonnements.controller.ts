@@ -1,10 +1,14 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, Query, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { DemandeAbonnementsService } from './demande-abonnements.service';
+import { AbonnementsService } from '../abonnements/abonnements.service';
 
 @Controller('demande_abonnements')
 export class DemandeAbonnementsController {
-  constructor(private readonly demandeAbonnementsService: DemandeAbonnementsService) {}
+  constructor(
+    private readonly demandeAbonnementsService: DemandeAbonnementsService,
+    private readonly abonnementsService: AbonnementsService
+  ) {}
 
   @UseGuards(AuthGuard('jwt'))
   @Post()
@@ -63,9 +67,11 @@ export class DemandeAbonnementsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() data: any) {
+  async update(@Param('id') id: string, @Body() data: any) {
     const daId = parseInt(id.split('-')[0]);
     if (isNaN(daId)) return null;
+
+    const oldDemande: any = await this.demandeAbonnementsService.findOne(daId);
 
     const mappedData: any = {};
     // Frontend sends paiement (boolean checkbox) which maps to statut in DB
@@ -97,7 +103,33 @@ export class DemandeAbonnementsController {
       return sStr.includes('/') ? parseInt(sStr.split('/').pop()) : parseInt(sStr);
     }).filter(n => !isNaN(n)) : undefined;
 
-    return this.demandeAbonnementsService.update(daId, mappedData, sousSecteurs);
+    const updated = await this.demandeAbonnementsService.update(daId, mappedData, sousSecteurs);
+
+    if (oldDemande && oldDemande.statut === false && mappedData.statut === true) {
+        try {
+            const ss = data.sousSecteurs || (oldDemande.sousSecteurs || []).map(s => s['@id'] || `/api/sous_secteurs/${s.id}`);
+            const abonnementPayload = {
+                fournisseur: `/api/fournisseurs/${oldDemande.fournisseur_id}`,
+                offre: data.offre || `/api/offres/${oldDemande.offre_id}`,
+                duree: data.duree || `/api/durees/${oldDemande.duree_id}`,
+                mode: data.mode || (oldDemande.mode ? oldDemande.mode['@id'] : (oldDemande.mode_id ? `/api/paiements/${oldDemande.mode_id}` : null)),
+                demande_id: daId,
+                prix: data.prix !== undefined ? data.prix : oldDemande.prix,
+                remise: data.remise !== undefined ? data.remise : (oldDemande.remise || 0),
+                type: data.type !== undefined ? data.type : oldDemande.type,
+                statut: true,
+                sousSecteurs: ss,
+                currency: data.currency || oldDemande.currency,
+                prix_admin: data.prix_admin !== undefined ? data.prix_admin : 0
+            };
+            
+            await this.abonnementsService.create(abonnementPayload);
+        } catch (e) {
+            console.error('[DEMANDE_ABONNEMENT] Failed to auto-create abonnement:', e);
+        }
+    }
+
+    return updated;
   }
 
   @Delete(':id')
