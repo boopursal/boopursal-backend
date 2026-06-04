@@ -68,9 +68,19 @@ export class DemandeAbonnementsController {
     if (isNaN(daId)) return null;
 
     const mappedData: any = {};
+    // Frontend sends paiement (boolean checkbox) which maps to statut in DB
+    if (data.paiement !== undefined) mappedData.statut = !!data.paiement;
     if (data.statut !== undefined) mappedData.statut = data.statut;
     if (data.offre) mappedData.offre_id = parseInt(data.offre.split('/').pop());
-    if (data.mode) mappedData.mode_id = parseInt(data.mode.split('/').pop());
+    if (data.mode) {
+      // mode can be an IRI string like "/api/paiements/1" or just a value
+      const modeStr = String(data.mode);
+      if (modeStr.includes('/')) {
+        mappedData.mode_id = parseInt(modeStr.split('/').pop());
+      } else {
+        mappedData.mode_id = parseInt(modeStr);
+      }
+    }
     if (data.duree) mappedData.duree_id = parseInt(data.duree.split('/').pop());
     if (data.prix !== undefined) mappedData.prix = data.prix;
     if (data.type !== undefined) mappedData.type = data.type;
@@ -79,7 +89,10 @@ export class DemandeAbonnementsController {
       mappedData.suggestions = Array.isArray(data.suggestions) ? data.suggestions.join(', ') : data.suggestions;
     }
 
-    const sousSecteurs = data.sousSecteurs ? data.sousSecteurs.map(s => parseInt(s.split('/').pop())) : undefined;
+    const sousSecteurs = data.sousSecteurs ? data.sousSecteurs.map(s => {
+      const sStr = String(s);
+      return sStr.includes('/') ? parseInt(sStr.split('/').pop()) : parseInt(sStr);
+    }).filter(n => !isNaN(n)) : undefined;
 
     return this.demandeAbonnementsService.update(daId, mappedData, sousSecteurs);
   }

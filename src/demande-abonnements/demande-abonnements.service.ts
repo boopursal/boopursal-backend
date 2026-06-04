@@ -99,10 +99,27 @@ export class DemandeAbonnementsService {
   async findAll(page = 1, limit = 20) {
     const skip = (page - 1) * limit;
     const [data, total] = await Promise.all([
-      this.prisma.demande_abonnement.findMany({ skip, take: limit, orderBy: { created: 'desc' }, include: { fournisseur: true } }),
+      this.prisma.demande_abonnement.findMany({
+        skip, take: limit, orderBy: { created: 'desc' },
+        include: {
+          fournisseur: true,
+          offre: true,
+          duree: true,
+          paiement: true,
+          _count: { select: { demande_abonnement_sous_secteur: true } }
+        }
+      }),
       this.prisma.demande_abonnement.count()
     ]);
-    return { 'hydra:member': data.map(i => ({ ...i, '@id': `/api/demande_abonnements/${i.id}` })), 'hydra:totalItems': total };
+    return {
+      'hydra:member': data.map(i => {
+        const formatted = this.formatDemandeAbonnement(i);
+        formatted.nbSousSecteurs = i._count?.demande_abonnement_sous_secteur || 0;
+        delete formatted._count;
+        return formatted;
+      }),
+      'hydra:totalItems': total
+    };
   }
 
   private formatDemandeAbonnement(item: any) {
@@ -110,6 +127,7 @@ export class DemandeAbonnementsService {
     if (item.offre) {
       item.offre = {
         ...item.offre,
+        '@id': `/api/offres/${item.offre.id}`,
         prixMad: item.offre.prix_mad,
         prixEur: item.offre.prix_eur,
         nbActivite: item.offre.nb_activite,
@@ -118,6 +136,12 @@ export class DemandeAbonnementsService {
         hasCommercial: item.offre.has_commercial,
         hasBanner: item.offre.has_banner,
       };
+    }
+    if (item.duree) {
+      item.duree = { ...item.duree, '@id': `/api/durees/${item.duree.id}` };
+    }
+    if (item.paiement) {
+      item.mode = { ...item.paiement, '@id': `/api/paiements/${item.paiement.id}` };
     }
     return { ...item, '@id': `/api/demande_abonnements/${item.id}` };
   }
@@ -129,10 +153,32 @@ export class DemandeAbonnementsService {
         fournisseur: { include: { user: true, pays: true, ville: true, currency: true } },
         offre: true,
         duree: true,
-        paiement: true
+        paiement: true,
+        demande_abonnement_sous_secteur: {
+          include: {
+            sous_secteur: {
+              include: { secteur: true }
+            }
+          }
+        }
       }
     });
-    return this.formatDemandeAbonnement(item);
+    if (!item) return null;
+    const formatted = this.formatDemandeAbonnement(item);
+    // Map sousSecteurs in the format the frontend expects
+    formatted.sousSecteurs = (item.demande_abonnement_sous_secteur || []).map(dass => ({
+      '@id': `/api/sous_secteurs/${dass.sous_secteur.id}`,
+      id: dass.sous_secteur.id,
+      name: dass.sous_secteur.name,
+      secteur: dass.sous_secteur.secteur ? {
+        '@id': `/api/secteurs/${dass.sous_secteur.secteur.id}`,
+        id: dass.sous_secteur.secteur.id,
+        name: dass.sous_secteur.secteur.name,
+      } : null,
+    }));
+    // Remove raw join table data
+    delete formatted.demande_abonnement_sous_secteur;
+    return formatted;
   }
 
   async update(id: number, data: any, sousSecteurs?: number[]) {
