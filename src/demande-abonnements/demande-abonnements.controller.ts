@@ -69,8 +69,11 @@ export class DemandeAbonnementsController {
 
     const mappedData: any = {};
     // Frontend sends paiement (boolean checkbox) which maps to statut in DB
-    if (data.paiement !== undefined) mappedData.statut = !!data.paiement;
-    if (data.statut !== undefined) mappedData.statut = data.statut;
+    if (data.paiement !== undefined) {
+      mappedData.statut = !!data.paiement;
+    } else if (data.statut !== undefined) {
+      mappedData.statut = data.statut;
+    }
     if (data.offre) mappedData.offre_id = parseInt(data.offre.split('/').pop());
     if (data.mode) {
       // mode can be an IRI string like "/api/paiements/1" or just a value
