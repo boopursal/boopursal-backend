@@ -266,11 +266,44 @@ export class FournisseursController {
             if (isNaN(frsId)) return { 'hydra:member': [], 'hydra:totalItems': 0 };
             const where: any = { fournisseur_id: frsId };
             if (query.statut !== undefined) where.statut = query.statut === 'true';
-            const items = await prisma.demande_abonnement.findMany({
+            
+            const rawItems = await prisma.demande_abonnement.findMany({
                 where,
                 take: +(query.itemsPerPage || 10),
                 orderBy: { created: 'desc' },
+                include: {
+                    offre: true,
+                    duree: true,
+                    demande_abonnement_sous_secteur: {
+                        include: { sous_secteur: true }
+                    }
+                }
             });
+            
+            const items = rawItems.map(item => {
+                const formatted = { ...item } as any;
+                formatted['@id'] = `/api/demande_abonnements/${item.id}`;
+                if (item.offre) {
+                    formatted.offre = {
+                        ...item.offre,
+                        '@id': `/api/offres/${item.offre.id}`,
+                        prixMad: item.offre.prix_mad,
+                        prixEur: item.offre.prix_eur
+                    };
+                }
+                if (item.duree) {
+                    formatted.duree = { ...item.duree, '@id': `/api/durees/${item.duree.id}` };
+                }
+                if (item.demande_abonnement_sous_secteur) {
+                    formatted.sousSecteurs = item.demande_abonnement_sous_secteur.map(d => ({
+                        ...d.sous_secteur,
+                        '@id': `/api/sous_secteurs/${d.sous_secteur.id}`
+                    }));
+                    delete formatted.demande_abonnement_sous_secteur;
+                }
+                return formatted;
+            });
+            
             return { 'hydra:member': items, 'hydra:totalItems': items.length };
         } catch {
             return { 'hydra:member': [], 'hydra:totalItems': 0 };
