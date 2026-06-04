@@ -406,16 +406,16 @@ export class DashboardService {
         const start = new Date(`${year}-01-01`);
         const end = new Date(`${year + 1}-01-01`);
 
-        const visites = await this.prisma.detail_visite.findMany({
+        const demandes = await this.prisma.demande_achat.findMany({
             where: {
-                demande_achat: { acheteur_id: id },
+                acheteur_id: id,
                 created: { gte: start, lt: end },
-                statut: 1
+                del: false
             },
             select: { budget: true }
         });
 
-        const total = visites.reduce((acc, v) => acc + (v.budget || 0), 0);
+        const total = demandes.reduce((acc, d) => acc + (d.budget || 0), 0);
         return total;
     }
 
