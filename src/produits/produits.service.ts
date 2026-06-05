@@ -452,6 +452,22 @@ export class ProduitsService {
             cleanedData.categorie_id = data.categorie.id;
         }
 
+        // Apply defaults for required fields
+        cleanedData.created = cleanedData.created || new Date();
+        cleanedData.del = cleanedData.del || false;
+        cleanedData.is_select = cleanedData.is_select || false;
+        cleanedData.is_valid = cleanedData.is_valid || false;
+        cleanedData.phone_vu = cleanedData.phone_vu || 0;
+        
+        if (!cleanedData.slug) {
+            const baseSlug = (cleanedData.titre || cleanedData.reference || 'produit').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+            cleanedData.slug = `${baseSlug}-${Date.now().toString(36)}`;
+        }
+
+        if (cleanedData.titre && !cleanedData.titre_lower) {
+            cleanedData.titre_lower = cleanedData.titre.toLowerCase();
+        }
+
         try {
             const result = await this.prisma.produit.create({
                 data: cleanedData
