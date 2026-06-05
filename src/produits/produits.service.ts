@@ -475,7 +475,7 @@ export class ProduitsService {
             return { ...result, '@id': `/api/produits/${result.id}` };
         } catch (e) {
             console.error('Create produit error:', e);
-            throw new (require('@nestjs/common').HttpException)({ message: 'Create produit error: ' + (e.message || String(e)) }, 500);
+            throw new (require('@nestjs/common').HttpException)({ Erreur: 'Erreur Serveur: ' + (e.message || String(e)) }, 400);
         }
     }
 
@@ -562,7 +562,7 @@ export class ProduitsService {
             return { ...result, '@id': `/api/produits/${result.id}` };
         } catch (e) {
             console.error('Update produit error:', e);
-            throw new (require('@nestjs/common').HttpException)({ message: 'Update produit error: ' + (e.message || String(e)) }, 500);
+            throw new (require('@nestjs/common').HttpException)({ Erreur: 'Erreur Serveur: ' + (e.message || String(e)) }, 400);
         }
     }
 
@@ -587,3 +587,5 @@ export class ProduitsService {
         }
     }
 }
+
+
