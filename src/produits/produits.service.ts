@@ -405,21 +405,34 @@ export class ProduitsService {
     }
 
     async create(data: any) {
-        // Exclude properties that shouldn't be blindly copied to DB
-        const { currency, categorie, secteur, sous_secteur, fournisseur, image_produit, produit_image_produit, '@context': _context, '@id': _id, '@type': _type, images, ficheReqInProgress, fiche, image, error, loading, success, ...rest } = data;
+        // Exclude ALL properties that shouldn't be blindly copied to DB
+        const {
+            currency, categorie, secteur, sous_secteur, sousSecteurs, fournisseur,
+            image_produit, produit_image_produit,
+            '@context': _context, '@id': _id, '@type': _type,
+            images, ficheReqInProgress, fiche, image, error, loading, success,
+            videoExist, videoLoading, secteurAdded, sousSecteurAdded, CategorieAdded,
+            ...rest
+        } = data;
         
         let cleanedData: any = { ...rest };
         
         if (cleanedData.ficheTechnique !== undefined) {
             if (cleanedData.ficheTechnique) {
-                cleanedData.fiche_technique_id = parseInt(cleanedData.ficheTechnique.split('/').pop());
+                const ficheStr = typeof cleanedData.ficheTechnique === 'string'
+                    ? cleanedData.ficheTechnique
+                    : cleanedData.ficheTechnique['@id'] || '';
+                cleanedData.fiche_technique_id = parseInt(ficheStr.split('/').pop());
             }
             delete cleanedData.ficheTechnique;
         }
 
         if (cleanedData.featuredImageId !== undefined) {
             if (cleanedData.featuredImageId) {
-                cleanedData.featured_image_id_id = parseInt(cleanedData.featuredImageId.split('/').pop());
+                const imgStr = typeof cleanedData.featuredImageId === 'string'
+                    ? cleanedData.featuredImageId
+                    : cleanedData.featuredImageId['@id'] || '';
+                cleanedData.featured_image_id_id = parseInt(imgStr.split('/').pop());
             }
             delete cleanedData.featuredImageId;
         }
@@ -427,29 +440,42 @@ export class ProduitsService {
         if (data.fournisseur && typeof data.fournisseur === 'string') {
             const fId = parseInt(data.fournisseur.split('/').pop());
             if (!isNaN(fId)) cleanedData.fournisseur_id = fId;
+        } else if (data.fournisseur && data.fournisseur['@id']) {
+            const fId = parseInt(data.fournisseur['@id'].split('/').pop());
+            if (!isNaN(fId)) cleanedData.fournisseur_id = fId;
         } else if (data.fournisseur && data.fournisseur.id) {
             cleanedData.fournisseur_id = data.fournisseur.id;
         }
 
-        if (data.secteur && typeof data.secteur === 'string') {
-            const id = parseInt(data.secteur.split('/').pop());
+        // secteur: string IRI or object
+        if (secteur && typeof secteur === 'string') {
+            const id = parseInt(secteur.split('/').pop());
             if (!isNaN(id)) cleanedData.secteur_id = id;
-        } else if (data.secteur && data.secteur.id) {
-            cleanedData.secteur_id = data.secteur.id;
+        } else if (secteur && secteur['@id']) {
+            cleanedData.secteur_id = parseInt(secteur['@id'].split('/').pop());
+        } else if (secteur && secteur.id) {
+            cleanedData.secteur_id = secteur.id;
         }
 
-        if (data.sous_secteur && typeof data.sous_secteur === 'string') {
-            const id = parseInt(data.sous_secteur.split('/').pop());
+        // sousSecteurs: the frontend sends this as 'sousSecteurs' (plural camelCase)
+        const sousSecteurData = sousSecteurs || sous_secteur;
+        if (sousSecteurData && typeof sousSecteurData === 'string') {
+            const id = parseInt(sousSecteurData.split('/').pop());
             if (!isNaN(id)) cleanedData.sous_secteur_id = id;
-        } else if (data.sous_secteur && data.sousSecteur?.id) {
-             cleanedData.sous_secteur_id = data.sousSecteur.id; 
+        } else if (sousSecteurData && sousSecteurData['@id']) {
+            cleanedData.sous_secteur_id = parseInt(sousSecteurData['@id'].split('/').pop());
+        } else if (sousSecteurData && sousSecteurData.id) {
+            cleanedData.sous_secteur_id = sousSecteurData.id;
         }
 
-        if (data.categorie && typeof data.categorie === 'string') {
-            const id = parseInt(data.categorie.split('/').pop());
+        // categorie: string IRI or object
+        if (categorie && typeof categorie === 'string') {
+            const id = parseInt(categorie.split('/').pop());
             if (!isNaN(id)) cleanedData.categorie_id = id;
-        } else if (data.categorie && data.categorie.id) {
-            cleanedData.categorie_id = data.categorie.id;
+        } else if (categorie && categorie['@id']) {
+            cleanedData.categorie_id = parseInt(categorie['@id'].split('/').pop());
+        } else if (categorie && categorie.id) {
+            cleanedData.categorie_id = categorie.id;
         }
 
         // Apply defaults for required fields
@@ -492,7 +518,7 @@ export class ProduitsService {
             return { ...result, '@id': `/api/produits/${result.id}` };
         } catch (e) {
             console.error('Create produit error:', e);
-            throw e;
+            throw new (require('@nestjs/common').HttpException)({ message: 'Create produit error: ' + (e.message || String(e)) }, 500);
         }
     }
 

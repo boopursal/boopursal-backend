@@ -32,6 +32,14 @@
       "dest": "src/main.ts"
     },
     {
+      "src": "/produits/(.*)",
+      "dest": "src/main.ts"
+    },
+    {
+      "src": "/attachement/(.*)",
+      "dest": "src/main.ts"
+    },
+    {
       "src": "/(.*)",
       "dest": "src/main.ts"
     }

@@ -22,6 +22,7 @@ async function bootstrap() {
       'https://boopursal.netlify.app',
       'https://boopursal.com',
       'https://www.boopursal.com',
+      'https://boopursal-frontend.vercel.app',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization, X-Requested-With',
@@ -39,6 +40,14 @@ async function bootstrap() {
   // Dossiers statiques
   app.use('/images', express.static(join(process.cwd(), 'public/images')));
   app.use('/attachement', express.static(join(process.cwd(), 'public/attachement')));
+  
+  // Fichiers uploadés produits (images + fiches techniques)
+  // En production (Vercel), les fichiers vont dans /tmp
+  const produitsUploadPath = process.env.NODE_ENV === 'production'
+    ? '/tmp'
+    : join(process.cwd(), 'public/images/produits');
+  app.use('/produits', express.static(produitsUploadPath));
+  app.use('/images/produits', express.static(produitsUploadPath));
 
   await app.init();
   cachedApp = app.getHttpAdapter().getInstance();
