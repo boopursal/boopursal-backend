@@ -405,112 +405,69 @@ export class ProduitsService {
     }
 
     async create(data: any) {
-        // Exclude ALL properties that shouldn't be blindly copied to DB
+        // Helper: extract numeric ID from IRI string, object with @id, or plain object with id
+        const extractId = (val: any): number | null => {
+            if (!val) return null;
+            if (typeof val === 'number') return val;
+            if (typeof val === 'string') { const n = parseInt(val.split('/').pop()); return isNaN(n) ? null : n; }
+            if (val['@id']) { const n = parseInt(val['@id'].split('/').pop()); return isNaN(n) ? null : n; }
+            if (val.id) return val.id;
+            return null;
+        };
+
+        // Destructure ALL relational/frontend-only fields from payload
         const {
             currency, categorie, secteur, sous_secteur, sousSecteurs, fournisseur,
             image_produit, produit_image_produit,
-            '@context': _context, '@id': _id, '@type': _type,
+            '@context': _ctx, '@id': _id, '@type': _type,
             images, ficheReqInProgress, fiche, image, error, loading, success,
             videoExist, videoLoading, secteurAdded, sousSecteurAdded, CategorieAdded,
-            ...rest
+            ficheTechnique, featuredImageId,
+            // Also strip raw FK integers that Prisma may reject in favour of relation syntax
+            fiche_technique_id: _fti, featured_image_id_id: _fii,
+            fournisseur_id: _fri, secteur_id: _si, sous_secteur_id: _ssid,
+            sous_secteurs_id: _ssid2, categorie_id: _ci, currency_id: _cui,
+            pays_id: _pi, ville_id: _vi,
+            ...scalarRest
         } = data;
-        
-        let cleanedData: any = { ...rest };
-        
-        if (cleanedData.ficheTechnique !== undefined) {
-            if (cleanedData.ficheTechnique) {
-                const ficheStr = typeof cleanedData.ficheTechnique === 'string'
-                    ? cleanedData.ficheTechnique
-                    : cleanedData.ficheTechnique['@id'] || '';
-                cleanedData.fiche_technique_id = parseInt(ficheStr.split('/').pop());
-            }
-            delete cleanedData.ficheTechnique;
-        }
 
-        if (cleanedData.featuredImageId !== undefined) {
-            if (cleanedData.featuredImageId) {
-                const imgStr = typeof cleanedData.featuredImageId === 'string'
-                    ? cleanedData.featuredImageId
-                    : cleanedData.featuredImageId['@id'] || '';
-                cleanedData.featured_image_id_id = parseInt(imgStr.split('/').pop());
-            }
-            delete cleanedData.featuredImageId;
-        }
-        
-        if (data.fournisseur && typeof data.fournisseur === 'string') {
-            const fId = parseInt(data.fournisseur.split('/').pop());
-            if (!isNaN(fId)) cleanedData.fournisseur_id = fId;
-        } else if (data.fournisseur && data.fournisseur['@id']) {
-            const fId = parseInt(data.fournisseur['@id'].split('/').pop());
-            if (!isNaN(fId)) cleanedData.fournisseur_id = fId;
-        } else if (data.fournisseur && data.fournisseur.id) {
-            cleanedData.fournisseur_id = data.fournisseur.id;
-        }
+        const ficheId       = extractId(ficheTechnique);
+        const featImgId     = extractId(featuredImageId);
+        const fournisseurId = extractId(fournisseur);
+        const secteurId     = extractId(secteur);
+        const sousSecteurId = extractId(sousSecteurs ?? sous_secteur);
+        const categorieId   = extractId(categorie);
 
-        // secteur: string IRI or object
-        if (secteur && typeof secteur === 'string') {
-            const id = parseInt(secteur.split('/').pop());
-            if (!isNaN(id)) cleanedData.secteur_id = id;
-        } else if (secteur && secteur['@id']) {
-            cleanedData.secteur_id = parseInt(secteur['@id'].split('/').pop());
-        } else if (secteur && secteur.id) {
-            cleanedData.secteur_id = secteur.id;
-        }
+        const baseSlug = (scalarRest.titre || scalarRest.reference || 'produit')
+            .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
-        // sousSecteurs: the frontend sends this as 'sousSecteurs' (plural camelCase)
-        const sousSecteurData = sousSecteurs || sous_secteur;
-        if (sousSecteurData && typeof sousSecteurData === 'string') {
-            const id = parseInt(sousSecteurData.split('/').pop());
-            if (!isNaN(id)) cleanedData.sous_secteur_id = id;
-        } else if (sousSecteurData && sousSecteurData['@id']) {
-            cleanedData.sous_secteur_id = parseInt(sousSecteurData['@id'].split('/').pop());
-        } else if (sousSecteurData && sousSecteurData.id) {
-            cleanedData.sous_secteur_id = sousSecteurData.id;
-        }
-
-        // categorie: string IRI or object
-        if (categorie && typeof categorie === 'string') {
-            const id = parseInt(categorie.split('/').pop());
-            if (!isNaN(id)) cleanedData.categorie_id = id;
-        } else if (categorie && categorie['@id']) {
-            cleanedData.categorie_id = parseInt(categorie['@id'].split('/').pop());
-        } else if (categorie && categorie.id) {
-            cleanedData.categorie_id = categorie.id;
-        }
-
-        // Apply defaults for required fields
-        cleanedData.created = cleanedData.created || new Date();
-        cleanedData.del = cleanedData.del || false;
-        cleanedData.is_select = cleanedData.is_select || false;
-        cleanedData.is_valid = cleanedData.is_valid || false;
-        cleanedData.phone_vu = cleanedData.phone_vu || 0;
-        
-        if (!cleanedData.slug) {
-            const baseSlug = (cleanedData.titre || cleanedData.reference || 'produit').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-            cleanedData.slug = `${baseSlug}-${Date.now().toString(36)}`;
-        }
-
-        if (cleanedData.titre && !cleanedData.titre_lower) {
-            cleanedData.titre_lower = cleanedData.titre.toLowerCase();
-        }
+        const prismaData: any = {
+            ...scalarRest,
+            slug:        scalarRest.slug || `${baseSlug}-${Date.now().toString(36)}`,
+            titre_lower: scalarRest.titre ? scalarRest.titre.toLowerCase() : (scalarRest.titre_lower || null),
+            created:     scalarRest.created   || new Date(),
+            del:         scalarRest.del       ?? false,
+            is_select:   scalarRest.is_select ?? false,
+            is_valid:    scalarRest.is_valid  ?? false,
+            phone_vu:    scalarRest.phone_vu  ?? 0,
+            free:        scalarRest.free      ?? true,
+            ...(ficheId       ? { fiche:        { connect: { id: ficheId       } } } : {}),
+            ...(featImgId     ? { image_produit: { connect: { id: featImgId     } } } : {}),
+            ...(fournisseurId ? { fournisseur:   { connect: { id: fournisseurId } } } : {}),
+            ...(secteurId     ? { secteur:       { connect: { id: secteurId     } } } : {}),
+            ...(sousSecteurId ? { sous_secteur:  { connect: { id: sousSecteurId } } } : {}),
+            ...(categorieId   ? { categorie:     { connect: { id: categorieId   } } } : {}),
+        };
 
         try {
-            const result = await this.prisma.produit.create({
-                data: cleanedData
-            });
+            const result = await this.prisma.produit.create({ data: prismaData });
 
-            if (images && Array.isArray(images)) {
-                const validImages = images.map(img => {
-                    const imgId = parseInt(img.split('/').pop());
-                    return isNaN(imgId) ? null : imgId;
-                }).filter(imgId => imgId !== null);
-                
+            // Link gallery images in join table
+            if (images && Array.isArray(images) && images.length > 0) {
+                const validImages = images.map(img => extractId(img)).filter((id): id is number => id !== null);
                 if (validImages.length > 0) {
                     await this.prisma.produit_image_produit.createMany({
-                        data: validImages.map(imgId => ({
-                            produit_id: result.id,
-                            image_produit_id: imgId
-                        }))
+                        data: validImages.map(imgId => ({ produit_id: result.id, image_produit_id: imgId }))
                     });
                 }
             }
@@ -523,129 +480,93 @@ export class ProduitsService {
     }
 
     async update(id: number, data: any) {
-        // Extract related/mapped metadata that can't be updated directly via basic types
-        const { currency, categorie, secteur, sousSecteurs, fournisseur, image_produit, images, ficheReqInProgress, fiche, image, '@context': _context, '@id': _id, '@type': _type, error, loading, success, ...rest } = data;
-        
-        let cleanedData: any = { ...rest };
-        
-        // Remove transient frontend state
-        delete cleanedData.videoExist;
-        delete cleanedData.videoLoading;
-        delete cleanedData.secteurAdded;
-        delete cleanedData.sousSecteurAdded;
-        delete cleanedData.CategorieAdded;
-        
-        if (cleanedData.ficheTechnique !== undefined) {
-            if (cleanedData.ficheTechnique) {
-                cleanedData.fiche_technique_id = parseInt(cleanedData.ficheTechnique.split('/').pop());
-            } else {
-                cleanedData.fiche_technique_id = null;
-            }
-            delete cleanedData.ficheTechnique;
-        }
+        // Helper: extract numeric ID from IRI string, object with @id, or plain object with id
+        const extractId = (val: any): number | null => {
+            if (!val) return null;
+            if (typeof val === 'number') return val;
+            if (typeof val === 'string') { const n = parseInt(val.split('/').pop()); return isNaN(n) ? null : n; }
+            if (val['@id']) { const n = parseInt(val['@id'].split('/').pop()); return isNaN(n) ? null : n; }
+            if (val.id) return val.id;
+            return null;
+        };
 
-        if (cleanedData.featuredImageId !== undefined) {
-            if (cleanedData.featuredImageId) {
-                cleanedData.featured_image_id_id = parseInt(cleanedData.featuredImageId.split('/').pop());
-            } else {
-                cleanedData.featured_image_id_id = null;
-            }
-            delete cleanedData.featuredImageId;
-        }
-        
-        if (data.fournisseur && typeof data.fournisseur === 'string') {
-            const fId = parseInt(data.fournisseur.split('/').pop());
-            if (!isNaN(fId)) cleanedData.fournisseur_id = fId;
-        } else if (data.fournisseur && data.fournisseur['@id']) {
-            const fId = parseInt(data.fournisseur['@id'].split('/').pop());
-            if (!isNaN(fId)) cleanedData.fournisseur_id = fId;
-        } else if (data.fournisseur && data.fournisseur.id) {
-            cleanedData.fournisseur_id = data.fournisseur.id;
-        }
+        const {
+            currency, categorie, secteur, sous_secteur, sousSecteurs, fournisseur,
+            image_produit, produit_image_produit,
+            '@context': _ctx, '@id': _id, '@type': _type,
+            images, ficheReqInProgress, fiche, image, error, loading, success,
+            videoExist, videoLoading, secteurAdded, sousSecteurAdded, CategorieAdded,
+            ficheTechnique, featuredImageId,
+            // Strip raw FK integers
+            fiche_technique_id: _fti, featured_image_id_id: _fii,
+            fournisseur_id: _fri, secteur_id: _si, sous_secteur_id: _ssid,
+            sous_secteurs_id: _ssid2, categorie_id: _ci, currency_id: _cui,
+            pays_id: _pi, ville_id: _vi,
+            // Strip non-updatable fields
+            created: _created, updated: _updated, slug: _slug,
+            ...scalarRest
+        } = data;
 
-        if (data.secteur && data.secteur['@id']) {
-            cleanedData.secteur_id = parseInt(data.secteur['@id'].split('/').pop());
-        } else if (data.secteur && data.secteur.id) {
-            cleanedData.secteur_id = data.secteur.id;
-        } else if (typeof data.secteur === 'string') {
-            cleanedData.secteur_id = parseInt(data.secteur.split('/').pop());
-        }
+        const ficheId       = extractId(ficheTechnique);
+        const hasFiche      = ficheTechnique !== undefined;
+        const featImgId     = extractId(featuredImageId);
+        const hasFeatImg    = featuredImageId !== undefined;
+        const fournisseurId = extractId(fournisseur);
+        const secteurId     = extractId(secteur);
+        const sousSecteurId = extractId(sousSecteurs ?? sous_secteur);
+        const categorieId   = extractId(categorie);
 
-        if (data.sousSecteurs && data.sousSecteurs['@id']) {
-             cleanedData.sous_secteur_id = parseInt(data.sousSecteurs['@id'].split('/').pop());
-        } else if (data.sousSecteurs && data.sousSecteurs.id) {
-             cleanedData.sous_secteur_id = data.sousSecteurs.id;
-        } else if (typeof data.sousSecteurs === 'string') {
-            cleanedData.sous_secteur_id = parseInt(data.sousSecteurs.split('/').pop());
-        }
+        const prismaData: any = {
+            ...scalarRest,
+            // Relations via connect/disconnect
+            ...(hasFiche    ? (ficheId    ? { fiche:        { connect: { id: ficheId    } } } : { fiche:        { disconnect: true } }) : {}),
+            ...(hasFeatImg  ? (featImgId  ? { image_produit: { connect: { id: featImgId  } } } : { image_produit: { disconnect: true } }) : {}),
+            ...(fournisseurId ? { fournisseur: { connect: { id: fournisseurId } } } : {}),
+            ...(secteurId    ? { secteur:     { connect: { id: secteurId     } } } : {}),
+            ...(sousSecteurId? { sous_secteur:{ connect: { id: sousSecteurId } } } : {}),
+            ...(categorieId  ? { categorie:   { connect: { id: categorieId   } } } : {}),
+        };
 
-        if (data.categorie && data.categorie['@id']) {
-            cleanedData.categorie_id = parseInt(data.categorie['@id'].split('/').pop());
-        } else if (data.categorie && data.categorie.id) {
-            cleanedData.categorie_id = data.categorie.id;
-        } else if (typeof data.categorie === 'string') {
-            cleanedData.categorie_id = parseInt(data.categorie.split('/').pop());
+        // Update titre_lower if titre changed
+        if (scalarRest.titre) {
+            prismaData.titre_lower = scalarRest.titre.toLowerCase();
         }
-        
-        // Sometimes frontend sends a date object or string for update that needs parsing or we can drop it to not overwrite
-        if (cleanedData.created) delete cleanedData.created;
-        if (cleanedData.updated) delete cleanedData.updated;
 
         try {
-            // Récupérer l'état d'origine du produit pour les emails
             const original = await this.prisma.produit.findUnique({
                 where: { id },
-                include: {
-                    fournisseur: {
-                        include: { user: true }
-                    }
-                }
+                include: { fournisseur: { include: { user: true } } }
             });
 
-            const result = await this.prisma.produit.update({
-                where: { id },
-                data: cleanedData
-            });
+            const result = await this.prisma.produit.update({ where: { id }, data: prismaData });
 
+            // Sync gallery images
             if (images && Array.isArray(images)) {
-                await this.prisma.produit_image_produit.deleteMany({
-                    where: { produit_id: id }
-                });
-                
-                const validImages = images.map(img => {
-                    const imgId = parseInt(img.split('/').pop());
-                    return isNaN(imgId) ? null : imgId;
-                }).filter(imgId => imgId !== null);
-                
+                await this.prisma.produit_image_produit.deleteMany({ where: { produit_id: id } });
+                const validImages = images.map(img => extractId(img)).filter((imgId): imgId is number => imgId !== null);
                 if (validImages.length > 0) {
                     await this.prisma.produit_image_produit.createMany({
-                        data: validImages.map(imgId => ({
-                            produit_id: id,
-                            image_produit_id: imgId
-                        }))
+                        data: validImages.map(imgId => ({ produit_id: id, image_produit_id: imgId }))
                     });
                 }
             }
 
-            // Envoyer l'email de validation si le statut passe à validé
-            const isNowValid = (cleanedData.is_valid === true || cleanedData.is_valid === 'true' || cleanedData.is_valid === 1);
+            // Email notification on validation
+            const isNowValid = (prismaData.is_valid === true || prismaData.is_valid === 'true' || prismaData.is_valid === 1);
             if (isNowValid && original && !original.is_valid) {
                 if (original.fournisseur?.user?.email) {
-                    await this.mailService.sendProduitValidationEmail(
-                        original.fournisseur.user.email,
-                        result
-                    ).catch(console.error);
+                    await this.mailService.sendProduitValidationEmail(original.fournisseur.user.email, result).catch(console.error);
                 }
             }
 
             return { ...result, '@id': `/api/produits/${result.id}` };
         } catch (e) {
             console.error('Update produit error:', e);
-            throw e;
+            throw new (require('@nestjs/common').HttpException)({ message: 'Update produit error: ' + (e.message || String(e)) }, 500);
         }
     }
 
-    async remove(id: number) {
+        async remove(id: number) {
         // Typically soft delete
         await this.prisma.produit.update({
             where: { id },
