@@ -406,9 +406,23 @@ export class ProduitsService {
 
     async create(data: any) {
         // Exclude properties that shouldn't be blindly copied to DB
-        const { currency, categorie, secteur, sous_secteur, fournisseur, image_produit, produit_image_produit, '@context': _context, '@id': _id, '@type': _type, ...rest } = data;
+        const { currency, categorie, secteur, sous_secteur, fournisseur, image_produit, produit_image_produit, '@context': _context, '@id': _id, '@type': _type, images, ficheReqInProgress, fiche, image, error, loading, success, ...rest } = data;
         
-        let cleanedData = { ...rest };
+        let cleanedData: any = { ...rest };
+        
+        if (cleanedData.ficheTechnique !== undefined) {
+            if (cleanedData.ficheTechnique) {
+                cleanedData.fiche_technique_id = parseInt(cleanedData.ficheTechnique.split('/').pop());
+            }
+            delete cleanedData.ficheTechnique;
+        }
+
+        if (cleanedData.featuredImageId !== undefined) {
+            if (cleanedData.featuredImageId) {
+                cleanedData.featured_image_id_id = parseInt(cleanedData.featuredImageId.split('/').pop());
+            }
+            delete cleanedData.featuredImageId;
+        }
         
         if (data.fournisseur && typeof data.fournisseur === 'string') {
             const fId = parseInt(data.fournisseur.split('/').pop());
@@ -442,6 +456,23 @@ export class ProduitsService {
             const result = await this.prisma.produit.create({
                 data: cleanedData
             });
+
+            if (images && Array.isArray(images)) {
+                const validImages = images.map(img => {
+                    const imgId = parseInt(img.split('/').pop());
+                    return isNaN(imgId) ? null : imgId;
+                }).filter(imgId => imgId !== null);
+                
+                if (validImages.length > 0) {
+                    await this.prisma.produit_image_produit.createMany({
+                        data: validImages.map(imgId => ({
+                            produit_id: result.id,
+                            image_produit_id: imgId
+                        }))
+                    });
+                }
+            }
+
             return { ...result, '@id': `/api/produits/${result.id}` };
         } catch (e) {
             console.error('Create produit error:', e);
@@ -461,6 +492,24 @@ export class ProduitsService {
         delete cleanedData.secteurAdded;
         delete cleanedData.sousSecteurAdded;
         delete cleanedData.CategorieAdded;
+        
+        if (cleanedData.ficheTechnique !== undefined) {
+            if (cleanedData.ficheTechnique) {
+                cleanedData.fiche_technique_id = parseInt(cleanedData.ficheTechnique.split('/').pop());
+            } else {
+                cleanedData.fiche_technique_id = null;
+            }
+            delete cleanedData.ficheTechnique;
+        }
+
+        if (cleanedData.featuredImageId !== undefined) {
+            if (cleanedData.featuredImageId) {
+                cleanedData.featured_image_id_id = parseInt(cleanedData.featuredImageId.split('/').pop());
+            } else {
+                cleanedData.featured_image_id_id = null;
+            }
+            delete cleanedData.featuredImageId;
+        }
         
         if (data.fournisseur && typeof data.fournisseur === 'string') {
             const fId = parseInt(data.fournisseur.split('/').pop());
@@ -515,6 +564,26 @@ export class ProduitsService {
                 where: { id },
                 data: cleanedData
             });
+
+            if (images && Array.isArray(images)) {
+                await this.prisma.produit_image_produit.deleteMany({
+                    where: { produit_id: id }
+                });
+                
+                const validImages = images.map(img => {
+                    const imgId = parseInt(img.split('/').pop());
+                    return isNaN(imgId) ? null : imgId;
+                }).filter(imgId => imgId !== null);
+                
+                if (validImages.length > 0) {
+                    await this.prisma.produit_image_produit.createMany({
+                        data: validImages.map(imgId => ({
+                            produit_id: id,
+                            image_produit_id: imgId
+                        }))
+                    });
+                }
+            }
 
             // Envoyer l'email de validation si le statut passe à validé
             const isNowValid = (cleanedData.is_valid === true || cleanedData.is_valid === 'true' || cleanedData.is_valid === 1);
