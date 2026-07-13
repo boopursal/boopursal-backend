@@ -61,7 +61,8 @@ export class ContactFournisseursService {
     private sanitizeData(data: any) {
         const { '@id': _, '@type': __, fournisseur, ...cleanData } = data;
         
-        if (cleanData.created && typeof cleanData.created === 'string') cleanData.created = new Date(cleanData.created);
+        cleanData.created = cleanData.created ? new Date(cleanData.created) : new Date();
+        
         if (cleanData.date_validation && typeof cleanData.date_validation === 'string') cleanData.date_validation = new Date(cleanData.date_validation);
         if (cleanData.date_read && typeof cleanData.date_read === 'string') cleanData.date_read = new Date(cleanData.date_read);
 
@@ -75,10 +76,9 @@ export class ContactFournisseursService {
             if (fId && !isNaN(fId)) cleanData.fournisseur = { connect: { id: fId } };
         }
         
-        // Ensure some fields that might come as '0' or '1' are booleans
-        if (cleanData.is_read !== undefined) cleanData.is_read = Boolean(cleanData.is_read);
-        if (cleanData.statut !== undefined) cleanData.statut = Boolean(cleanData.statut);
-        if (cleanData.del !== undefined) cleanData.del = Boolean(cleanData.del);
+        cleanData.is_read = cleanData.is_read !== undefined ? Boolean(cleanData.is_read) : false;
+        cleanData.statut = cleanData.statut !== undefined ? Boolean(cleanData.statut) : false;
+        cleanData.del = cleanData.del !== undefined ? Boolean(cleanData.del) : false;
 
         return cleanData;
     }
