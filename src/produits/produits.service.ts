@@ -428,6 +428,7 @@ export class ProduitsService {
             fournisseur_id: _fri, secteur_id: _si, sous_secteur_id: _ssid,
             sous_secteurs_id: _ssid2, categorie_id: _ci, currency_id: _cui,
             pays_id: _pi, ville_id: _vi,
+            autreSecteur, autreActivite, autreProduit,
             ...scalarRest
         } = data;
 
@@ -451,6 +452,9 @@ export class ProduitsService {
             is_valid:    scalarRest.is_valid  ?? false,
             phone_vu:    scalarRest.phone_vu  ?? 0,
             free:        scalarRest.free      ?? true,
+            autre_secteur: autreSecteur ?? scalarRest.autre_secteur ?? null,
+            autre_activite: autreActivite ?? scalarRest.autre_activite ?? null,
+            autre_produit: autreProduit ?? scalarRest.autre_produit ?? null,
             ...(ficheId       ? { fiche:        { connect: { id: ficheId       } } } : {}),
             ...(featImgId     ? { image_produit: { connect: { id: featImgId     } } } : {}),
             ...(fournisseurId ? { fournisseur:   { connect: { id: fournisseurId } } } : {}),
@@ -502,6 +506,7 @@ export class ProduitsService {
             fournisseur_id: _fri, secteur_id: _si, sous_secteur_id: _ssid,
             sous_secteurs_id: _ssid2, categorie_id: _ci, currency_id: _cui,
             pays_id: _pi, ville_id: _vi,
+            autreSecteur, autreActivite, autreProduit,
             // Strip non-updatable fields
             created: _created, updated: _updated, slug: _slug,
             ...scalarRest
@@ -518,6 +523,9 @@ export class ProduitsService {
 
         const prismaData: any = {
             ...scalarRest,
+            ...(autreSecteur !== undefined ? { autre_secteur: autreSecteur } : {}),
+            ...(autreActivite !== undefined ? { autre_activite: autreActivite } : {}),
+            ...(autreProduit !== undefined ? { autre_produit: autreProduit } : {}),
             // Relations via connect/disconnect
             ...(hasFiche    ? (ficheId    ? { fiche:        { connect: { id: ficheId    } } } : { fiche:        { disconnect: true } }) : {}),
             ...(hasFeatImg  ? (featImgId  ? { image_produit: { connect: { id: featImgId  } } } : { image_produit: { disconnect: true } }) : {}),
