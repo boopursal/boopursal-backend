@@ -110,6 +110,7 @@ export class ProduitsService {
                         categorie: true,
                         secteur: true,
                         sous_secteur: true,
+                        fiche: true,
                         image_produit: true,
                         produit_image_produit: {
                             include: {
@@ -164,6 +165,7 @@ export class ProduitsService {
                     categorie: true,
                     secteur: true,
                     sous_secteur: true,
+                    fiche: true,
                     image_produit: true,
                     produit_image_produit: {
                         include: {
@@ -198,6 +200,7 @@ export class ProduitsService {
                     categorie: true,
                     secteur: true,
                     sous_secteur: true,
+                    fiche: true,
                     image_produit: true,
                     produit_image_produit: {
                         include: {
@@ -233,6 +236,11 @@ export class ProduitsService {
             categorie: p.categorie ? {
                 ...p.categorie,
                 '@id': `/api/categories/${p.categorie.id}`
+            } : null,
+            fiche: p.fiche ? {
+                ...p.fiche,
+                '@id': `/api/fiche_techniques/${p.fiche.id}`,
+                url: p.fiche.url
             } : null,
             // Gallery transformation
             images: (() => {
