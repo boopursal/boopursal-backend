@@ -507,8 +507,9 @@ export class ProduitsService {
             sous_secteurs_id: _ssid2, categorie_id: _ci, currency_id: _cui,
             pays_id: _pi, ville_id: _vi,
             autreSecteur, autreActivite, autreProduit,
-            // Strip non-updatable fields
-            created: _created, updated: _updated, slug: _slug,
+            // Strip non-updatable fields (primary key + timestamps)
+            id: _strippedId, created: _created, updated: _updated, slug: _slug,
+            visite: _visite,
             ...scalarRest
         } = data;
 
