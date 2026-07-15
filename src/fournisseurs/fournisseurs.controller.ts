@@ -59,11 +59,14 @@ export class FournisseursController {
     @UseGuards(AuthGuard('jwt'))
     async getFreeProducts(@Req() req) {
         try {
+            const fournisseurId = req.user.data?.fournisseur?.id;
+            if (!fournisseurId) return 0;
+            
             const count = await prisma.produit.count({
                 where: { 
                     free: true, 
                     del: false,
-                    fournisseur_id: req.user.id
+                    fournisseur_id: fournisseurId
                 }
             });
             // Return exactly what the legacy endpoint returned so parseInt() works
