@@ -1,4 +1,5 @@
-import { Controller, Get, Param, Query, ParseIntPipe, Put, Body, Post, BadRequestException, InternalServerErrorException, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseIntPipe, Put, Body, Post, BadRequestException, InternalServerErrorException, Delete, UseGuards, Req } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { FournisseursService } from './fournisseurs.service';
 import { PrismaClient } from '@prisma/client';
 
@@ -55,17 +56,20 @@ export class FournisseursController {
     // ─── Endpoints spécifiques AVANT :id pour éviter les conflits NestJS ───
 
     @Get('free-products')
-    async getFreeProducts() {
+    @UseGuards(AuthGuard('jwt'))
+    async getFreeProducts(@Req() req) {
         try {
-            const products = await prisma.produit.findMany({
-                where: { free: true, del: false },
-                take: 20,
-                orderBy: { created: 'desc' },
-                select: { id: true, titre: true, description: true }
+            const count = await prisma.produit.count({
+                where: { 
+                    free: true, 
+                    del: false,
+                    fournisseur_id: req.user.id
+                }
             });
-            return { 'hydra:member': products, 'hydra:totalItems': products.length };
+            // Return exactly what the legacy endpoint returned so parseInt() works
+            return count;
         } catch {
-            return { 'hydra:member': [], 'hydra:totalItems': 0 };
+            return 0;
         }
     }
 
