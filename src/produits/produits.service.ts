@@ -501,15 +501,17 @@ export class ProduitsService {
             images, ficheReqInProgress, fiche, image, error, loading, success,
             videoExist, videoLoading, secteurAdded, sousSecteurAdded, CategorieAdded,
             ficheTechnique, featuredImageId,
-            // Strip raw FK integers
+            // Strip raw FK integers (handled via connect/disconnect above)
             fiche_technique_id: _fti, featured_image_id_id: _fii,
             fournisseur_id: _fri, secteur_id: _si, sous_secteur_id: _ssid,
             sous_secteurs_id: _ssid2, categorie_id: _ci, currency_id: _cui,
             pays_id: _pi, ville_id: _vi,
             autreSecteur, autreActivite, autreProduit,
-            // Strip non-updatable fields (primary key + timestamps)
-            id: _strippedId, created: _created, updated: _updated, slug: _slug,
+            // Strip non-updatable/non-schema fields
+            id: _strippedId,
+            created: _created, updated: _updated, slug: _slug,
             visite: _visite,
+            logo: _logo,                    // n'existe pas dans le schéma Prisma
             ...scalarRest
         } = data;
 
@@ -522,8 +524,21 @@ export class ProduitsService {
         const sousSecteurId = extractId(sousSecteurs ?? sous_secteur);
         const categorieId   = extractId(categorie);
 
+        // Whitelist stricte: seulement les champs scalaires définis dans schema.prisma
+        const ALLOWED_SCALAR_FIELDS = [
+            'reference', 'description', 'pu', 'del', 'is_select', 'is_valid',
+            'videos', 'titre', 'titre_lower', 'date_validation', 'phone_vu',
+            'free', 'autre_secteur', 'autre_activite', 'autre_produit',
+        ];
+        const safeScalars: any = {};
+        for (const key of ALLOWED_SCALAR_FIELDS) {
+            if (key in scalarRest) {
+                safeScalars[key] = scalarRest[key];
+            }
+        }
+
         const prismaData: any = {
-            ...scalarRest,
+            ...safeScalars,
             ...(autreSecteur !== undefined ? { autre_secteur: autreSecteur } : {}),
             ...(autreActivite !== undefined ? { autre_activite: autreActivite } : {}),
             ...(autreProduit !== undefined ? { autre_produit: autreProduit } : {}),
