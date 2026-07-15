@@ -11,10 +11,16 @@ export class FournisseursService {
     async findAll(page = 1, limit = 20, query: any = {}) {
         const skip = (page - 1) * limit;
 
-        const where: any = {
-            user: { isactif: true },
-            is_complet: true,
-        };
+        const where: any = {};
+        
+        // La vitrine demande spécifiquement isactif=true et isComplet=true
+        // L'admin a besoin de voir TOUT le monde
+        if (query.isactif === 'true') {
+            where.user = { isactif: true };
+        }
+        if (query.isComplet === 'true') {
+            where.is_complet = true;
+        }
         const search = query.search || query.q;
 
         if (search) {
