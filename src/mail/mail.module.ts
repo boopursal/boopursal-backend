@@ -15,12 +15,17 @@ import { MailService } from './mail.service';
             pass: process.env.MAILER_PASS || 'Y6.v8;cON9c(',
           },
           tls: {
-            rejectUnauthorized: false
-          }
+            rejectUnauthorized: false,
+          },
+          // Désactivé pour éviter le timeout au cold-start sur Vercel (serverless)
+          // Nodemailer vérifie la connexion SMTP à l'init, ce qui peut bloquer toute l'app
+          pool: false,
         },
         defaults: {
           from: '"Boopursal" <adherent@boopursal.com>',
         },
+        // Ne pas vérifier la connexion SMTP au démarrage du module
+        verifyTransporters: false,
       }),
     }),
   ],
