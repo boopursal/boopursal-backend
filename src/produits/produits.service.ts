@@ -24,26 +24,36 @@ export class ProduitsService {
                 // Secteur filter
                 if (query['secteur.slug']) {
                     where.secteur = { slug: query['secteur.slug'] };
+                } else if (query.secteur) {
+                    where.secteur = { slug: query.secteur };
                 }
 
                 // Sous-secteur / Activite filter
                 if (query['sousSecteurs.slug']) {
                     where.sous_secteur = { slug: query['sousSecteurs.slug'] };
+                } else if (query.sousSecteurs) {
+                    where.sous_secteur = { slug: query.sousSecteurs };
                 }
 
                 // Categorie filter
                 if (query['categorie.slug']) {
                     where.categorie = { slug: query['categorie.slug'] };
+                } else if (query.categorie && typeof query.categorie === 'string' && isNaN(parseInt(query.categorie))) {
+                    where.categorie = { slug: query.categorie };
                 }
 
                 // Pays filter
                 if (query['pays.slug']) {
                     where.pays = { slug: query['pays.slug'] };
+                } else if (query.pays) {
+                    where.pays = { slug: query.pays };
                 }
 
                 // Ville filter
                 if (query['ville.slug']) {
                     where.ville = { slug: query['ville.slug'] };
+                } else if (query.ville) {
+                    where.ville = { slug: query.ville };
                 }
 
                 if (query.fournisseur) {
