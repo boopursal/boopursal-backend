@@ -221,6 +221,7 @@ export class ProduitsService {
         return {
             ...p,
             '@id': `/api/produits/${p.id}`,
+            currency: p.currency ? p.currency.currency : 'MAD',
             secteur: p.secteur ? {
                 ...p.secteur,
                 '@id': `/api/secteurs/${p.secteur.id}`

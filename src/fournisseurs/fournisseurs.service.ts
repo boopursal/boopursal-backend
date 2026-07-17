@@ -340,6 +340,7 @@ export class FournisseursService {
             '@id': `/api/produits/${item.id}`,
             isValid: item.is_valid,
             isSelect: item.is_select,
+            currency: item.currency ? item.currency.currency : 'MAD',
             featuredImageId: item.image_produit ? {
                 ...item.image_produit,
                 '@id': `/api/image_produits/${item.image_produit.id}`,
