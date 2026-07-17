@@ -306,11 +306,19 @@ export class FournisseursService {
         };
     }
 
-    async getProduits(id: number, page = 1, limit = 20, orderBy: any = { created: 'desc' }) {
+    async getProduits(id: number, page = 1, limit = 20, orderBy: any = { created: 'desc' }, isValid?: string) {
         const skip = (page - 1) * limit;
+        const where: any = { fournisseur_id: id, del: false };
+        
+        if (isValid === 'true') {
+            where.is_valid = true;
+        } else if (isValid === 'false') {
+            where.is_valid = false;
+        }
+
         const [data, total] = await Promise.all([
             this.prisma.produit.findMany({
-                where: { fournisseur_id: id, del: false },
+                where,
                 skip,
                 take: limit,
                 include: {
@@ -323,7 +331,7 @@ export class FournisseursService {
                 orderBy: orderBy,
             }),
             this.prisma.produit.count({
-                where: { fournisseur_id: id, del: false }
+                where
             }),
         ]);
 

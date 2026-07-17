@@ -544,6 +544,14 @@ export class ProduitsService {
                 safeScalars[key] = scalarRest[key];
             }
         }
+        
+        // Map frontend camelCase fields back to snake_case for Prisma
+        if ('isValid' in scalarRest) {
+            safeScalars.is_valid = scalarRest.isValid === true || scalarRest.isValid === 'true' || scalarRest.isValid === 1;
+        }
+        if ('isSelect' in scalarRest) {
+            safeScalars.is_select = scalarRest.isSelect === true || scalarRest.isSelect === 'true' || scalarRest.isSelect === 1;
+        }
 
         const prismaData: any = {
             ...safeScalars,

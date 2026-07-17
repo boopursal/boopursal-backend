@@ -23,7 +23,7 @@ export class ActualitesController {
                 const orderBracketKey = Object.keys(allQuery).find(k => k.startsWith('order[') && k.endsWith(']'));
                 if (orderBracketKey) {
                     const field = orderBracketKey.replace('order[', '').replace(']', '');
-                    const direction = (allQuery[orderBracketKey] || 'desc').toLowerCase();
+                    const direction = String(allQuery[orderBracketKey] || 'desc').toLowerCase();
                     // Validate direction to avoid Prisma crash
                     const finalDir = direction === 'asc' ? 'asc' : 'desc';
                     orderBy = { [field]: finalDir };

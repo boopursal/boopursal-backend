@@ -186,12 +186,13 @@ export class FournisseursController {
         @Param('id') idOrSlug: string,
         @Query('page') page = '1',
         @Query('limit') limit = '20',
-        @Query('order') order?: { [key: string]: string }
+        @Query('order') order?: { [key: string]: string },
+        @Query('isValid') isValid?: string
     ) {
         const id = parseInt(idOrSlug.split('-')[0]);
         if (isNaN(id)) return null;
         const orderBy = order ? Object.entries(order).map(([k, v]) => ({ [k]: v }))[0] : { created: 'desc' };
-        return this.fournisseursService.getProduits(id, +page, +limit, orderBy);
+        return this.fournisseursService.getProduits(id, +page, +limit, orderBy, isValid);
     }
 
     @Get('fournisseurs/:id/messages')

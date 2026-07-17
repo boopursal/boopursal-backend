@@ -8,8 +8,16 @@ export class PrismaService
     private readonly logger = new Logger(PrismaService.name);
 
     constructor() {
-        // Build the connection URL with serverless-friendly settings
-        const baseUrl = process.env.DATABASE_URL || '';
+        let baseUrl = process.env.DATABASE_URL;
+        
+        // Fallback if DATABASE_URL is not set on Vercel
+        if (!baseUrl) {
+            baseUrl = 'mysql://boopugbb_render:Database%40%402026@159.8.122.144:3306/boopugbb_render';
+        } else {
+            // Fix if the unencoded password with @@ was pasted in Vercel env vars
+            baseUrl = baseUrl.replace('Database@@2026', 'Database%40%402026');
+        }
+
         const separator = baseUrl.includes('?') ? '&' : '?';
         const serverlessUrl = `${baseUrl}${separator}connection_limit=1&connect_timeout=10&pool_timeout=10`;
 
