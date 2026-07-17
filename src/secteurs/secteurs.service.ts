@@ -24,13 +24,16 @@ export class SecteursService {
         ]);
 
         return {
-            'hydra:member': data.map(s => ({
-                ...s,
-                '@id': `/api/secteurs/${s.id}`,
-                url: s.image_secteur?.url || null,
-                image: s.image_secteur?.url || null,
-                logo: s.image_secteur?.url || null,
-            })),
+            'hydra:member': data.map(s => {
+                const defaultImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name)}&background=random&color=fff&size=256`;
+                return {
+                    ...s,
+                    '@id': `/api/secteurs/${s.id}`,
+                    url: s.image_secteur?.url || defaultImg,
+                    image: s.image_secteur?.url || defaultImg,
+                    logo: s.image_secteur?.url || defaultImg,
+                };
+            }),
             'hydra:totalItems': total,
         };
     }
@@ -58,12 +61,13 @@ export class SecteursService {
             include: { image_secteur: true, sous_secteur: { where: { del: false } } },
         });
         if (!secteur) return null;
+        const defaultImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(secteur.name)}&background=random&color=fff&size=256`;
         return {
             ...secteur,
             '@id': `/api/secteurs/${secteur.id}`,
-            url: secteur.image_secteur?.url || null,
-            image: secteur.image_secteur?.url || null,
-            logo: secteur.image_secteur?.url || null,
+            url: secteur.image_secteur?.url || defaultImg,
+            image: secteur.image_secteur?.url || defaultImg,
+            logo: secteur.image_secteur?.url || defaultImg,
             sous_secteur: secteur.sous_secteur.map(ss => ({
                 ...ss,
                 '@id': `/api/sous_secteurs/${ss.id}`,
@@ -77,12 +81,13 @@ export class SecteursService {
             include: { image_secteur: true, sous_secteur: { where: { del: false } } },
         });
         if (!secteur) return null;
+        const defaultImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(secteur.name)}&background=random&color=fff&size=256`;
         return {
             ...secteur,
             '@id': `/api/secteurs/${secteur.id}`,
-            url: secteur.image_secteur?.url || null,
-            image: secteur.image_secteur?.url || null,
-            logo: secteur.image_secteur?.url || null,
+            url: secteur.image_secteur?.url || defaultImg,
+            image: secteur.image_secteur?.url || defaultImg,
+            logo: secteur.image_secteur?.url || defaultImg,
         };
     }
 
