@@ -1,6 +1,4 @@
-import { Controller, Get, Param, Query, ParseIntPipe, Put, Body, Post, BadRequestException, InternalServerErrorException, Delete, UseGuards, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Controller, Get, Param, Query, ParseIntPipe, Put, Body, Post, BadRequestException, InternalServerErrorException, Delete, UseGuards, Req } from '@nestjs/common';
 import { FournisseursService } from './fournisseurs.service';
 import { PrismaClient } from '@prisma/client';
 
@@ -66,14 +64,15 @@ export class FournisseursController {
     }
 
     @Post('fournisseurs/import')
-    @UseInterceptors(FileInterceptor('file'))
-    async importFournisseurs(@UploadedFile() file: any) {
-        if (!file) {
-            throw new BadRequestException({ error: 'Fichier manquant' });
+    async importFournisseurs(@Body() body: any) {
+        const csvContent = body?.csvContent;
+        if (!csvContent) {
+            throw new BadRequestException({ error: 'Contenu CSV manquant' });
         }
 
         try {
-            const results = await this.fournisseursService.importFromCsv(file.buffer);
+            const buffer = Buffer.from(csvContent, 'utf-8');
+            const results = await this.fournisseursService.importFromCsv(buffer);
             return {
                 message: 'Fournisseurs importés avec succès',
                 data: results
