@@ -822,6 +822,7 @@ export class FournisseursService {
                         redirect: '/register/fournisseur',
                         confirmation_token: token,
                         created: new Date(),
+                        parent1: acheteurId || null,
                         fournisseur: {
                             create: {
                                 societe: societe || `${prenom} ${nom}`.trim() || email,
@@ -832,7 +833,6 @@ export class FournisseursService {
                                 phone_vu: 0,
                                 description: '',
                                 is_complet: false,
-                                parent: acheteurId || null
                             }
                         }
                     },
@@ -864,7 +864,7 @@ export class FournisseursService {
         
         const whereClause: any = { fournisseur: { isNot: null } };
         if (acheteurId) {
-            whereClause.fournisseur = { parent: acheteurId };
+            whereClause.parent1 = acheteurId;
         }
 
         const [data, total] = await Promise.all([
