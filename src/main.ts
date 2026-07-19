@@ -55,6 +55,29 @@ async function bootstrap() {
 }
 
 export default async (req: any, res: any) => {
+  // Gestion manuelle des CORS pour Vercel (évite de démarrer NestJS pour un simple preflight OPTIONS)
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'https://boopursal.netlify.app',
+      'https://boopursal.com',
+      'https://www.boopursal.com',
+      'https://boopursal-frontend.vercel.app',
+  ];
+  
+  if (allowedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
   const handler = await bootstrap();
   return handler(req, res);
 };
