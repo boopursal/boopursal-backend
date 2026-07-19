@@ -767,7 +767,11 @@ export class FournisseursService {
     /**
      * Import fournisseurs from a CSV file buffer.
      * Expected CSV columns (separated by ; or ,):
-     * Civilite;Nom;Prenom;Adresse;Pays;Telephone;Email;Société;Secteur d'activité;Produit;Service
+    /**
+     * Import fournisseurs from CSV into the fournisseur_import table.
+     * Each row is saved as a fournisseur_import record linked to the acheteur (user_id).
+     * Expected CSV columns (separated by ; or ,):
+     * Nom;Email;Telephone;Adresse (or any order)
      */
     async importFromCsv(fileBuffer: Buffer, acheteurId?: number): Promise<any[]> {
         const content = fileBuffer.toString('utf-8');
@@ -775,86 +779,59 @@ export class FournisseursService {
         if (lines.length < 2) throw new BadRequestException('Le fichier CSV est vide ou invalide');
 
         const sep = lines[0].includes(';') ? ';' : ',';
-        const headers = lines[0].split(sep).map(h => h.trim().toLowerCase());
+        const headers = lines[0].split(sep).map(h => h.trim().toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove accents
+        );
 
-        const getCol = (row: string[], key: string) => {
-            const idx = headers.indexOf(key);
-            return idx >= 0 ? (row[idx] || '').trim() : '';
+        const getCol = (row: string[], ...keys: string[]) => {
+            for (const key of keys) {
+                const normalized = key.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                const idx = headers.indexOf(normalized);
+                if (idx >= 0) return (row[idx] || '').trim();
+            }
+            return '';
         };
 
+        console.log(`[importFromCsv] Headers detected: ${headers.join('|')}, acheteurId=${acheteurId}`);
+
         const results: any[] = [];
+        const userId = acheteurId || 1;
 
         for (let i = 1; i < lines.length; i++) {
             const row = lines[i].split(sep);
+            const nom = getCol(row, 'nom', 'name', 'societe', 'société');
             const email = getCol(row, 'email');
-            const nom = getCol(row, 'nom');
-            const prenom = getCol(row, 'prenom');
-            const societe = getCol(row, 'société') || getCol(row, 'societe') || getCol(row, 'société');
-            const telephone = getCol(row, 'telephone');
+            const telephone = getCol(row, 'telephone', 'phone', 'tel');
+            const adresse = getCol(row, 'adresse', 'address', 'ville', 'city');
 
-            if (!email) continue;
+            // Skip empty rows
+            if (!nom && !email) continue;
 
-            // Check if already exists
-            const existing = await this.prisma.user.findFirst({ where: { email } });
-            if (existing) {
-                // Update parent1 so this supplier appears in the acheteur's list
-                if (acheteurId) {
-                    await this.prisma.user.update({ where: { id: existing.id }, data: { parent1: acheteurId } });
-                }
-                results.push({ id: existing.id, nom: `${nom} ${prenom}`.trim(), email, telephone, tempPassword: null, status: 'exists' });
-                continue;
-            }
-
-            const tempPassword = Math.random().toString(36).slice(2, 10);
-            const hashedPassword = await bcrypt.hash(tempPassword, 10);
-            const token = crypto.randomBytes(32).toString('hex');
-            const slug = (societe ? societe.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'societe') + '-' + Date.now();
-            const civilite = getCol(row, 'civilite') || 'M.';
-
-            console.log(`[importFromCsv] Processing ${email}, acheteurId=${acheteurId}`);
             try {
-                const user = await this.prisma.user.create({
-                    data: {
-                        email,
-                        password: hashedPassword,
-                        first_name: prenom || nom,
-                        last_name: nom,
-                        phone: telephone,
-                        isactif: true,
-                        del: false,
-                        discr: 'fournisseur',
-                        roles: '["ROLE_FOURNISSEUR"]',
-                        redirect: '/register/fournisseur',
-                        confirmation_token: token,
-                        created: new Date(),
-                        parent1: acheteurId || null,
-                        fournisseur: {
-                            create: {
-                                societe: societe || `${prenom} ${nom}`.trim() || email,
-                                civilite: civilite,
-                                step: 1,
-                                slug: slug,
-                                visite: 0,
-                                phone_vu: 0,
-                                description: '',
-                                is_complet: false,
-                            }
-                        }
-                    },
-                    include: { fournisseur: true }
+                // Check if already imported for this user
+                const existing = await this.prisma.fournisseur_import.findFirst({
+                    where: { user_id: userId, email: email || null }
                 });
 
-                results.push({
-                    id: user.id,
-                    nom: `${prenom} ${nom}`.trim(),
-                    email,
-                    telephone,
-                    tempPassword,
-                    status: 'created'
+                if (existing && email) {
+                    results.push({ id: existing.id, nom, email, telephone, status: 'exists' });
+                    continue;
+                }
+
+                const record = await this.prisma.fournisseur_import.create({
+                    data: {
+                        nom: nom || email,
+                        email: email || null,
+                        telephone: telephone || null,
+                        adresse: adresse || '',
+                        user_id: userId,
+                    }
                 });
+
+                results.push({ id: record.id, nom, email, telephone, status: 'created' });
             } catch (err: any) {
-                console.error(`[importFromCsv] Error creating user ${email}:`, err?.message);
-                results.push({ nom, email, telephone, tempPassword: null, status: 'error', error: err?.message });
+                console.error(`[importFromCsv] Error importing row ${i}:`, err?.message);
+                results.push({ nom, email, telephone, status: 'error', error: err?.message });
             }
         }
 
@@ -862,34 +839,30 @@ export class FournisseursService {
     }
 
     /**
-     * Get list of imported fournisseurs (users with fournisseur account, ordered by creation date desc)
+     * Get list of imported fournisseurs from fournisseur_import table for a given acheteur.
      */
     async getImportedList(page = 1, limit = 50, acheteurId?: number): Promise<any> {
         const skip = (page - 1) * limit;
-        
-        const whereClause: any = { fournisseur: { isNot: null } };
-        if (acheteurId) {
-            whereClause.parent1 = acheteurId;
-        }
+        const userId = acheteurId || 1;
+
+        const where: any = { user_id: userId };
 
         const [data, total] = await Promise.all([
-            this.prisma.user.findMany({
-                where: whereClause,
-                orderBy: { created: 'desc' },
+            this.prisma.fournisseur_import.findMany({
+                where,
+                orderBy: { id: 'desc' },
                 skip,
                 take: limit,
-                include: { fournisseur: true }
             }),
-            this.prisma.user.count({ where: whereClause })
+            this.prisma.fournisseur_import.count({ where })
         ]);
 
         return {
-            data: data.map(u => ({
-                id: u.id,
-                nom: `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.email,
-                email: u.email,
-                telephone: u.phone || '',
-                tempPassword: null
+            data: data.map(r => ({
+                id: r.id,
+                nom: r.nom,
+                email: r.email || '',
+                telephone: r.telephone || '',
             })),
             total
         };
