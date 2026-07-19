@@ -820,9 +820,7 @@ export class FournisseursService {
 
                 if (existing && email) {
                     results.push({ id: existing.id, nom, email, telephone, status: 'exists' });
-                    if (sendInvite) {
-                        await this.mailService.sendFournisseurInvitation(email, acheteurName, nom || 'Fournisseur');
-                    }
+                    // On n'envoie pas d'email si le fournisseur existe déjà pour éviter le spam
                     continue;
                 }
 
