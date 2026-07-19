@@ -59,7 +59,7 @@ export class FournisseursController {
     @UseGuards(AuthGuard('jwt'))
     async getImportedList(@Query('page') page = '1', @Query('limit') limit = '50', @Req() req: any) {
         try {
-            return await this.fournisseursService.getImportedList(+page, +limit, req.user?.id);
+            return await this.fournisseursService.getImportedList(+page, +limit, req.user?.data?.id);
         } catch (error: any) {
             throw new InternalServerErrorException({ message: 'Erreur lors de la récupération des fournisseurs', detail: error?.message });
         }
@@ -75,7 +75,7 @@ export class FournisseursController {
 
         try {
             const buffer = Buffer.from(csvContent, 'utf-8');
-            const results = await this.fournisseursService.importFromCsv(buffer, req.user?.id);
+            const results = await this.fournisseursService.importFromCsv(buffer, req.user?.data?.id);
             return {
                 message: 'Fournisseurs importés avec succès',
                 data: results
