@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query, ParseIntPipe, Put, Body, Post, BadRequestException, InternalServerErrorException, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseIntPipe, Put, Body, Post, BadRequestException, InternalServerErrorException, Delete, UseGuards, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { FournisseursService } from './fournisseurs.service';
 import { PrismaClient } from '@prisma/client';
 
@@ -55,6 +56,33 @@ export class FournisseursController {
 
     // ─── Endpoints spécifiques AVANT :id pour éviter les conflits NestJS ───
 
+    @Get('fournisseurs/import/list')
+    async getImportedList(@Query('page') page = '1', @Query('limit') limit = '50') {
+        try {
+            return await this.fournisseursService.getImportedList(+page, +limit);
+        } catch (error: any) {
+            throw new InternalServerErrorException({ message: 'Erreur lors de la récupération des fournisseurs', detail: error?.message });
+        }
+    }
+
+    @Post('fournisseurs/import')
+    @UseInterceptors(FileInterceptor('file'))
+    async importFournisseurs(@UploadedFile() file: any) {
+        if (!file) {
+            throw new BadRequestException({ error: 'Fichier manquant' });
+        }
+
+        try {
+            const results = await this.fournisseursService.importFromCsv(file.buffer);
+            return {
+                message: 'Fournisseurs importés avec succès',
+                data: results
+            };
+        } catch (error: any) {
+            console.error('Erreur lors de l\'importation:', error);
+            throw new InternalServerErrorException({ error: error.message });
+        }
+    }
     @Get('free-products')
     @UseGuards(AuthGuard('jwt'))
     async getFreeProducts(@Req() req) {
