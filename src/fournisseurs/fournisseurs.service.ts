@@ -795,7 +795,7 @@ export class FournisseursService {
             if (!email) continue;
 
             // Check if already exists
-            const existing = await this.prisma.user.findUnique({ where: { email } });
+            const existing = await this.prisma.user.findFirst({ where: { email } });
             if (existing) {
                 results.push({ id: existing.id, nom: `${nom} ${prenom}`.trim(), email, telephone, tempPassword: null, status: 'exists' });
                 continue;

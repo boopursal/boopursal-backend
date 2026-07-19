@@ -1,4 +1,5 @@
 import { Controller, Get, Param, Query, ParseIntPipe, Put, Body, Post, BadRequestException, InternalServerErrorException, Delete, UseGuards, Req } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { FournisseursService } from './fournisseurs.service';
 import { PrismaClient } from '@prisma/client';
 
