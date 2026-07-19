@@ -797,6 +797,10 @@ export class FournisseursService {
             // Check if already exists
             const existing = await this.prisma.user.findFirst({ where: { email } });
             if (existing) {
+                // Update parent1 so this supplier appears in the acheteur's list
+                if (acheteurId) {
+                    await this.prisma.user.update({ where: { id: existing.id }, data: { parent1: acheteurId } });
+                }
                 results.push({ id: existing.id, nom: `${nom} ${prenom}`.trim(), email, telephone, tempPassword: null, status: 'exists' });
                 continue;
             }
@@ -807,6 +811,7 @@ export class FournisseursService {
             const slug = (societe ? societe.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'societe') + '-' + Date.now();
             const civilite = getCol(row, 'civilite') || 'M.';
 
+            console.log(`[importFromCsv] Processing ${email}, acheteurId=${acheteurId}`);
             try {
                 const user = await this.prisma.user.create({
                     data: {

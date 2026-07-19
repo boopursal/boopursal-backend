@@ -59,7 +59,9 @@ export class FournisseursController {
     @UseGuards(AuthGuard('jwt'))
     async getImportedList(@Query('page') page = '1', @Query('limit') limit = '50', @Req() req: any) {
         try {
-            return await this.fournisseursService.getImportedList(+page, +limit, req.user?.data?.id);
+            const acheteurId = req.user?.data?.id || req.user?.id;
+            console.log(`[getImportedList] req.user keys=${Object.keys(req.user||{}).join(',')}, acheteurId=${acheteurId}`);
+            return await this.fournisseursService.getImportedList(+page, +limit, acheteurId);
         } catch (error: any) {
             throw new InternalServerErrorException({ message: 'Erreur lors de la récupération des fournisseurs', detail: error?.message });
         }
@@ -73,9 +75,12 @@ export class FournisseursController {
             throw new BadRequestException({ error: 'Contenu CSV manquant' });
         }
 
+        const acheteurId = req.user?.data?.id || req.user?.id;
+        console.log(`[importFournisseurs] req.user keys=${Object.keys(req.user||{}).join(',')}, acheteurId=${acheteurId}`);
+
         try {
             const buffer = Buffer.from(csvContent, 'utf-8');
-            const results = await this.fournisseursService.importFromCsv(buffer, req.user?.data?.id);
+            const results = await this.fournisseursService.importFromCsv(buffer, acheteurId);
             return {
                 message: 'Fournisseurs importés avec succès',
                 data: results
