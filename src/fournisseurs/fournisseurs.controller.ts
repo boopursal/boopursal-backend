@@ -71,16 +71,17 @@ export class FournisseursController {
     @UseGuards(AuthGuard('jwt'))
     async importFournisseurs(@Body() body: any, @Req() req: any) {
         const csvContent = body?.csvContent;
+        const sendInvite = !!body?.sendInvite;
         if (!csvContent) {
             throw new BadRequestException({ error: 'Contenu CSV manquant' });
         }
 
         const acheteurId = req.user?.data?.id || req.user?.id;
-        console.log(`[importFournisseurs] req.user keys=${Object.keys(req.user||{}).join(',')}, acheteurId=${acheteurId}`);
+        console.log(`[importFournisseurs] req.user keys=${Object.keys(req.user||{}).join(',')}, acheteurId=${acheteurId}, sendInvite=${sendInvite}`);
 
         try {
             const buffer = Buffer.from(csvContent, 'utf-8');
-            const results = await this.fournisseursService.importFromCsv(buffer, acheteurId);
+            const results = await this.fournisseursService.importFromCsv(buffer, acheteurId, sendInvite);
             return {
                 message: 'Fournisseurs importés avec succès',
                 data: results

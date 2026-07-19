@@ -1198,6 +1198,54 @@ export class MailService {
     }
   }
 
+  private getFournisseurInvitationHtml(acheteurName: string, fournisseurName: string, lien: string): string {
+    const preHeader = `${acheteurName} vous invite à rejoindre Boopursal`;
+    const title = `Invitation à rejoindre Boopursal`;
+
+    const bodyContent = `
+      <h2 style="color: #333333; font-size: 22px; font-weight: bold; margin-bottom: 20px;">Bonjour ${fournisseurName},</h2>
+      <p>L'entreprise <strong>${acheteurName}</strong> utilise la plateforme B2B Boopursal pour gérer ses achats et vous a ajouté à son carnet de fournisseurs privilégiés.</p>
+      
+      <p>Pour faciliter vos futurs échanges commerciaux (demandes de devis, commandes, facturation...), <strong>${acheteurName}</strong> vous invite à créer gratuitement votre profil fournisseur sur Boopursal.</p>
+      
+      <div style="background-color: #f5f8fa; padding: 20px; border-radius: 8px; margin: 25px 0;">
+          <h3 style="margin-top: 0; color: #387ca3;">En rejoignant Boopursal, vous pourrez également :</h3>
+          <ul style="margin-bottom: 0;">
+              <li style="margin-bottom: 10px;">Créer votre catalogue de produits</li>
+              <li style="margin-bottom: 10px;">Être visible par d'autres acheteurs B2B professionnels</li>
+              <li>Développer votre chiffre d'affaires</li>
+          </ul>
+      </div>
+
+      <div style="text-align: center; margin: 35px 0;">
+          <a href="${lien}" class="btn" style="background-color: #55c39e; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block;">
+              Créer mon profil fournisseur gratuit
+          </a>
+      </div>
+
+      <p style="color: #888888; font-size: 14px; margin-top: 40px;">
+        Si vous avez des questions, n'hésitez pas à nous contacter.<br>
+        L'équipe Boopursal
+      </p>
+    `;
+
+    return this.getHtmlWrapper(title, bodyContent, preHeader);
+  }
+
+  async sendFournisseurInvitation(email: string, acheteurName: string, fournisseurName: string) {
+    try {
+      const lienInscription = `${this.urlSite}register/fournisseur?email=${encodeURIComponent(email)}&nom=${encodeURIComponent(fournisseurName)}`;
+      await this.mailerService.sendMail({
+        to: email,
+        subject: `Invitation de la part de ${acheteurName} à rejoindre Boopursal`,
+        html: this.getFournisseurInvitationHtml(acheteurName, fournisseurName, lienInscription),
+      });
+      this.logger.log(`[Mail] Invitation fournisseur envoyée à ${email} de la part de ${acheteurName}.`);
+    } catch (err) {
+      this.logger.error(`Erreur envoi invitation fournisseur à ${email}`, err?.stack || err);
+    }
+  }
+
   async sendAlertFrsNewChild(parentEmail: string, parentSociete: string, childName: string, childEmail: string) {
     try {
       await this.mailerService.sendMail({

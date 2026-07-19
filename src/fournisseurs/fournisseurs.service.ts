@@ -765,15 +765,12 @@ export class FournisseursService {
     }
 
     /**
-     * Import fournisseurs from a CSV file buffer.
-     * Expected CSV columns (separated by ; or ,):
-    /**
      * Import fournisseurs from CSV into the fournisseur_import table.
      * Each row is saved as a fournisseur_import record linked to the acheteur (user_id).
      * Expected CSV columns (separated by ; or ,):
      * Nom;Email;Telephone;Adresse (or any order)
      */
-    async importFromCsv(fileBuffer: Buffer, acheteurId?: number): Promise<any[]> {
+    async importFromCsv(fileBuffer: Buffer, acheteurId?: number, sendInvite: boolean = false): Promise<any[]> {
         const content = fileBuffer.toString('utf-8');
         const lines = content.split(/\r?\n/).filter(l => l.trim());
         if (lines.length < 2) throw new BadRequestException('Le fichier CSV est vide ou invalide');
@@ -792,10 +789,18 @@ export class FournisseursService {
             return '';
         };
 
-        console.log(`[importFromCsv] Headers detected: ${headers.join('|')}, acheteurId=${acheteurId}`);
+        console.log(`[importFromCsv] Headers detected: ${headers.join('|')}, acheteurId=${acheteurId}, sendInvite=${sendInvite}`);
 
         const results: any[] = [];
         const userId = acheteurId || 1;
+        
+        let acheteurName = 'Un acheteur';
+        if (userId) {
+            const acheteur = await this.prisma.user.findUnique({ where: { id: userId } });
+            if (acheteur) {
+                acheteurName = `${acheteur.first_name || ''} ${acheteur.last_name || ''}`.trim() || acheteur.email || acheteurName;
+            }
+        }
 
         for (let i = 1; i < lines.length; i++) {
             const row = lines[i].split(sep);
@@ -815,6 +820,9 @@ export class FournisseursService {
 
                 if (existing && email) {
                     results.push({ id: existing.id, nom, email, telephone, status: 'exists' });
+                    if (sendInvite) {
+                        await this.mailService.sendFournisseurInvitation(email, acheteurName, nom || 'Fournisseur');
+                    }
                     continue;
                 }
 
@@ -827,6 +835,10 @@ export class FournisseursService {
                         user_id: userId,
                     }
                 });
+
+                if (sendInvite && email) {
+                    await this.mailService.sendFournisseurInvitation(email, acheteurName, nom || 'Fournisseur');
+                }
 
                 results.push({ id: record.id, nom, email, telephone, status: 'created' });
             } catch (err: any) {
