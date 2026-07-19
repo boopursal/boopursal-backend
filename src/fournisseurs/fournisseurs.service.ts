@@ -763,4 +763,114 @@ export class FournisseursService {
             throw dbErr;
         }
     }
+
+    /**
+     * Import fournisseurs from a CSV file buffer.
+     * Expected CSV columns (separated by ; or ,):
+     * Civilite;Nom;Prenom;Adresse;Pays;Telephone;Email;Société;Secteur d'activité;Produit;Service
+     */
+    async importFromCsv(fileBuffer: Buffer): Promise<any[]> {
+        const content = fileBuffer.toString('utf-8');
+        const lines = content.split(/\r?\n/).filter(l => l.trim());
+        if (lines.length < 2) throw new BadRequestException('Le fichier CSV est vide ou invalide');
+
+        const sep = lines[0].includes(';') ? ';' : ',';
+        const headers = lines[0].split(sep).map(h => h.trim().toLowerCase());
+
+        const getCol = (row: string[], key: string) => {
+            const idx = headers.indexOf(key);
+            return idx >= 0 ? (row[idx] || '').trim() : '';
+        };
+
+        const results: any[] = [];
+
+        for (let i = 1; i < lines.length; i++) {
+            const row = lines[i].split(sep);
+            const email = getCol(row, 'email');
+            const nom = getCol(row, 'nom');
+            const prenom = getCol(row, 'prenom');
+            const societe = getCol(row, 'société') || getCol(row, 'societe') || getCol(row, 'société');
+            const telephone = getCol(row, 'telephone');
+
+            if (!email) continue;
+
+            // Check if already exists
+            const existing = await this.prisma.user.findUnique({ where: { email } });
+            if (existing) {
+                results.push({ id: existing.id, nom: `${nom} ${prenom}`.trim(), email, telephone, tempPassword: null, status: 'exists' });
+                continue;
+            }
+
+            const tempPassword = Math.random().toString(36).slice(2, 10);
+            const hashedPassword = await bcrypt.hash(tempPassword, 10);
+            const token = crypto.randomBytes(32).toString('hex');
+
+            try {
+                const user = await this.prisma.user.create({
+                    data: {
+                        email,
+                        password: hashedPassword,
+                        first_name: prenom || nom,
+                        last_name: nom,
+                        phone: telephone,
+                        isactif: true,
+                        token,
+                        created: new Date(),
+                        fournisseur: {
+                            create: {
+                                societe: societe || `${prenom} ${nom}`.trim() || email,
+                                description: '',
+                                del: false,
+                                is_complet: false,
+                                created: new Date(),
+                            }
+                        }
+                    },
+                    include: { fournisseur: true }
+                });
+
+                results.push({
+                    id: user.id,
+                    nom: `${prenom} ${nom}`.trim(),
+                    email,
+                    telephone,
+                    tempPassword,
+                    status: 'created'
+                });
+            } catch (err: any) {
+                console.error(`[importFromCsv] Error creating user ${email}:`, err?.message);
+                results.push({ nom, email, telephone, tempPassword: null, status: 'error', error: err?.message });
+            }
+        }
+
+        return results;
+    }
+
+    /**
+     * Get list of imported fournisseurs (users with fournisseur account, ordered by creation date desc)
+     */
+    async getImportedList(page = 1, limit = 50): Promise<any> {
+        const skip = (page - 1) * limit;
+        const [data, total] = await Promise.all([
+            this.prisma.user.findMany({
+                where: { fournisseur: { isNot: null } },
+                orderBy: { created: 'desc' },
+                skip,
+                take: limit,
+                include: { fournisseur: true }
+            }),
+            this.prisma.user.count({ where: { fournisseur: { isNot: null } } })
+        ]);
+
+        return {
+            data: data.map(u => ({
+                id: u.id,
+                nom: `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.email,
+                email: u.email,
+                telephone: u.phone || '',
+                tempPassword: null
+            })),
+            total
+        };
+    }
 }
