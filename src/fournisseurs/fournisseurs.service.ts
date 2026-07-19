@@ -804,6 +804,8 @@ export class FournisseursService {
             const tempPassword = Math.random().toString(36).slice(2, 10);
             const hashedPassword = await bcrypt.hash(tempPassword, 10);
             const token = crypto.randomBytes(32).toString('hex');
+            const slug = (societe ? societe.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'societe') + '-' + Date.now();
+            const civilite = getCol(row, 'civilite') || 'M.';
 
             try {
                 const user = await this.prisma.user.create({
@@ -814,11 +816,20 @@ export class FournisseursService {
                         last_name: nom,
                         phone: telephone,
                         isactif: true,
-                        token,
+                        del: false,
+                        discr: 'fournisseur',
+                        roles: '["ROLE_FOURNISSEUR"]',
+                        redirect: '/register/fournisseur',
+                        confirmation_token: token,
                         created: new Date(),
                         fournisseur: {
                             create: {
                                 societe: societe || `${prenom} ${nom}`.trim() || email,
+                                civilite: civilite,
+                                step: 1,
+                                slug: slug,
+                                visite: 0,
+                                phone_vu: 0,
                                 description: '',
                                 del: false,
                                 is_complet: false,
