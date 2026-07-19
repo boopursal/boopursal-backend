@@ -831,9 +831,7 @@ export class FournisseursService {
                                 visite: 0,
                                 phone_vu: 0,
                                 description: '',
-                                del: false,
                                 is_complet: false,
-                                created: new Date(),
                             }
                         }
                     },
