@@ -56,16 +56,18 @@ export class FournisseursController {
     // ─── Endpoints spécifiques AVANT :id pour éviter les conflits NestJS ───
 
     @Get('fournisseurs/import/list')
-    async getImportedList(@Query('page') page = '1', @Query('limit') limit = '50') {
+    @UseGuards(AuthGuard('jwt'))
+    async getImportedList(@Query('page') page = '1', @Query('limit') limit = '50', @Req() req: any) {
         try {
-            return await this.fournisseursService.getImportedList(+page, +limit);
+            return await this.fournisseursService.getImportedList(+page, +limit, req.user?.id);
         } catch (error: any) {
             throw new InternalServerErrorException({ message: 'Erreur lors de la récupération des fournisseurs', detail: error?.message });
         }
     }
 
     @Post('fournisseurs/import')
-    async importFournisseurs(@Body() body: any) {
+    @UseGuards(AuthGuard('jwt'))
+    async importFournisseurs(@Body() body: any, @Req() req: any) {
         const csvContent = body?.csvContent;
         if (!csvContent) {
             throw new BadRequestException({ error: 'Contenu CSV manquant' });
@@ -73,7 +75,7 @@ export class FournisseursController {
 
         try {
             const buffer = Buffer.from(csvContent, 'utf-8');
-            const results = await this.fournisseursService.importFromCsv(buffer);
+            const results = await this.fournisseursService.importFromCsv(buffer, req.user?.id);
             return {
                 message: 'Fournisseurs importés avec succès',
                 data: results

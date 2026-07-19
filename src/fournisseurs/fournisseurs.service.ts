@@ -769,7 +769,7 @@ export class FournisseursService {
      * Expected CSV columns (separated by ; or ,):
      * Civilite;Nom;Prenom;Adresse;Pays;Telephone;Email;Société;Secteur d'activité;Produit;Service
      */
-    async importFromCsv(fileBuffer: Buffer): Promise<any[]> {
+    async importFromCsv(fileBuffer: Buffer, acheteurId?: number): Promise<any[]> {
         const content = fileBuffer.toString('utf-8');
         const lines = content.split(/\r?\n/).filter(l => l.trim());
         if (lines.length < 2) throw new BadRequestException('Le fichier CSV est vide ou invalide');
@@ -832,6 +832,7 @@ export class FournisseursService {
                                 phone_vu: 0,
                                 description: '',
                                 is_complet: false,
+                                parent: acheteurId || null
                             }
                         }
                     },
@@ -858,17 +859,23 @@ export class FournisseursService {
     /**
      * Get list of imported fournisseurs (users with fournisseur account, ordered by creation date desc)
      */
-    async getImportedList(page = 1, limit = 50): Promise<any> {
+    async getImportedList(page = 1, limit = 50, acheteurId?: number): Promise<any> {
         const skip = (page - 1) * limit;
+        
+        const whereClause: any = { fournisseur: { isNot: null } };
+        if (acheteurId) {
+            whereClause.fournisseur = { parent: acheteurId };
+        }
+
         const [data, total] = await Promise.all([
             this.prisma.user.findMany({
-                where: { fournisseur: { isNot: null } },
+                where: whereClause,
                 orderBy: { created: 'desc' },
                 skip,
                 take: limit,
                 include: { fournisseur: true }
             }),
-            this.prisma.user.count({ where: { fournisseur: { isNot: null } } })
+            this.prisma.user.count({ where: whereClause })
         ]);
 
         return {
