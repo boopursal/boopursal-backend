@@ -776,7 +776,7 @@ export class FournisseursService {
         if (lines.length < 2) throw new BadRequestException('Le fichier CSV est vide ou invalide');
 
         const sep = lines[0].includes(';') ? ';' : ',';
-        const headers = lines[0].split(sep).map(h => h.trim().toLowerCase()
+        const headers = lines[0].split(sep).map(h => h.trim().replace(/^"|"$/g, '').toLowerCase()
             .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove accents
         );
 
@@ -784,7 +784,7 @@ export class FournisseursService {
             for (const key of keys) {
                 const normalized = key.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                 const idx = headers.indexOf(normalized);
-                if (idx >= 0) return (row[idx] || '').trim();
+                if (idx >= 0) return (row[idx] || '').trim().replace(/^"|"$/g, '');
             }
             return '';
         };
