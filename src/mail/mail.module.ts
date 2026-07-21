@@ -12,7 +12,7 @@ import { MailService } from './mail.service';
           secure: true, // true pour port 465
           auth: {
             user: process.env.MAILER_USER || 'adherent@boopursal.com',
-            pass: process.env.MAILER_PASS || 'Y6.v8;cON9c(',
+            pass: process.env.MAILER_PASS || 'Adherent@@2026',
           },
           tls: {
             rejectUnauthorized: false,
